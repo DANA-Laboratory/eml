@@ -35,7 +35,7 @@
 
 using "stage_separators/tank";
 
-Model tank_cost as tank
+Model tank_cost as VesselVolume
 	ATTRIBUTES
 	Pallete 	= true;
 	Icon 		= "icon/Tank"; 
