@@ -14,112 +14,24 @@
 *
 *----------------------------------------------------------------------
 * Author: Paula B. Staudt
-* $Id$
+* $Id: tray.mso 522 2008-05-21 23:21:12Z arge $
 *--------------------------------------------------------------------*#
 
 using "streams";
 
-Model trayBasic
-	ATTRIBUTES
+Model tray
+
+ATTRIBUTES
 	Pallete 	= false;
 	Icon 		= "icon/Tray"; 
-	Brief 		= "Basic equations of a tray column model.";
+	Brief 		= "Complete model of a column tray.";
 	Info 		=
-"This model contains only the main equations of a column tray equilibrium model without
-the hidraulic equations.
-	
-== Assumptions ==
+"== Assumptions ==
 * both phases (liquid and vapour) exists all the time;
 * thermodymanic equilibrium with Murphree plate efficiency;
 * no entrainment of liquid or vapour phase;
 * no weeping;
 * the dymanics in the downcomer are neglected.
-";
-	
-	PARAMETERS
-outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
-outer NComp as Integer;
-	V as volume(Brief="Total Volume of the tray");
-	Q as heat_rate (Brief="Rate of heat supply"); 
-	Ap as area (Brief="Plate area = Atray - Adowncomer");
-	
-	VARIABLES
-in	Inlet as stream (Brief="Feed stream", PosX=0, PosY=0.4932, Symbol="_{in}");
-in	InletL as stream (Brief="Inlet liquid stream", PosX=0.5195, PosY=0, Symbol="_{inL}");
-in	InletV as stream (Brief="Inlet vapour stream", PosX=0.4994, PosY=1, Symbol="_{inV}");
-out	OutletL as liquid_stream (Brief="Outlet liquid stream", PosX=0.8277, PosY=1, Symbol="_{outL}");
-out	OutletV as vapour_stream (Brief="Outlet vapour stream", PosX=0.8043, PosY=0, Symbol="_{outV}");
-
-	M(NComp) as mol (Brief="Molar Holdup in the tray");
-	ML as mol (Brief="Molar liquid holdup");
-	MV as mol (Brief="Molar vapour holdup");
-	E as energy (Brief="Total Energy Holdup on tray");
-	vL as volume_mol (Brief="Liquid Molar Volume");
-	vV as volume_mol (Brief="Vapour Molar volume");
-	Level as length (Brief="Height of clear liquid on plate");
-	yideal(NComp) as fraction;
-	Emv as Real (Brief = "Murphree efficiency");
-	
-	EQUATIONS
-	"Component Molar Balance"
-	diff(M)=Inlet.F*Inlet.z + InletL.F*InletL.z + InletV.F*InletV.z
-		- OutletL.F*OutletL.z - OutletV.F*OutletV.z;
-	
-	"Energy Balance"
-	diff(E) = ( Inlet.F*Inlet.h + InletL.F*InletL.h + InletV.F*InletV.h
-		- OutletL.F*OutletL.h - OutletV.F*OutletV.h + Q );
-	
-	"Molar Holdup"
-	M = ML*OutletL.z + MV*OutletV.z;
-	
-	"Energy Holdup"
-	E = ML*OutletL.h + MV*OutletV.h - OutletL.P*V;
-	
-	"Mol fraction normalisation"
-	sum(OutletL.z)= 1.0;
-	sum(OutletL.z)= sum(OutletV.z);
-	
-	"Liquid Volume"
-	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
-	"Vapour Volume"
-	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
-	
-	"Chemical Equilibrium"
-	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
-		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, yideal)*yideal;
-
-	"Murphree Efficiency"
-	OutletV.z = Emv * (yideal - InletV.z) + InletV.z;
-	
-	"Thermal Equilibrium"
-	OutletV.T = OutletL.T;
-	
-	"Mechanical Equilibrium"
-	OutletV.P = OutletL.P;
-	
-	"Geometry Constraint"
-	V = ML* vL + MV*vV;
-	
-	"Level of clear liquid over the weir"
-	Level = ML*vL/Ap;
-end
-
-Model tray as trayBasic
-	ATTRIBUTES
-	Pallete 	= false;
-	Icon 		= "icon/Tray"; 
-	Brief 		= "Complete model of a column tray.";
-	Info 		=
-"== Specify ==
-* the Feed stream
-* the Liquid inlet stream
-* the Vapour inlet stream
-* the Vapour outlet flow (OutletV.F)
-	
-== Initial ==
-* the plate temperature (OutletL.T)
-* the liquid height (Level) OR the liquid flow OutletL.F
-* (NoComps - 1) OutletL compositions
 
 == Options ==
 You can choose the equation for the liquid outlet flow and the vapour
@@ -135,100 +47,234 @@ switchers.
 * ROFFEL, B.; BETLEM, B.; RUIJTER, J. de. First principles dynamic modeling and multivariable control of a cryogenic distillation column process. Computers and Chemical Engineering, v. 24, p. 111-123, 2000.
 * WANG, L.; LI, P.; WOZNY, G.; WANG, S. A start-up model for simulation of batch distillation starting from a cold state. Computers and Chemical Engineering, v. 27, p.1485-1497, 2003.
 ";	
-
-	PARAMETERS
-	Ah as area (Brief="Total holes area");
-	lw as length (Brief="Weir length");
-	g as acceleration (Default=9.81);
-	hw as length (Brief="Weir height");
-	beta as fraction (Brief="Aeration fraction");
-	alfa as fraction (Brief="Dry pressure drop coefficient");
-	w as Real (Brief="Feehery correlation coefficient", Unit='1/m^4', Default=1);
-	btray as Real (Brief="Elgue correlation coefficient", Unit='kg/m/mol^2', Default=1);
-	fw as Real 	(Brief = "Olsen correlation coefficient", Default=1);
-	Np as Real 	(Brief = "Number of liquid passes in the tray", Default=1);
-	Mw(NComp)  	as molweight 	(Brief = "Component Mol Weight");
 	
-	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
-	LiquidFlow as Switcher(Valid = ["on", "off"], Default = "on");
-	VapourFlowModel as Switcher(Valid = ["Reepmeyer", "Feehery_Fv", "Roffel_Fv", "Klingberg", "Wang_Fv", "Elgue"], Default = "Reepmeyer");
-	LiquidFlowModel as Switcher(Valid = ["default", "Wang_Fl", "Olsen", "Feehery_Fl", "Roffel_Fl"], Default = "default");
+PARAMETERS
+outer PP 		as Plugin		(Brief = "External Physical Properties", Type="PP");
+outer NComp 	as Integer 		(Brief="Number of components");
 
-	SET
+	Mw(NComp)  							as molweight 		(Brief="Component Mol Weight",Hidden=true);
+	Gconst 								as acceleration 	(Brief="Gravity Acceleration",Default=9.81,Hidden=true);
+	zero_flow 							as flow_mol 		(Brief = "Stream Flow closed",Default = 0, Hidden=true);
+	low_flow  							as flow_mol 		(Brief = "Low stream Flow",Default = 1E-6, Hidden=true);
+	Pi									as constant 		(Brief="Pi Number",Default=3.14159265, Symbol = "\pi",Hidden=true);
+	
+	TrayDiameter_			as length 		(Brief="Tray Diameter",Default=1.600);
+	TraySpacing_			as length 		(Brief="Tray Spacing",Default=0.600);
+	Fraction_HoleArea_ 		as fraction 	(Brief="Fraction of the active area that is occupied by the holes with respect to the total tray area",Default=0.10);
+	Fraction_DowncomerArea_ as fraction 	(Brief="Fraction of the downcomer area with respect to the total tray area",Default=0.20);
+	WeirLength_				as length 		(Brief="Weir length", Default = 1);
+	WeirHeight_ 			as length 		(Brief="Weir height", Default= 0.05);
+	TrayLiquidPasses_ 		as positive 	(Brief="Number of liquid passes in the tray", Lower = 1,Default=1);
+	HeatSupply_ 			as heat_rate 	(Brief="Rate of heat supply",Default = 0);
+	AerationFraction_ 		as Real 		(Brief="Aeration fraction", Default = 1);
+	DryPdropCoeff_ 			as Real 		(Brief="Dry pressure drop coefficient", Default= 0.60);
+	MurphreeEff_ 			as Real 		(Brief="Murphree efficiency for All Trays",Lower=0.01,Upper=1);
+
+	PlateArea_ 				as area 		(Brief="Plate area = Atray - Adowncomer",Protected=true);
+	TrayVolume_				as volume		(Brief="Total Volume of the tray",Protected=true);
+	HolesArea_ 				as area 		(Brief="Total holes area",Protected=true);
+	
+	FeeheryCoeff	as Real 	(Brief="Feeherys correlation coefficient", Unit='1/m^4', Default=1,Hidden=true);
+	ElgueCoeff		as Real 	(Brief="Elgues correlation coefficient", Unit='kg/m/mol^2', Default=1,Hidden=true);
+	OlsenCoeff		as Real 	(Brief="Olsens correlation coefficient", Default=1,Hidden=true);
+	
+	VapourFlow 	as Switcher	(Brief="Flag for Vapour Flow condition",Valid = ["on", "off"], Default = "off",Hidden=true);
+	LiquidFlow 	as Switcher	(Brief="Flag for Liquid Flow condition",Valid = ["on", "off"], Default = "off",Hidden=true);
+	
+VARIABLES
+
+	Inlet 				as stream 			(Brief="Feed stream", Hidden=true, PosX=0, PosY=0.4932, Symbol="_{in}");
+	LiquidSideStream	as liquid_stream 	(Brief="liquid Sidestream", Hidden=true, Symbol="_{outL}");
+	VapourSideStream 	as vapour_stream 	(Brief="vapour Sidestream", Hidden=true, Symbol="_{outV}");
+
+in	InletLiquid 	as stream 			(Brief="Inlet liquid stream", PosX=0.5195, PosY=0, Symbol="_{inL}");
+in	InletVapour 	as stream 			(Brief="Inlet vapour stream", PosX=0.4994, PosY=1, Symbol="_{inV}");
+out	OutletLiquid 	as liquid_stream 	(Brief="Outlet liquid stream", PosX=0.8277, PosY=1, Symbol="_{outL}");
+out	OutletVapour 	as vapour_stream 	(Brief="Outlet vapour stream", PosX=0.8043, PosY=0, Symbol="_{outV}");
+
+	LFlowModel 	as positive	(Brief="Flag for Liquid Flow Model",Lower = 0, Default = 1 , Hidden=true);
+	VFlowModel 	as positive	(Brief="Flag for Vapour Flow Model",Lower = 0, Default = 1 , Hidden=true);
+
+	M(NComp) 			as mol 			(Brief="Molar Holdup in the tray");
+	ML 					as mol 			(Brief="Molar liquid holdup");
+	MV 					as mol 			(Brief="Molar vapour holdup");
+	E 					as energy 		(Brief="Total Energy Holdup on tray");
+	vL 					as volume_mol 	(Brief="Liquid Molar Volume");
+	vV 					as volume_mol 	(Brief="Vapour Molar volume");
+	Level 				as length 		(Brief="Height of clear liquid on plate");
+	yideal(NComp) 		as fraction;
+	rhoL 				as dens_mass 	(Brief="Mass Density of liquid phase");
+	rhoV 				as dens_mass	(Brief="Mass Density of vapour phase");
+
+SET
+
 	Mw = PP.MolecularWeight();
-	
-	VARIABLES
-	rhoL as dens_mass;
-	rhoV as dens_mass;
-	
-	EQUATIONS
-	"Liquid Density"
-	rhoL = PP.LiquidDensity(OutletL.T, OutletL.P, OutletL.z);
-	"Vapour Density"
-	rhoV = PP.VapourDensity(InletV.T, InletV.P, InletV.z);
+	zero_flow = 0 * 'kmol/h';
+	low_flow = 1E-6 * 'kmol/h';
 
-	switch LiquidFlow
-		case "on":
-			switch LiquidFlowModel
-				case "default":
+	PlateArea_ = 0.25*Pi*(TrayDiameter_^2)*(1-Fraction_DowncomerArea_);
+	TrayVolume_ = 0.25*Pi*(TrayDiameter_^2)*TraySpacing_;
+	HolesArea_ = 0.25*Pi*(TrayDiameter_^2)*Fraction_HoleArea_;
+
+EQUATIONS
+
+# LiquidFlow and VapourFlow equations need to be linerized to avoid indetermination !
+switch LiquidFlow
+
+	case "on":
+			
+			if LFlowModel equal 1 then
 				"Francis Equation"
-				OutletL.F*vL = 1.84*'1/s'*lw*((Level-(beta*hw))/(beta))^2;
+				OutletLiquid.F*vL = 1.84*'1/s'*WeirLength_*((Level-(AerationFraction_*WeirHeight_))/(AerationFraction_))^2;
 			
-				case "Wang_Fl":
-				OutletL.F*vL = 1.84*'m^0.5/s'*lw*((Level-(beta*hw))/(beta))^1.5;
+			else if	LFlowModel equal 2 then 
+				"Wang_Fl"
+				OutletLiquid.F*vL = 1.84*'m^0.5/s'*WeirLength_*((Level-(AerationFraction_*WeirHeight_))/(AerationFraction_))^1.5;
 			
-				case "Olsen":
-				OutletL.F / 'mol/s'= lw*Np*rhoL/sum(Mw*OutletV.z)/(0.665*fw)^1.5 * ((ML*sum(Mw*OutletL.z)/rhoL/Ap)-hw)^1.5 * 'm^0.5/mol';
+			else if	LFlowModel equal 3 then
+				"Olsen"
+				OutletLiquid.F / 'mol/s'= WeirLength_*TrayLiquidPasses_*rhoL/sum(Mw*OutletVapour.z)/(0.665*OlsenCoeff)^1.5 * ((ML*sum(Mw*OutletLiquid.z)/rhoL/PlateArea_)-WeirHeight_)^1.5 * 'm^0.5/mol';
 			
-				case "Feehery_Fl":
-				OutletL.F = lw*rhoL/sum(Mw*OutletL.z) * ((Level-hw)/750/'mm')^1.5 * 'm^2/s';
+			else if	LFlowModel equal 4 then  
+				"Feehery_Fl"
+				OutletLiquid.F = WeirLength_*rhoL/sum(Mw*OutletLiquid.z) * ((Level-WeirHeight_)/750/'mm')^1.5 * 'm^2/s';
 			
-				case "Roffel_Fl":
-				OutletL.F = 2/3*rhoL/sum(Mw*OutletL.z)*lw*(ML*sum(Mw*OutletL.z)/(Ap*1.3)/rhoL)^1.5*sqrt(2*g/
-							(2*(1 - 0.3593/'Pa^0.0888545'*(OutletV.F*sum(Mw*OutletV.z)/(Ap*1.3)/sqrt(rhoV))^0.177709)-1));	
-			end
-		when Level < (beta * hw) switchto "off";
+			else   
+				"Roffel_Fl"
+				OutletLiquid.F = 2/3*rhoL/sum(Mw*OutletLiquid.z)*WeirLength_*(ML*sum(Mw*OutletLiquid.z)/(PlateArea_*1.3)/rhoL)^1.5*sqrt(2*Gconst/
+							(2*(1 - 0.3593/'Pa^0.0888545'*abs(OutletVapour.F*sum(Mw*OutletVapour.z)/(PlateArea_*1.3)/sqrt(rhoV))^0.177709)-1)); #/'(kg/m)^0.0888545/s^0.177709';
+end
+end
+end
+end
+		
+		when Level < (AerationFraction_ *WeirHeight_) switchto "off";
 		
 		case "off":
+		
 		"Low level"
-		OutletL.F = 0 * 'mol/h';
-		when Level > (beta * hw) + 1e-6*'m' switchto "on";
-	end
-	
-	switch VapourFlow
-		case "on":
-			switch VapourFlowModel
-				case "Reepmeyer":
-				InletV.F*vV = sqrt((InletV.P - OutletV.P)/(rhoV*alfa))*Ah;
-			
-				case "Feehery_Fv":
-				InletV.F = rhoV/Ap/w/sum(Mw*OutletV.z) * sqrt(((InletV.P - OutletV.P)-(rhoV*g*ML*vL/Ap))/rhoV);
-			
-				case "Roffel_Fv":
-				InletV.F^1.08 * 0.0013 * 'kg/m/mol^1.08/s^0.92*1e5' = (InletV.P - OutletV.P)*1e5 - (beta*sum(M*Mw)/(Ap*1.3)*g*1e5) * (rhoV*Ah/sum(Mw*OutletV.z))^1.08 * 'm^1.08/mol^1.08';
-			
-				case "Klingberg":
-				InletV.F * vV = Ap * sqrt(((InletV.P - OutletV.P)-rhoL*g*Level)/rhoV);
-			
-				case "Wang_Fv":
-				InletV.F * vV = Ap * sqrt(((InletV.P - OutletV.P)-rhoL*g*Level)/rhoV*alfa);
-				
-				case "Elgue":
-				InletV.F  = sqrt((InletV.P - OutletV.P)/btray);
-			end
-		when InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		OutletLiquid.F = zero_flow;
 		
-		case "off":
-		InletV.F = 0 * 'mol/s';
-		when InletV.P > OutletV.P + Level*g*rhoL + 1e-1 * 'atm' switchto "on";
-	end
+		when Level > (AerationFraction_ * WeirHeight_) switchto "on";
+		
+end
+	
+switch VapourFlow
+	
+	case "on":
+			
+			if VFlowModel equal 1 then
+				"Reepmeyer"
+				InletVapour.F*vV = sqrt((InletVapour.P - OutletVapour.P)/(rhoV*DryPdropCoeff_))*HolesArea_;
+			
+			else if VFlowModel equal 2 then
+				"Feehery_Fv"
+				InletVapour.F = rhoV/PlateArea_/FeeheryCoeff/sum(Mw*OutletVapour.z) * sqrt(((InletVapour.P - OutletVapour.P)-(rhoV*Gconst*ML*vL/PlateArea_))/rhoV);
+			
+			else if VFlowModel equal 3 then
+				"Roffel_Fv"
+				InletVapour.F^1.08 * 0.0013 * 'kg/m/mol^1.08/s^0.92*1e5' = (InletVapour.P - OutletVapour.P)*1e5 - (AerationFraction_*sum(M*Mw)/(PlateArea_*1.3)*Gconst*1e5) * (rhoV*HolesArea_/sum(Mw*OutletVapour.z))^1.08 * 'm^1.08/mol^1.08';
+			
+			else if VFlowModel equal 4  then
+				"Klingberg"
+				InletVapour.F * vV = PlateArea_ * sqrt(((InletVapour.P - OutletVapour.P)-rhoL*Gconst*Level)/rhoV);
+			
+			else if VFlowModel equal 5 then
+				"Wang_Fv"
+				InletVapour.F * vV = PlateArea_ * sqrt(((InletVapour.P - OutletVapour.P)-rhoL*Gconst*Level)/rhoV*DryPdropCoeff_);
+				
+			else 
+				"Elgue"
+				InletVapour.F  = sqrt((InletVapour.P - OutletVapour.P)/ElgueCoeff);
+end
+end
+end
+end
+end
+	
+	when InletVapour.F < low_flow switchto "off";
+
+	case "off":
+		InletVapour.F = zero_flow;
+		
+	when InletVapour.P > OutletVapour.P switchto "on";
+
+end
+
+"Murphree Efficiency"
+	OutletVapour.z =  MurphreeEff_ * (yideal - InletVapour.z) + InletVapour.z;
+	
+"Energy Balance"
+	diff(E) = ( Inlet.F*Inlet.h + InletLiquid.F*InletLiquid.h + InletVapour.F*InletVapour.h- OutletLiquid.F*OutletLiquid.h - OutletVapour.F*OutletVapour.h
+	- VapourSideStream.F*VapourSideStream.h - LiquidSideStream.F*LiquidSideStream.h + HeatSupply_ );
+
+"Energy Holdup"
+	E = ML*OutletLiquid.h + MV*OutletVapour.h - OutletLiquid.P*TrayVolume_;
+
+"Geometry Constraint"
+	TrayVolume_ = ML* vL + MV*vV;
+
+"Level of clear liquid over the weir"
+	Level = ML*vL/PlateArea_;
+
+"Component Molar Balance"
+	diff(M)=Inlet.F*Inlet.z + InletLiquid.F*InletLiquid.z + InletVapour.F*InletVapour.z- OutletLiquid.F*OutletLiquid.z - OutletVapour.F*OutletVapour.z-
+	LiquidSideStream.F*LiquidSideStream.z-VapourSideStream.F*VapourSideStream.z;
+
+"Molar Holdup"
+	M = ML*OutletLiquid.z + MV*OutletVapour.z;
+
+"Mol fraction normalisation"
+	sum(OutletLiquid.z)= 1.0;
+
+"Mol fraction constraint"
+	sum(OutletLiquid.z)= sum(OutletVapour.z);
+
+"Liquid Volume"
+	vL = PP.LiquidVolume(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
+
+"Vapour Volume"
+	vV = PP.VapourVolume(OutletVapour.T, OutletVapour.P, OutletVapour.z);
+
+"Liquid Density"
+	rhoL = PP.LiquidDensity(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
+	
+"Vapour Density"
+	rhoV = PP.VapourDensity(InletVapour.T, InletVapour.P, InletVapour.z);
+
+"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z)*OutletLiquid.z = PP.VapourFugacityCoefficient(OutletVapour.T, OutletVapour.P, yideal)*yideal;
+
+"Thermal Equilibrium"
+	OutletVapour.T = OutletLiquid.T;
+
+"Mechanical Equilibrium"
+	OutletVapour.P = OutletLiquid.P;
+	
+"Thermal Equilibrium Vapour Side Stream"
+	OutletVapour.T = VapourSideStream.T;
+
+"Thermal Equilibrium Liquid Side Stream"
+	OutletLiquid.T = LiquidSideStream.T;
+
+"Mechanical Equilibrium Vapour Side Stream"
+	OutletVapour.P= VapourSideStream.P;
+
+"Mechanical Equilibrium Liquid Side Stream"
+	OutletLiquid.P = LiquidSideStream.P;
+
+"Composition Liquid Side Stream"
+	OutletLiquid.z= LiquidSideStream.z;
+	
+"Composition Vapour Side Stream"
+	OutletVapour.z= VapourSideStream.z;
 
 end
 
 #*-------------------------------------------------------------------
 * Model of a tray with reaction
 *-------------------------------------------------------------------*#
-Model trayReact
+Model trayReac
 	ATTRIBUTES
 	Pallete 	= false;
 	Icon 		= "icon/Tray"; 
@@ -245,148 +291,114 @@ Model trayReact
 * the Feed stream;
 * the Liquid inlet stream;
 * the Vapour inlet stream;
-* the Vapour outlet flow (OutletV.F);
+* the Vapour outlet flow (OutletVapour.F);
 * the reaction related variables.
 	
 == Initial ==
-* the plate temperature (OutletL.T)
-* the liquid height (Level) OR the liquid flow OutletL.F
-* (NoComps - 1) OutletL compositions
+* the plate temperature (OutletLiquid.T)
+* the liquid height (Level) OR the liquid flow OutletLiquid.F
+* (NoComps - 1) OutletLiquid compositions
 ";
 
-	PARAMETERS
-	outer PP as Plugin(Type="PP");
-	outer NComp as Integer;
-	V as volume(Brief="Total Volume of the tray");
-	Q as power (Brief="Rate of heat supply"); 
-	Ap as area (Brief="Plate area = Atray - Adowncomer");
-	
-	Ah as area (Brief="Total holes area");
-	lw as length (Brief="Weir length");
-	g as acceleration (Default=9.81);
-	hw as length (Brief="Weir height");
-	beta as fraction (Brief="Aeration fraction");
-	alfa as fraction (Brief="Dry pressure drop coefficient");
+PARAMETERS
 
-	stoic(NComp) as Real(Brief="Stoichiometric matrix");
-	Hr as energy_mol;
-	Pstartup as pressure;
+	outer PP 			as Plugin(Type="PP");
+	outer NComp 	as Integer;
 	
-	VapourFlow as Switcher(Valid = ["on", "off"], Default = "off");
-	LiquidFlow as Switcher(Valid = ["on", "off"], Default = "off");
-	
-	VARIABLES
-in	Inlet as stream (Brief="Feed stream", PosX=0, PosY=0.4932, Symbol="_{in}");
-in	InletL as stream (Brief="Inlet liquid stream", PosX=0.5195, PosY=0, Symbol="_{inL}");
-in	InletV as stream (Brief="Inlet vapour stream", PosX=0.4994, PosY=1, Symbol="_{inV}");
-out	OutletL as liquid_stream (Brief="Outlet liquid stream", PosX=0.8277, PosY=1, Symbol="_{outL}");
-out	OutletV as vapour_stream (Brief="Outlet vapour stream", PosX=0.8043, PosY=0, Symbol="_{outV}");
+VARIABLES
 
-	yideal(NComp) as fraction;
-	Emv as Real (Brief = "Murphree efficiency");
+	Inlet 						as stream 				(Brief="Feed stream", PosX=0, PosY=0.4932, Symbol="_{in}");
+	LiquidSideStream	as liquid_stream 	(Brief="liquid Sidestream", Hidden=true, Symbol="_{outL}");
+	VapourSideStream as vapour_stream 	(Brief="vapour Sidestream", Hidden=true, Symbol="_{outV}");
+	
 
-	M(NComp) as mol (Brief="Molar Holdup in the tray");
-	ML as mol (Brief="Molar liquid holdup");
-	MV as mol (Brief="Molar vapour holdup");
-	E as energy (Brief="Total Energy Holdup on tray");
-	vL as volume_mol (Brief="Liquid Molar Volume");
-	vV as volume_mol (Brief="Vapour Molar volume");
-	Level as length (Brief="Height of clear liquid on plate");
-	Vol as volume;
-	
-	rhoL as dens_mass;
-	rhoV as dens_mass;
-	r3 as reaction_mol (Brief = "Reaction resulting ethyl acetate", DisplayUnit = 'mol/l/s');
-	C(NComp) as conc_mol (Brief = "Molar concentration", Lower = -1); #, Unit = "mol/l");
-	
-	EQUATIONS
-	"Molar Concentration"
-	OutletL.z = vL * C;
-	
-	"Reaction"
-	r3 = exp(-7150*'K'/OutletL.T)*(4.85e4*C(1)*C(2) - 1.23e4*C(3)*C(4))*'l/mol/s';
-	
-	"Component Molar Balance"
-	diff(M)=Inlet.F*Inlet.z + InletL.F*InletL.z + InletV.F*InletV.z
-		- OutletL.F*OutletL.z - OutletV.F*OutletV.z + stoic*r3*ML*vL;
-	
-	"Energy Balance"
-	diff(E) = ( Inlet.F*Inlet.h + InletL.F*InletL.h + InletV.F*InletV.h
-		- OutletL.F*OutletL.h - OutletV.F*OutletV.h + Q ) + Hr * r3 * vL*ML;
-	
-	"Molar Holdup"
-	M = ML*OutletL.z + MV*OutletV.z;
-	
-	"Energy Holdup"
-	E = ML*OutletL.h + MV*OutletV.h - OutletL.P*V;
-	
-	"Mol fraction normalisation"
-	sum(OutletL.z)= 1.0;
-	
-	"Liquid Volume"
-	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
-	"Vapour Volume"
-	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
+in		InletLiquid 		as 	stream 				(Brief="Inlet liquid stream", PosX=0.5195, PosY=0, Symbol="_{inL}");
+in		InletVapour 		as 	stream 				(Brief="Inlet vapour stream", PosX=0.4994, PosY=1, Symbol="_{inV}");
+out	OutletLiquid 	as 	liquid_stream 		(Brief="Outlet liquid stream", PosX=0.8277, PosY=1, Symbol="_{outL}");
+out	OutletVapour 	as 	vapour_stream 	(Brief="Outlet vapour stream", PosX=0.8043, PosY=0, Symbol="_{outV}");
 
-	"Thermal Equilibrium"
-	OutletV.T = OutletL.T;
+	yideal(NComp) 	as fraction;
+
+	M(NComp) 		as mol 				(Brief="Molar Holdup in the tray");
+	ML 						as mol 				(Brief="Molar liquid holdup");
+	MV 						as mol 				(Brief="Molar vapour holdup");
+	E 						as energy 			(Brief="Total Energy Holdup on tray");
+	vL 						as volume_mol 	(Brief="Liquid Molar Volume");
+	vV 						as volume_mol 	(Brief="Vapour Molar volume");
+	Level 					as length 			(Brief="Height of clear liquid on plate");
+	Vol 						as volume;
 	
-	"Mechanical Equilibrium"
-	OutletV.P = OutletL.P;
+	rhoL 			as dens_mass;
+	rhoV 			as dens_mass;
+	r3 				as reaction_mol 	(Brief = "Reaction resulting ethyl acetate", DisplayUnit = 'mol/l/s');
+	C(NComp) 	as conc_mol 		(Brief = "Molar concentration", Lower = -1); 
 	
-	"Level of clear liquid over the weir"
-	Level = ML*vL/Ap;
+EQUATIONS
+
+"Molar Concentration"
+	OutletLiquid.z = vL * C;
+	
+"Reaction"
+	r3 = exp(-7150*'K'/OutletLiquid.T)*(4.85e4*C(1)*C(2) - 1.23e4*C(3)*C(4))*'l/mol/s';
+	
+"Molar Holdup"
+	M = ML*OutletLiquid.z + MV*OutletVapour.z;
+
+"Thermal Equilibrium Vapour Side Stream"
+	OutletVapour.T = VapourSideStream.T;
+
+"Thermal Equilibrium Liquid Side Stream"
+	OutletLiquid.T = LiquidSideStream.T;
+
+"Mechanical Equilibrium Vapour Side Stream"
+	OutletVapour.P= VapourSideStream.P;
+
+"Mechanical Equilibrium Liquid Side Stream"
+	OutletLiquid.P = LiquidSideStream.P;
+
+"Composition Liquid Side Stream"
+	OutletLiquid.z= LiquidSideStream.z;
+	
+"Composition Vapour Side Stream"
+	OutletVapour.z= VapourSideStream.z;
+
+"Mol fraction normalisation"
+	sum(OutletLiquid.z)= 1.0;
+
+"Liquid Volume"
+	vL = PP.LiquidVolume(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
+
+"Vapour Volume"
+	vV = PP.VapourVolume(OutletVapour.T, OutletVapour.P, OutletVapour.z);
+
+"Thermal Equilibrium"
+	OutletVapour.T = OutletLiquid.T;
+
+"Mechanical Equilibrium"
+	OutletVapour.P = OutletLiquid.P;
 
 	Vol = ML*vL;
 	
-	"Liquid Density"
-	rhoL = PP.LiquidDensity(OutletL.T, OutletL.P, OutletL.z);
-	"Vapour Density"
-	rhoV = PP.VapourDensity(InletV.T, InletV.P, InletV.z);
+"Liquid Density"
+	rhoL = PP.LiquidDensity(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
 
-	switch LiquidFlow
-		case "on":
-		"Francis Equation"
-		OutletL.F*vL = 1.84*'1/s'*lw*((Level-(beta*hw)+1e-6*'m')/(beta))^2;
-		when Level < (beta * hw) switchto "off";
-		
-		case "off":
-		"Low level"
-		OutletL.F = 0 * 'mol/h';
-		when Level > (beta * hw) + 1e-6*'m' switchto "on";
-	end
+"Vapour Density"
+	rhoV = PP.VapourDensity(InletVapour.T, InletVapour.P, InletVapour.z);
 
-	switch VapourFlow
-		case "on":
-		#InletV.P = OutletV.P + Level*g*rhoL + rhoV*alfa*(InletV.F*vV/Ah)^2;
-		InletV.F*vV = sqrt((InletV.P - OutletV.P - Level*g*rhoL + 1e-8 * 'atm')/(rhoV*alfa))*Ah;
-		when InletV.P < OutletV.P + Level*g*rhoL switchto "off";
-		
-		case "off":
-		InletV.F = 0 * 'mol/s';
-		when InletV.P > OutletV.P + Level*g*rhoL + 3e-2 * 'atm' switchto "on";
-		#when InletV.P > OutletV.P + Level*beta*g*rhoL + 1e-2 * 'atm' switchto "on";
-	end
+"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z)*OutletLiquid.z = 	PP.VapourFugacityCoefficient(OutletVapour.T, OutletVapour.P, yideal)*yideal;
 
-	"Chemical Equilibrium"
-	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
-		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, yideal)*yideal;
-	
-	OutletV.z = Emv * (yideal - InletV.z) + InletV.z;
-	
-	sum(OutletL.z)= sum(OutletV.z);
-	
-	"Geometry Constraint"
-	V = ML* vL + MV*vV;
+	sum(OutletLiquid.z)= sum(OutletVapour.z);
+
 end
 
 #*-------------------------------------
 * Model of a packed column stage
 -------------------------------------*#
 Model packedStage
-	ATTRIBUTES
+
+ATTRIBUTES
 	Pallete 	= false;
-	Icon 		= "icon/PackedStage"; 
 	Brief 		= "Complete model of a packed column stage.";
 	Info 		=
 "== Specify ==
@@ -396,134 +408,159 @@ Model packedStage
 * the stage pressure drop (deltaP)
 	
 == Initial ==
-* the plate temperature (OutletL.T)
+* the plate temperature (OutletLiquid.T)
 * the liquid molar holdup ML
-* (NoComps - 1) OutletL compositions
-";	
-	
-	PARAMETERS
-outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
-outer NComp as Integer;
+* (NoComps - 1) OutletLiquid compositions
+";
 
-	V as volume(Brief="Total Volume of the tray");
-	Q as heat_rate (Brief="Rate of heat supply"); 
-	d as length (Brief="Column diameter");	
+PARAMETERS
 
-	a as Real (Brief="surface area per packing volume", Unit='m^2/m^3');
-	g as acceleration;
-	e as Real (Brief="Void fraction of packing, m^3/m^3");
-	Mw(NComp)  	as molweight 	(Brief = "Component Mol Weight");
-	hs as length (Brief="Height of the packing stage");
-	Qsil as positive (Brief="Resistance coefficient on the liquid load", Default=0.6);
+outer PP 	as Plugin	(Brief = "External Physical Properties", Type="PP");
+outer NComp as Integer	(Brief = "Number Of Components");
 
-	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
+	LiquidResistanceCoeff 	as positive 	(Brief="Resistance coefficient on the liquid load", Default=1,Hidden=true);
+	AreaPerPackingVolume 	as Real 		(Brief="surface area per packing volume", Unit='m^2/m^3',Hidden=true);
+	ColumnInternalDiameter	as length 		(Brief="Column diameter",Hidden=true);
+	PackingVoidFraction		as Real 		(Brief="Void fraction of packing, (m^3 void space/m^3 packed bed)",Hidden=true);
+	HeightOfPacking 		as length 		(Brief="Height of packing",Hidden=true);
+	Number_Stages 			as Integer		(Brief="Number of Stages", Default=3,Hidden=true);
+	HeatOnStage 			as heat_rate 	(Brief="Rate of heat supply",Hidden=true);
 
-	VARIABLES
-in	Inlet as stream (Brief="Feed stream", PosX=0, PosY=0.4932, Symbol="_{in}");
-in	InletL as stream (Brief="Inlet liquid stream", PosX=0.5195, PosY=0, Symbol="_{inL}");
-in	InletV as stream (Brief="Inlet vapour stream", PosX=0.4994, PosY=1, Symbol="_{inV}");
-out	OutletL as liquid_stream (Brief="Outlet liquid stream", PosX=0.8277, PosY=1, Symbol="_{outL}");
-out	OutletV as vapour_stream (Brief="Outlet vapour stream", PosX=0.8043, PosY=0, Symbol="_{outV}");
+	HETP 			as length 		(Brief="The Height Equivalent to a Theoretical Plate",Hidden=true);
+	ColumnArea 		as area			(Brief="Column Sectional Cross Area",Hidden=true);
+	V 				as volume		(Brief="Total Volume of the tray",Hidden=true);
+	Pi				as constant 	(Brief="Pi Number",Default=3.14159265, Symbol = "\pi",Hidden=true);
+	Gconst 			as acceleration (Brief="Gravity Acceleration",Default=9.81,Hidden=true);
+	
+	low_flow  		as flow_mol 	(Brief ="Low Flow",Default = 1E-6, Hidden=true);
+	low_pressure  	as pressure 	(Brief ="Low Pressure",Default = 1E-6, Hidden=true);
+	zero_flow 		as flow_mol 	(Brief ="No Flow",Default = 0, Hidden=true);
 
-	M(NComp) as mol (Brief="Molar Holdup in the tray", Default=0.01, Lower=0, Upper=100);
-	ML as mol (Brief="Molar liquid holdup", Default=0.01, Lower=0, Upper=100);
-	MV as mol (Brief="Molar vapour holdup", Default=0.01, Lower=0, Upper=100);
-	E as energy (Brief="Total Energy Holdup on tray", Default=-500);
-	vL as volume_mol (Brief="Liquid Molar Volume");
-	vV as volume_mol (Brief="Vapour Molar volume");
-	
-	miL as viscosity (Brief="Liquid dynamic viscosity", DisplayUnit='kg/m/s');
-	rhoL as dens_mass;
-	rhoV as dens_mass;
-	
-	deltaP as pressure(Lower=-10);
-	
-	uL as velocity (Brief="volume flow rate of liquid, m^3/m^2/s", Lower=0, Upper=100);
-	uV as velocity (Brief="volume flow rate of vapor, m^3/m^2/s", Lower=0, Upper=100);
-	Al as area (Brief="Area occupied by the liquid", Default=0.001, Upper=10);
-	hl as positive (Brief="Column holdup", Unit='m^3/m^3', Default=0.04,Upper=1);
-	
-	SET
+	Mw(NComp)  	as molweight 	(Brief = "Component Mol Weight",Hidden=true);
+	VapourFlow  as Switcher		(Brief = "Vapour Flow", Valid = ["on", "off"], Default = "on",Hidden=true);
+
+SET
 	Mw = PP.MolecularWeight();
+	
+	ColumnArea 	= 0.25*Pi*ColumnInternalDiameter^2;
+	HETP 		= HeightOfPacking/Number_Stages;	
+	V 			= HETP * ColumnArea;
+	
+	low_pressure = 1E-4 * 'atm';
+	low_flow = 1E-6 * 'kmol/h';
+	zero_flow = 0 * 'kmol/h';
 
-	EQUATIONS
-	"Component Molar Balance"
-	diff(M)=Inlet.F*Inlet.z + InletL.F*InletL.z + InletV.F*InletV.z
-		- OutletL.F*OutletL.z - OutletV.F*OutletV.z;
+VARIABLES
 
-	"Energy Balance"
-	diff(E) = ( Inlet.F*Inlet.h + InletL.F*InletL.h + InletV.F*InletV.h
-		- OutletL.F*OutletL.h - OutletV.F*OutletV.h + Q );
-	
-	"Molar Holdup"
-	M = ML*OutletL.z + MV*OutletV.z;
-	
-	"Energy Holdup"
-	E = ML*OutletL.h + MV*OutletV.h - OutletL.P*V;
-	
-	"Mol fraction normalisation"
-	sum(OutletL.z)= 1.0;
-	sum(OutletL.z)=sum(OutletV.z);
+	Inlet 			as stream 			(Brief="Feed stream", Symbol="_{in}",Protected=true);
+in	InletLiquid 	as stream 			(Brief="Inlet liquid stream",  Symbol="_{inL}",Protected=true);
+in	InletVapour 	as stream 			(Brief="Inlet vapour stream",  Symbol="_{inV}",Protected=true);
+out	OutletLiquid 	as liquid_stream 	(Brief="Outlet liquid stream", Symbol="_{outL}",Protected=true);
+out	OutletVapour 	as vapour_stream 	(Brief="Outlet vapour stream", Symbol="_{outV}",Protected=true);
 
-	"Liquid Volume"
-	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
-	"Vapour Volume"
-	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
-	
-	"Chemical Equilibrium"
-	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
-		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
-	
-	"Thermal Equilibrium"
-	OutletV.T = OutletL.T;
-	
-	"Mechanical Equilibrium"
-	OutletL.P = OutletV.P;
-	
-	"Geometry Constraint"
-	V*e = ML*vL + MV*vV;
-	
-	"Liquid Density"
-	rhoL = PP.LiquidDensity(OutletL.T, OutletL.P, OutletL.z);
-	"Vapour Density"
-	rhoV = PP.VapourDensity(InletV.T, InletV.P, InletV.z);
-	"Liquid viscosity"
-	miL = PP.LiquidViscosity(OutletL.T, OutletL.P, OutletL.z);
+	M(NComp) 	as mol 			(Brief="Molar Holdup in the tray", Default=0.01, Lower=-0.000001, Upper=100,Protected=true);
+	ML 			as mol 			(Brief="Molar liquid holdup", Default=0.01, Lower=0, Upper=100,Protected=true);
+	MV 			as mol 			(Brief="Molar vapour holdup", Default=0.01, Lower=0, Upper=100,Protected=true);
+	E 			as energy 		(Brief="Total Energy Holdup on tray", Default=-500,Protected=true);
+	vL 			as volume_mol 	(Brief="Liquid Molar Volume",Protected=true);
+	vV 			as volume_mol 	(Brief="Vapour Molar volume",Protected=true);
+	miL 		as viscosity 	(Brief="Liquid dynamic viscosity", DisplayUnit='kg/m/s',Protected=true);
+	rhoL 		as dens_mass	(Brief="Liquid mass density",Protected=true);
+	rhoV 		as dens_mass	(Brief="Vapour mass density",Protected=true);
+	uL 			as velocity 	(Brief="volume flow rate of liquid, m^3/m^2/s", Lower=-10, Upper=1000,Protected=true);
+	uV 			as velocity 	(Brief="volume flow rate of vapor, m^3/m^2/s", Lower=-10, Upper=1000,Protected=true);
+	Al 			as area 		(Brief="Area occupied by the liquid", Default=0.001, Upper=10,Protected=true);
+	hl 			as positive 	(Brief="Column holdup", Unit='m^3/m^3', Default=0.01,Upper=10,Protected=true);
+	deltaP 		as pressure 	(Brief="Stage Pressure drop",Protected=true);
 
-	"Area occupied by the liquid"
-	Al = ML*vL/hs;
+EQUATIONS
 
-	"Volume flow rate of liquid, m^3/m^2/s"
-	uL * Al = OutletL.F * vL;
-	"Volume flow rate of vapor, m^3/m^2/s"
-	uV * (V*e/hs - Al) = InletV.F * vV;
+switch VapourFlow
 	
-	"Liquid holdup"
-	hl*V*e = ML*vL;
+	case "on":
+"Pressure drop and Vapor flow, Billet (4-58)"
+	deltaP/HETP  = LiquidResistanceCoeff *( 0.5*AreaPerPackingVolume + 2/ColumnInternalDiameter) * 1/((PackingVoidFraction-hl)^3) * (uV^2) *rhoV;
 	
-	"Liquid velocity as a function of liquid holdup, Billet (4-27)"
-	hl^3 = (12/g) * a^2 * (miL/rhoL) * uL;
+	when InletVapour.F < low_flow switchto "off";
 	
-	switch VapourFlow
-		case "on":
-		"Pressure drop and Vapor flow, Billet (4-58)"
-		deltaP/hs  = Qsil * (a/2 + 2/d) * 1/((e-hl)^3) * (uV^2) * rhoV;
-		
-		when InletV.F < 1e-6 * 'kmol/h' switchto "off";
-		
-		case "off":
-		InletV.F = 0 * 'mol/s';
-		when deltaP > 1e-4 * 'atm' switchto "on";
-	end
+	case "off":
+"Vapour Flow"
+	InletVapour.F = zero_flow;
+	
+	when deltaP > low_pressure switchto "on";
 
-	"Pressure profile"
-	deltaP = InletV.P - OutletV.P;
+end
+
+"Energy Balance"
+	diff(E) = (Inlet.F*Inlet.h + InletLiquid.F*InletLiquid.h + InletVapour.F*InletVapour.h- OutletLiquid.F*OutletLiquid.h
+	- OutletVapour.F*OutletVapour.h + HeatOnStage );
+
+"Energy Holdup"
+	E = ML*OutletLiquid.h + MV*OutletVapour.h - OutletLiquid.P*V;
+
+"Geometry Constraint"
+	V*PackingVoidFraction= ML*vL + MV*vV;
+
+"Volume flow rate of vapor, m^3/m^2/s"
+	uV * (V*PackingVoidFraction/HETP - Al) = InletVapour.F * vV;
+
+"Liquid holdup"
+	hl*V*PackingVoidFraction = ML*vL;
+
+"Liquid velocity as a function of liquid holdup, Billet (4-27)"
+	hl^3 = (12/Gconst) * AreaPerPackingVolume^2 * (miL/rhoL) * uL;
+
+"Area occupied by the liquid"
+	Al = ML*vL/HETP;
+
+"Component Molar Balance"
+	diff(M)=Inlet.F*Inlet.z + InletLiquid.F*InletLiquid.z + InletVapour.F*InletVapour.z- OutletLiquid.F*OutletLiquid.z - OutletVapour.F*OutletVapour.z;
+
+"Molar Holdup"
+	M = ML*OutletLiquid.z + MV*OutletVapour.z;
+
+"Mol Fraction Normalisation"
+	sum(OutletLiquid.z)= 1.0;
+
+"Mol Fraction Constraint"
+	sum(OutletLiquid.z)= sum(OutletVapour.z);
+	
+"Liquid Volume"
+	vL = PP.LiquidVolume(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
+
+"Vapour Volume"
+	vV = PP.VapourVolume(OutletVapour.T, OutletVapour.P, OutletVapour.z);
+	
+"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z)*OutletLiquid.z = 	PP.VapourFugacityCoefficient(OutletVapour.T, OutletVapour.P, OutletVapour.z)*OutletVapour.z;
+	
+"Thermal Equilibrium"
+	OutletVapour.T = OutletLiquid.T;
+	
+"Mechanical Equilibrium"
+	OutletLiquid.P = OutletVapour.P;
+	
+"Liquid Density"
+	rhoL = PP.LiquidDensity(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
+
+"Vapour Density"
+	rhoV = PP.VapourDensity(InletVapour.T, InletVapour.P, InletVapour.z);
+
+"Liquid viscosity"
+	miL = PP.LiquidViscosity(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
+
+"Volume flow rate of liquid, m^3/m^2/s"
+	uL * Al = OutletLiquid.F * vL;
+	
+"Pressure Drop"
+	deltaP = InletVapour.P - OutletVapour.P;	
+
 end
 
 #*-------------------------------------
 * Nonequilibrium Model
--------------------------------------*#
-Model interface
+-------------------------------------*
+Model interfaceTeste
 	
 	ATTRIBUTES
 	Pallete 	= false;
@@ -563,7 +600,7 @@ outer NC1 as Integer;
 
 end
 
-Model trayRateBasic
+Model trayRateBasicTeste
 	ATTRIBUTES
 	Pallete 	= false;
 	Icon 		= "icon/Tray"; 
@@ -590,10 +627,10 @@ outer NComp as Integer;
 	VARIABLES
 in	Inlet as stream (Brief="Feed stream", PosX=0, PosY=0.4932, Symbol="_{in}");
 in	InletFV as stream (Brief="Feed stream", PosX=0, PosY=0.4932, Symbol="_{in}");
-in	InletL as stream (Brief="Inlet liquid stream", PosX=0.5195, PosY=0, Symbol="_{inL}");
-in	InletV as stream (Brief="Inlet vapour stream", PosX=0.4994, PosY=1, Symbol="_{inV}");
-out	OutletL as liquid_stream (Brief="Outlet liquid stream", PosX=0.8277, PosY=1, Symbol="_{outL}");
-out	OutletV as vapour_stream (Brief="Outlet vapour stream", PosX=0.8043, PosY=0, Symbol="_{outV}");
+in	InletLiquid as stream (Brief="Inlet liquid stream", PosX=0.5195, PosY=0, Symbol="_{inL}");
+in	InletVapour as stream (Brief="Inlet vapour stream", PosX=0.4994, PosY=1, Symbol="_{inV}");
+out	OutletLiquid as liquid_stream (Brief="Outlet liquid stream", PosX=0.8277, PosY=1, Symbol="_{outL}");
+out	OutletVapour as vapour_stream (Brief="Outlet vapour stream", PosX=0.8043, PosY=0, Symbol="_{outV}");
 
 	M_liq(NComp) as mol (Brief="Liquid Molar Holdup in the tray");
 	M_vap(NComp) as mol (Brief="Vapour Molar Holdup in the tray");
@@ -604,40 +641,40 @@ out	OutletV as vapour_stream (Brief="Outlet vapour stream", PosX=0.8043, PosY=0,
 	vL as volume_mol (Brief="Liquid Molar Volume");
 	vV as volume_mol (Brief="Vapour Molar volume");
 	Level as length (Brief="Height of clear liquid on plate");
-	interf as interface;	
+	interf as interfaceTeste;	
 
 	SET   
 	NC1=NComp-1;
 
 	EQUATIONS
 	"Component Molar Balance"
-	diff(M_liq)=Inlet.F*Inlet.z + InletL.F*InletL.z 
-	- OutletL.F*OutletL.z + interf.NL;
+	diff(M_liq)=Inlet.F*Inlet.z + InletLiquid.F*InletLiquid.z 
+	- OutletLiquid.F*OutletLiquid.z + interf.NL;
 	
-	diff(M_vap)=InletFV.F*InletFV.z + InletV.F*InletV.z 
-	- OutletV.F*OutletV.z - interf.NV;
+	diff(M_vap)=InletFV.F*InletFV.z + InletVapour.F*InletVapour.z 
+	- OutletVapour.F*OutletVapour.z - interf.NV;
 	
 	"Energy Balance"
-	diff(E_liq) = Inlet.F*Inlet.h + InletL.F*InletL.h
-		- OutletL.F*OutletL.h  + Q + interf.E_liq;
+	diff(E_liq) = Inlet.F*Inlet.h + InletLiquid.F*InletLiquid.h
+		- OutletLiquid.F*OutletLiquid.h  + Q + interf.E_liq;
 	
-	diff(E_vap) = InletFV.F*InletFV.h + InletV.F*InletV.h
-		- OutletV.F*OutletV.h  - interf.E_vap;
+	diff(E_vap) = InletFV.F*InletFV.h + InletVapour.F*InletVapour.h
+		- OutletVapour.F*OutletVapour.h  - interf.E_vap;
 	
 	"Molar Holdup"
-	M_liq = ML*OutletL.z;
+	M_liq = ML*OutletLiquid.z;
 	
-	M_vap = MV*OutletV.z;
+	M_vap = MV*OutletVapour.z;
 	
 	"Energy Holdup"
-	E_liq = ML*(OutletL.h - OutletL.P*vL);
+	E_liq = ML*(OutletLiquid.h - OutletLiquid.P*vL);
 	
-	E_vap = MV*(OutletV.h - OutletV.P*vV);
+	E_vap = MV*(OutletVapour.h - OutletVapour.P*vV);
 	
 	"Energy Rate through the interface"
-	interf.E_liq = interf.htL*interf.a*(interf.T-OutletL.T)+sum(interf.NL)*interf.hL;	
+	interf.E_liq = interf.htL*interf.a*(interf.T-OutletLiquid.T)+sum(interf.NL)*interf.hL;	
 	
-	interf.E_vap = interf.htV*interf.a*(OutletV.T-interf.T)+sum(interf.NV)*interf.hV;
+	interf.E_vap = interf.htV*interf.a*(OutletVapour.T-interf.T)+sum(interf.NV)*interf.hV;
 	
 	"Mass Conservation"
 	interf.NL = interf.NV;
@@ -646,15 +683,15 @@ out	OutletV as vapour_stream (Brief="Outlet vapour stream", PosX=0.8043, PosY=0,
 	interf.E_liq = interf.E_vap;
 	
 	"Mol fraction normalisation"
-	sum(OutletL.z)= 1.0;
-	sum(OutletL.z)= sum(OutletV.z);
+	sum(OutletLiquid.z)= 1.0;
+	sum(OutletLiquid.z)= sum(OutletVapour.z);
 	sum(interf.x)=1.0;
 	sum(interf.x)=sum(interf.y);
 	
 	"Liquid Volume"
-	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
+	vL = PP.LiquidVolume(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
 	"Vapour Volume"
-	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
+	vV = PP.VapourVolume(OutletVapour.T, OutletVapour.P, OutletVapour.z);
 	
 	"Chemical Equilibrium"
 	PP.LiquidFugacityCoefficient(interf.T, interf.P, interf.x)*interf.x = 
@@ -667,20 +704,20 @@ out	OutletV as vapour_stream (Brief="Outlet vapour stream", PosX=0.8043, PosY=0,
 	Level = ML*vL/Ap;
 
 	"Total Mass Transfer Rates"
-	interf.NL(1:NC1)=interf.a*sumt(interf.kL*(interf.x(1:NC1)-OutletL.z(1:NC1)))/vL+
-		OutletL.z(1:NC1)*sum(interf.NL);
+	interf.NL(1:NC1)=interf.a*sumt(interf.kL*(interf.x(1:NC1)-OutletLiquid.z(1:NC1)))/vL+
+		OutletLiquid.z(1:NC1)*sum(interf.NL);
 
 #	interf.NL(1:NC1)=0.01*'kmol/s';
 	
-	interf.NV(1:NC1)=interf.a*sumt(interf.kV*(OutletV.z(1:NC1)-interf.y(1:NC1)))/vV+
-		OutletV.z(1:NC1)*sum(interf.NV);
+	interf.NV(1:NC1)=interf.a*sumt(interf.kV*(OutletVapour.z(1:NC1)-interf.y(1:NC1)))/vV+
+		OutletVapour.z(1:NC1)*sum(interf.NV);
 
 	"Mechanical Equilibrium"
-	OutletV.P = OutletL.P;
-	interf.P=OutletL.P;
+	OutletVapour.P = OutletLiquid.P;
+	interf.P=OutletLiquid.P;
 end
 
-Model trayRate as trayRateBasic
+Model trayRateTeste as trayRateBasicTeste
 	ATTRIBUTES
 	Pallete 	= false;
 	Icon 		= "icon/Tray"; 
@@ -690,13 +727,13 @@ Model trayRate as trayRateBasic
 * the Feed stream
 * the Liquid inlet stream
 * the Vapour inlet stream
-* the Vapour outlet flow (OutletV.F)
+* the Vapour outlet flow (OutletVapour.F)
 	
 == Initial ==
-* the plate temperature of both phases (OutletL.T and OutletV.T)
+* the plate temperature of both phases (OutletLiquid.T and OutletVapour.T)
 * the liquid height (Level) OR the liquid flow holdup (ML)
 * the vapor holdup (MV)
-* (NoComps - 1) OutletL compositions
+* (NoComps - 1) OutletLiquid compositions
 ";
 
 	PARAMETERS
@@ -716,30 +753,32 @@ Model trayRate as trayRateBasic
 
 	EQUATIONS
 	"Liquid Density"
-	rhoL = PP.LiquidDensity(OutletL.T, OutletL.P, OutletL.z);
+	rhoL = PP.LiquidDensity(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
 	"Vapour Density"
-	rhoV = PP.VapourDensity(InletV.T, InletV.P, InletV.z);
+	rhoV = PP.VapourDensity(InletVapour.T, InletVapour.P, InletVapour.z);
 
 	switch LiquidFlow
 		case "on":
 		"Francis Equation"
-#		OutletL.F*vL = 1.84*'m^0.5/s'*lw*((Level-(beta*hw))/(beta))^1.5;
-		OutletL.F*vL = 1.84*'1/s'*lw*((Level-(beta*hw))/(beta))^2;
+#		OutletLiquid.F*vL = 1.84*'m^0.5/s'*lw*((Level-(beta*hw))/(beta))^1.5;
+		OutletLiquid.F*vL = 1.84*'1/s'*lw*((Level-(beta*hw))/(beta))^2;
 		when Level < (beta * hw) switchto "off";
 		
 		case "off":
 		"Low level"
-		OutletL.F = 0 * 'mol/h';
+		OutletLiquid.F = 0 * 'mol/h';
 		when Level > (beta * hw) + 1e-6*'m' switchto "on";
 	end
 
 	switch VapourFlow
 		case "on":
-		InletV.F*vV = sqrt((InletV.P - OutletV.P)/(rhoV*alfa))*Ah;
-		when InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		InletVapour.F*vV = sqrt((InletVapour.P - OutletVapour.P)/(rhoV*alfa))*Ah;
+		when InletVapour.F < 1e-6 * 'kmol/h' switchto "off";
 		
 		case "off":
-		InletV.F = 0 * 'mol/s';
-		when InletV.P > OutletV.P + Level*g*rhoL + 1e-1 * 'atm' switchto "on";
+		InletVapour.F = 0 * 'mol/s';
+		when InletVapour.P > OutletVapour.P + Level*g*rhoL + 1e-1 * 'atm' switchto "on";
 	end	
 end
+
+*#

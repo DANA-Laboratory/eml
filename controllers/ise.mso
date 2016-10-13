@@ -22,7 +22,7 @@ using "types";
 Model ISE
 
 ATTRIBUTES
-	Pallete 	= true;
+	Pallete 	= false;
 	Icon 		= "icon/ISE"; 
 	Brief 		= "Model ISE.";
 	Info 		=

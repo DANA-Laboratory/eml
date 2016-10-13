@@ -17,289 +17,329 @@
 *-------------------------------------------------------------------*#
 using "types";
 
-Model MParameters
-
-ATTRIBUTES
-	Pallete 	= false;
-	Brief 		= "Model of Parameters to be used with PIDs.";
-	
-	VARIABLES
-	
-	alpha      as positive (Brief="Derivative term filter constant", Default=1);
-	beta       as positive (Brief="Proportional term setPoint change filter");
-	bias       as control_signal (Brief="Previous scaled bias", Default=0.5);
-	derivTime  as time_sec (Brief="Derivative time constant");
-	intTime    as time_sec (Brief="Integral time constant");
-	gain       as positive (Brief="Controller gain", Default=0.5);
-	gamma      as positive (Brief="Derivative term SP change filter");
-	tau        as time_sec (Brief="Input filter time constant");
-	tauSet     as time_sec (Brief="Input filter time constant");
-
-end
-
-Model MOptions	
-
-ATTRIBUTES
-	Pallete 	= false;
-	Brief 		= "Model of Options to be used with PIDs.";
-	
-	VARIABLES	
-	
-	action	   as Real     (Brief="Controller action: (-1) Direct,(1) Reverse", Default=-1);
-    autoMan    as Real     (Brief="Controller option: (0) Automatic, (1) Manual", Default=0);    
-	clip       as Real     (Brief="Controller option: (1) output clipped, (0) output unclipped", Default=1);
-
-end
-
-Model MPorts
-
-ATTRIBUTES
-	Pallete 	= false;
-	Brief 		= "Model of Ports to be used with PIDs.";
-	
-	VARIABLES
-	
-	input      as control_signal (Brief="Previous scaled input signal", Default=0.5);
-	output     as control_signal (Brief="Scaled output signal", Default=0.5);
-	setPoint   as control_signal (Brief="Scaled setPoint",Default=0.5);
-
-end
-
-Model MInternal_Variables
-	
-	ATTRIBUTES
-	Pallete 	= false;
-	Brief 		= "Model of Internal Variables to be used with PIDs.";
-	
-	VARIABLES
-
-	derivTerm  as control_signal (Brief="Derivative term", Default=0);
-	dFilt      as control_signal (Brief="Derivative term filtered", Default=0.5);
-	error      as control_signal (Brief="Error definition for proportional term");
-	errorD     as control_signal (Brief="Error definition for derivative term");
-	errorI     as control_signal (Brief="Error definition for integral term");
-	inputFilt  as control_signal (Brief="Filtered input");
-	intTerm    as control_signal (Brief="Integral term", Default=0);
-	outp       as control_signal (Brief="Sum of proportional, integral and derivative terms");
-	outps      as control_signal (Brief="Variable outp scaled between -1 and 1");
-	propTerm   as control_signal (Brief="Proportional term", Default=0);
-	setPointFilt  as control_signal (Brief="Filtered setPoint", Default=0);
-
-end
 
 Model PID
 
 ATTRIBUTES
 	Pallete 	= true;
 	Icon 		= "icon/PID"; 
-	Brief 		= "Model of PIDs.";
-	Info 		=
-"== Inputs ==
-* scaled processs variable.
-* scaled bias.
-* scaled setpoint.
 
-== Outputs ==
-* scaled output.
-";
+PARAMETERS
+
+	PID_Select 	as Switcher 	(Brief="Type of PID Incremental", Valid=["Ideal","Parallel","Series","Ideal_AWBT","Parallel_AWBT","Series_AWBT","Ideal_AW","Parallel_AW","Series_AW"], Default = "Ideal");
+	Action	   	as Switcher 	(Brief="Controller action", Valid=["Direct","Reverse"], Default = "Reverse");
+	Mode       	as Switcher 	(Brief="Controller mode", Valid=["Automatic","Manual"], Default = "Automatic");
+	Clip       	as Switcher 	(Brief="Controller mode", Valid=["Clipped","Unclipped"], Default = "Clipped");
+
+	alpha      	as positive 		(Brief="Derivative term filter constant", Default=1);
+	beta       	as positive 		(Brief="Proportional term setPoint change filter");
+	bias       	as control_signal 	(Brief="Previous scaled bias", Default=0.5);
+	derivTime  	as time_sec 		(Brief="Derivative time constant");
+	intTime    	as time_sec 		(Brief="Integral time constant");
+	gain       	as positive 		(Brief="Controller gain", Default=0.5);
+	gamma      	as positive 		(Brief="Derivative term SP change filter");
+	tau        	as time_sec 		(Brief="Input filter time constant");
+	tauSet     	as time_sec 		(Brief="Input filter time constant");
+	MinInput 	as control_signal	(Default=0);
+	MaxInput 	as control_signal	(Default=1000);
+	MinOutput 	as control_signal	(Default=0);
+	MaxOutput 	as control_signal	(Default=1);
+
+VARIABLES
+in	Input 		as control_signal	(Protected=true, PosX=0, PosY=0.5);
+out	Output 		as control_signal	(Protected=true, PosX=0.54, PosY=1);
+	SetPoint 	as control_signal;
+
+#++++++++++++++++++++ PID Internal Variables ++++++++++++++++++++++++++++++++
+	PID_derivTerm  	as control_signal 	(Brief="Derivative term", Hidden =true , Default=0);
+	PID_dFilt      	as control_signal 	(Brief="Derivative term filtered", Hidden =true ,Default=0.5);
+	PID_error      	as control_signal 	(Brief="Error definition for proportional term",Hidden =true );
+	PID_errorD     	as control_signal 	(Brief="Error definition for derivative term", Hidden =true );
+	PID_errorI     	as control_signal 	(Brief="Error definition for integral term", Hidden =true);
+	PID_inputFilt  	as control_signal 	(Brief="Filtered input", Hidden =true);
+	PID_intTerm    	as control_signal 	(Brief="Integral term", Hidden =true , Default=0);
+	PID_outp       	as control_signal 	(Brief="Sum of proportional, integral and derivative terms", Hidden =true );
+	PID_outps      	as control_signal 	(Brief="Variable outp scaled between -1 and 1",Hidden =true);
+	PID_propTerm   	as control_signal 	(Brief="Proportional term", Default=0 , Hidden =true );
+	PID_setPointFilt  as control_signal (Brief="Filtered setPoint", Default=0, Hidden =true);
+	PID_AWFactor    as Real     		(Brief="Integral term multiplier used in anti-reset windup", Hidden=true);
+	PID_action      as Real				(Protected=true, Hidden=true);
 	
-	PARAMETERS
-	PID_Select as Switcher (Brief="Type of PID", Valid=["Ideal","Parallel","Series","Ideal_AWBT","Parallel_AWBT","Series_AWBT","Ideal_AW","Parallel_AW","Series_AW"], Default = "Ideal");
+	PID_input      	as control_signal 	(Brief="Previous scaled input signal", Default=0.5, Hidden=true);
+	PID_output     	as control_signal 	(Brief="Scaled output signal", Default=0.5, Hidden=true);
+	PID_setPoint    as control_signal 	(Brief="Scaled setPoint",Default=0.5, Hidden=true);
+#++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+EQUATIONS
+
+"Input "
+	PID_input*(MaxInput - MinInput) = Input - MinInput;
+
+"Output "
+	Output = PID_output*(MaxOutput - MinOutput) + MinOutput;
 	
-	VARIABLES
-	Parameters         as MParameters;
-	Options            as MOptions;
-	Internal           as MInternal_Variables;
-	Ports              as MPorts;
-	AWFactor     as Real     (Brief="Integral term multiplier used in anti-reset windup");
+"Set Point "
+	PID_setPoint*(MaxInput - MinInput) = SetPoint - MinInput;
+
+INITIAL
+
+	PID_intTerm = 0;
 	
-	INITIAL
-	Internal.intTerm = 0;
-	diff(Internal.dFilt) = 0/'s';
-	diff(Internal.inputFilt) = 0/'s';
-	diff(Internal.setPointFilt) = 0/'s';
+	diff(PID_dFilt) = 0/'s';
+	
+	diff(PID_inputFilt) = 0/'s';
+	
+	diff(PID_setPointFilt) = 0/'s';
 	
 	EQUATIONS
 
-	if (Parameters.tau equal 0) then
+	if (tau < 1e-3*'s') then
 		"Input first order filter"
-		(Parameters.tau + 1e-3*'s')*diff(Internal.inputFilt)= Ports.input - Internal.inputFilt;
+		(tau + 1e-3*'s')*diff(PID_inputFilt)= PID_input - PID_inputFilt;
 	else
 		"Input first order filter"
-		Parameters.tau*diff(Internal.inputFilt)= Ports.input - Internal.inputFilt;	
+		tau*diff(PID_inputFilt)= PID_input - PID_inputFilt;	
 	end
 
-	if (Parameters.tauSet equal 0) then
+	if (tauSet < 1e-3*'s') then
 		"setPoint first order filter"
-		(Parameters.tauSet + 1e-3*'s')*diff(Internal.setPointFilt)= Ports.setPoint - Internal.setPointFilt;
+		(tauSet + 1e-3*'s')*diff(PID_setPointFilt)= PID_setPoint - PID_setPointFilt;
 	else
 		"setPoint first order filter"
-		Parameters.tauSet*diff(Internal.setPointFilt)= Ports.setPoint - Internal.setPointFilt;
+		tauSet*diff(PID_setPointFilt)= PID_setPoint - PID_setPointFilt;
 	end
 	
-	if Options.autoMan equal 1 then 
+	switch Mode
+	case "Manual":
 		"Error definition for proportional term"
-		Internal.error = Internal.inputFilt*(Parameters.beta-1.0);
+		PID_error = PID_inputFilt*(beta-1.0);
 		"Error definition for derivative term"
-		Internal.errorD= Internal.inputFilt*(Parameters.gamma-1.0);
+		PID_errorD= PID_inputFilt*(gamma-1.0);
 		"Error definition for integral term"		
-		Internal.errorI= 0;
-	else
+		PID_errorI= 0;
+	case "Automatic":
 		"Error definition for proportional term"			
-		Internal.error = Parameters.beta*Internal.setPointFilt - Internal.inputFilt;
+		PID_error = beta*PID_setPointFilt - PID_inputFilt;
 		"Error definition for derivative term"
-		Internal.errorD = Parameters.gamma*Internal.setPointFilt - Internal.inputFilt;
+		PID_errorD = gamma*PID_setPointFilt - PID_inputFilt;
 		"Error definition for integral term"
-		Internal.errorI = Internal.setPointFilt-Internal.inputFilt;
+		PID_errorI = PID_setPointFilt-PID_inputFilt;
 	end
 	
 	"Calculate proportional term"
-	Internal.propTerm=Internal.error;
+	PID_propTerm=PID_error;
 	
-	if (Parameters.derivTime equal 0) then
+	if (derivTime < 1e-3*'s') then
 		"Derivative term filter"	
-		Parameters.alpha*(Parameters.derivTime + 1e-3*'s')*diff(Internal.dFilt) = Internal.errorD - Internal.dFilt;
+		alpha*(derivTime + 1e-3*'s')*diff(PID_dFilt) = PID_errorD - PID_dFilt;
 	else
 		"Derivative term filter"	
-		Parameters.alpha*(Parameters.derivTime)*diff(Internal.dFilt) = Internal.errorD - Internal.dFilt;
+		alpha*(derivTime)*diff(PID_dFilt) = PID_errorD - PID_dFilt;
 	end
 
 	"Calculate derivative term"
-	Internal.derivTerm = Parameters.derivTime*diff(Internal.dFilt);
+	PID_derivTerm = derivTime*diff(PID_dFilt);
 	
 	"Scale outp"
-	Internal.outps=2*Internal.outp-1;
+	PID_outps=2*PID_outp-1;
 	
-	if Options.clip equal 1 then
-		if abs(Internal.outps)>1 then
-			"Calculate clipped output when it´s saturated"
-			Ports.output=(sign(Internal.outps)*1+1)/2;
+	switch Clip
+	case "Clipped":
+		if abs(PID_outps)>1 then
+			"Calculate clipped output when saturated"
+			PID_output=(sign(PID_outps)+1)/2;
 		else
-			"Calculate clipped output when it´s not saturated"
-			Ports.output=Internal.outp;
+			"Calculate clipped output when not saturated"
+			PID_output=PID_outp;
 		end
-	else
+	case "Unclipped":
 		"Calculate unclipped output"
-		Ports.output=Internal.outp;
+		PID_output=PID_outp;
 	end
+
+	switch Action
+	case "Direct":
+		PID_action = -1.0;
+	case "Reverse":
+		PID_action = 1.0;
+	end
+
 
 switch PID_Select
 	
 case "Ideal_AW":
 	
 	"Calculate integral term with anti-windup"
-	Parameters.intTime*diff(Internal.intTerm) = AWFactor*Internal.errorI;
+	intTime*diff(PID_intTerm) = PID_AWFactor*PID_errorI;
 	
 	"Sum of proportional, integral and derivative terms"
-	Internal.outp = Parameters.bias + Options.action*Parameters.gain*(Internal.propTerm + Internal.intTerm + Internal.derivTerm);
+	PID_outp = bias + PID_action*gain*(PID_propTerm + PID_intTerm + PID_derivTerm);
 
-	if abs(Internal.outps)>1 and (Options.action*sign(Internal.outps)*Internal.errorI)>0 then
+	if abs(PID_outps)>1 and (PID_action*sign(PID_outps)*PID_errorI)>0 then
 		"Calculate AWFactor"
-		AWFactor=-tanh(sign(Internal.outps)*Internal.outps*100-102);
+		PID_AWFactor=-tanh(sign(PID_outps)*PID_outps*100-102);
 	else
 		"Calculate AWFactor"
-		AWFactor=1;
+		PID_AWFactor=1;
 	end
 
 case "Parallel_AW":
 	
 	"Calculate integral term with anti-windup"
-	Parameters.intTime*diff(Internal.intTerm) = AWFactor*Internal.errorI;
+	intTime*diff(PID_intTerm) = PID_AWFactor*PID_errorI;
 	
 	"Sum of proportional, integral and derivative terms"
-	Internal.outp = Parameters.bias + Options.action*(Parameters.gain*Internal.propTerm + Internal.intTerm + Internal.derivTerm);
+	PID_outp = bias + PID_action*(gain*PID_propTerm + PID_intTerm + PID_derivTerm);
 
-	if abs(Internal.outps)>1 and (Options.action*sign(Internal.outps)*Internal.errorI)>0 then
+	if abs(PID_outps)>1 and (PID_action*sign(PID_outps)*PID_errorI)>0 then
 		"Calculate AWFactor"
-		AWFactor=-tanh(sign(Internal.outps)*Internal.outps*100-102);
+		PID_AWFactor=-tanh(sign(PID_outps)*PID_outps*100-102);
 	else
 		"Calculate AWFactor"
-		AWFactor=1;
+		PID_AWFactor=1;
 	end
 
 
 case "Series_AW":
 
 	"Calculate integral term with anti-windup"	
-	Parameters.intTime*diff(Internal.intTerm) = AWFactor*Internal.errorI;
+	intTime*diff(PID_intTerm) = PID_AWFactor*PID_errorI;
 	
 	"Sum of proportional, integral and derivative terms"
-	Internal.outp = Parameters.bias + Options.action*(Parameters.gain*(Internal.propTerm + Internal.intTerm)*(1 + Internal.derivTerm));
+	PID_outp = bias + PID_action*(gain*(PID_propTerm + PID_intTerm)*(1 + PID_derivTerm));
 
-	if abs(Internal.outps)>1 and (Options.action*sign(Internal.outps)*Internal.errorI)>0 then
+	if abs(PID_outps)>1 and (PID_action*sign(PID_outps)*PID_errorI)>0 then
 		"Calculate AWFactor"		
-		AWFactor=-tanh(sign(Internal.outps)*Internal.outps*100-102);
+		PID_AWFactor=-tanh(sign(PID_outps)*PID_outps*100-102);
 	else
 		"Calculate AWFactor"
-		AWFactor=1;
+		PID_AWFactor=1;
 	end
 
 case "Ideal":
 	
 	"Calculate integral term"	
-	Parameters.intTime*diff(Internal.intTerm) = Internal.errorI;
+	intTime*diff(PID_intTerm) = PID_errorI;
 	
 	"Sum of proportional, integral and derivative terms"	
-	Internal.outp = Parameters.bias + Options.action*Parameters.gain*(Internal.propTerm + Internal.intTerm + Internal.derivTerm);
+	PID_outp = bias + PID_action*gain*(PID_propTerm + PID_intTerm + PID_derivTerm);
 
 	"Calculate AWFactor - Not in use in this mode"
-	AWFactor=1;
+	PID_AWFactor=1;
 	
 case "Parallel":
 	
 	"Calculate integral term"	
-	Parameters.intTime*diff(Internal.intTerm) = Internal.errorI;
+	intTime*diff(PID_intTerm) = PID_errorI;
 	
 	"Sum of proportional, integral and derivative terms"	
-	Internal.outp = Parameters.bias + Options.action*(Parameters.gain*Internal.propTerm + Internal.intTerm + Internal.derivTerm);
+	PID_outp = bias + PID_action*(gain*PID_propTerm + PID_intTerm + PID_derivTerm);
 
 	"Calculate AWFactor - Not in use in this mode"
-	AWFactor=1;
+	PID_AWFactor=1;
 	
 case "Series":
 	
 	"Calculate integral term"	
-	Parameters.intTime*diff(Internal.intTerm) = Internal.errorI;
+	intTime*diff(PID_intTerm) = PID_errorI;
 	
 	"Sum of proportional, integral and derivative terms"
-	Internal.outp = Parameters.bias + Options.action*(Parameters.gain*(Internal.propTerm + Internal.intTerm)*(1 + Internal.derivTerm));
+	PID_outp = bias + PID_action*(gain*(PID_propTerm + PID_intTerm)*(1 + PID_derivTerm));
 	
 	"Calculate AWFactor - Not in use in this mode"
-	AWFactor=1;
+	PID_AWFactor=1;
 	
 case "Ideal_AWBT":
 	
 	"Calculate integral term with anti-windup and bumpless transfer"	
-	Options.action*Parameters.gain*(Parameters.intTime*diff(Internal.intTerm)-Internal.errorI) = Ports.output-Internal.outp;	
+	PID_action*gain*(intTime*diff(PID_intTerm)-PID_errorI) = PID_output-PID_outp;	
 	
 	"Sum of proportional, integral and derivative terms"	
-	Internal.outp = Parameters.bias + Options.action*Parameters.gain*(Internal.propTerm + Internal.intTerm + Internal.derivTerm);
+	PID_outp = bias + PID_action*gain*(PID_propTerm + PID_intTerm + PID_derivTerm);
 	
 	"Calculate AWFactor - Not in use in this mode"
-	AWFactor=1;
+	PID_AWFactor=1;
 	
 case "Parallel_AWBT":
 	
 	"Calculate integral term with anti-windup and bumpless transfer"	
-	Options.action*Parameters.gain*(Parameters.intTime*diff(Internal.intTerm)-Internal.errorI) = Ports.output-Internal.outp;	
+	PID_action*gain*(intTime*diff(PID_intTerm)-PID_errorI) = PID_output-PID_outp;	
 	
 	"Sum of proportional, integral and derivative terms"	
-	Internal.outp = Parameters.bias + Options.action*(Parameters.gain*Internal.propTerm + Internal.intTerm + Internal.derivTerm);
+	PID_outp = bias + PID_action*(gain*PID_propTerm + PID_intTerm + PID_derivTerm);
 	
 	"Calculate AWFactor - Not in use in this mode"
-	AWFactor=1;
+	PID_AWFactor=1;
 	
 case "Series_AWBT":
 	
 	"Calculate integral term with anti-windup and bumpless transfer"
-	Options.action*Parameters.gain*(Parameters.intTime*diff(Internal.intTerm)-Internal.errorI) = Ports.output-Internal.outp;	
+	PID_action*gain*(intTime*diff(PID_intTerm)-PID_errorI) = PID_output-PID_outp;	
 	
 	"Sum of proportional, integral and derivative terms"
-	Internal.outp = Parameters.bias + Options.action*(Parameters.gain*(Internal.propTerm + Internal.intTerm)*(1 + Internal.derivTerm));
+	PID_outp = bias + PID_action*(gain*(PID_propTerm + PID_intTerm)*(1 + PID_derivTerm));
 
 	"Calculate AWFactor - Not in use in this mode"
-	AWFactor=1;
+	PID_AWFactor=1;
 	
 end
 
+end
+
+Model FirstOrder
+	ATTRIBUTES
+	Pallete 	= false;
+	Icon 		= "icon/PIDIncr"; 
+
+	PARAMETERS
+	tau    as Real (Brief="Time Constant", Unit = 's', Default=4);
+	A      as Real (Unit='1/s');
+	B      as Real (Unit='1/s');
+	C      as Real;
+	D      as Real(Default=0);
+
+	VARIABLES
+	x as control_signal(Brief="State");
+in	u as control_signal(Brief="Input signal", PosX=0, PosY=0.5);
+out	y as control_signal(Brief="Output signal", PosX=1, PosY=0.5);
+
+	EQUATIONS
+	diff(x) = A*x + B*u;
+	y = C*x + D*u;
+end
+
+Model StepSignal
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/StepSignal"; 
+
+	PARAMETERS
+	StepTime as positive(Unit='s');
+	StartValue as control_signal;
+	FinalValue as control_signal;
+	
+	VARIABLES
+out	OutSignal as control_signal(PosX=1, PosY=0.5);
+
+	EQUATIONS
+	if(time < StepTime) then
+		OutSignal = StartValue;
+	else
+		OutSignal = FinalValue;
+	end
+end
+
+Model ConstantSignal
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/ConstSignal"; 
+
+	PARAMETERS
+	Value as control_signal;
+	
+	VARIABLES
+out	OutSignal as control_signal(PosX=1, PosY=0.5);
+
+	EQUATIONS
+	OutSignal = Value;
 end

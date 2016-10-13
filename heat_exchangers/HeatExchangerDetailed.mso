@@ -51,7 +51,7 @@ ATTRIBUTES
 
 PARAMETERS
 
-HotSide 		as Switcher	(Brief="Hot Side in the Exchanger",Valid=["shell","tubes"],Default="shell");
+HotSide 		as Switcher	(Brief="Hot Side in the Exchanger",Hidden=true, Valid=["shell","tubes"],Default="shell");
 ShellType	as Switcher	(Brief="TEMA Designation",Valid=["Eshell","Fshell"],Default="Eshell");
 Pattern       	as Switcher	(Brief="Tube Layout Characteristic Angle",Valid=["Triangle","Rotated Square","Square"],Default="Triangle");
 
@@ -62,10 +62,10 @@ VARIABLES
 	Baffles			as Baffles_Main 			(Brief="Baffle Section", Symbol=" ");
 	Clearances	as Clearances_Main 	(Brief="Diametral Clearances", Symbol=" ");
 	
-in  InletTube		as stream 					(Brief="Inlet Tube Stream", PosX=0.08, PosY=0, Symbol="_{in }^{tube}");
-out OutletTube	as streamPH 				(Brief="Outlet Tube Stream", PosX=0.08, PosY=1, Symbol="_{out }^{tube}");
-in  InletShell		as stream 					(Brief="Inlet Shell Stream", PosX=0.2237, PosY=0, Symbol="_{in }^{shell}");
-out OutletShell	as streamPH 				(Brief="Outlet Shell Stream", PosX=0.8237, PosY=1, Symbol="_{out }^{shell}");
+in  InletTube		as stream 					(Brief="Inlet Tube Stream", PosX=0.13, PosY=0, Symbol="_{in }^{tube}");
+out OutletTube	as streamPH 				(Brief="Outlet Tube Stream", PosX=0.13, PosY=1, Symbol="_{out }^{tube}");
+in  InletShell		as stream 					(Brief="Inlet Shell Stream", PosX=0.31, PosY=1, Symbol="_{in }^{shell}");
+out OutletShell	as streamPH 				(Brief="Outlet Shell Stream", PosX=0.81, PosY=0, Symbol="_{out }^{shell}");
 	Details				as Details_Main 			(Brief="Details in Heat Exchanger", Symbol = " ");
 	
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
@@ -94,10 +94,10 @@ outer NComp   	as Integer   	(Brief="Number of Components");
 	
 M(NComp)	as molweight (Brief="Component Mol Weight");
 
-TubeFlowRegime 		 as Switcher		(Brief="Tube Side Flow Regime ",Valid=["laminar","transition","turbulent"],Default="laminar");
-ShellFlowRegime 	  	as Switcher		(Brief="Shell Side Flow Regime ",Valid=["deep laminar","laminar","turbulent"],Default="deep laminar");
-ShellRange       	  		as Switcher		(Brief="Shell Side Flow Regime Range for Correction Factor",Valid=["range1","range2","range3", "range4","range5"],Default="range1");
-Side			 	  				as Switcher		(Brief="Flag for Fluid Alocation ",Valid=["shell","tubes"],Default="shell");
+TubeFlowRegime 		 as Switcher		(Brief="Tube Side Flow Regime ",Hidden=true,Valid=["laminar","transition","turbulent"],Default="laminar");
+ShellFlowRegime 	  	as Switcher		(Brief="Shell Side Flow Regime ",Hidden=true,Valid=["deep laminar","laminar","turbulent"],Default="deep laminar");
+ShellRange       	  		as Switcher		(Brief="Shell Side Flow Regime Range for Correction Factor",Hidden=true,Valid=["range1","range2","range3", "range4","range5"],Default="range1");
+Side			 	  				as Switcher		(Brief="Flag for Fluid Alocation ",Hidden=true,Valid=["shell","tubes"],Default="shell");
 LaminarCorrelation    	as Switcher		(Brief="Tube Heat Transfer Correlation in Laminar Flow",Valid=["Hausen","Schlunder"],Default="Hausen");
 TransitionCorrelation 	as Switcher		(Brief="Tube Heat Transfer Correlation in Transition Flow",Valid=["Gnielinski","ESDU"],Default="Gnielinski");
 TurbulentCorrelation  	as Switcher		(Brief="Tube Heat Transfer Correlation in Turbulent Flow",Valid=["Petukhov","SiederTate"],Default="Petukhov");
@@ -469,47 +469,47 @@ switch ShellRange
 	Ji =1.40*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^0.667;
 	
 "Shell Side Pressure Drop Friction Factor"
-	Shell.PressureDrop.FricFactor=48*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-1;
+	Shell.PressureDrop.FricFactor=48*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-1);
 	
 	when Shell.HeatTransfer.Re > 10 switchto "range2";
 	
 	case "range2":
 	
 "Ji Factor"
-	Ji =1.36*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.657;
+	Ji =1.36*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^(-0.657);
 	
 "Shell Side Pressure Drop Friction Factor"
-	Shell.PressureDrop.FricFactor=45.10*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.973;
+	Shell.PressureDrop.FricFactor=45.10*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-0.973);
 	
 	when Shell.HeatTransfer.Re > 100 switchto "range3";
 	
 	case "range3":
 
 "Ji Factor"
-	Ji =0.593*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.477;
+	Ji =0.593*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^(-0.477);
 	
 "Shell Side Pressure Drop Friction Factor"
-	Shell.PressureDrop.FricFactor=4.570*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.476;
+	Shell.PressureDrop.FricFactor=4.570*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-0.476);
 	
 	when Shell.HeatTransfer.Re > 1000 switchto "range4";
 	
 	case "range4":
 
 "Ji Factor"
-	Ji =0.321*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.388;
+	Ji =0.321*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^(-0.388);
 	
 "Shell Side Pressure Drop Friction Factor"
-	Shell.PressureDrop.FricFactor=0.486*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.152;
+	Shell.PressureDrop.FricFactor=0.486*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-0.152);
 
 	when Shell.HeatTransfer.Re > 10000 switchto "range5";
 
 	case "range5":
 
 "Ji Factor"
-	Ji =0.321*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.388;
+	Ji =0.321*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^(-0.388);
 
 "Shell Side Pressure Drop Friction Factor"
-	Shell.PressureDrop.FricFactor=0.372*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.123;
+	Shell.PressureDrop.FricFactor=0.372*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-0.123);
 	
 	when Shell.HeatTransfer.Re < 10000 switchto "range4";
 	
@@ -549,7 +549,7 @@ switch ShellRange
 	Ji =1.550*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^0.667;
 
 "Shell Side Pressure Drop Friction Factor"
-	Shell.PressureDrop.FricFactor=32*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-1;
+	Shell.PressureDrop.FricFactor=32*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-1);
 	
 	when Shell.HeatTransfer.Re > 10 switchto "range2";
 	
@@ -559,7 +559,7 @@ switch ShellRange
 	Ji =0.498*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^0.656;
 
 "Shell Side Pressure Drop Friction Factor"
-	Shell.PressureDrop.FricFactor=26.20*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.913;
+	Shell.PressureDrop.FricFactor=26.20*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-0.913);
 	
 	when Shell.HeatTransfer.Re > 100 switchto "range3";
 	
@@ -569,27 +569,27 @@ switch ShellRange
 	Ji =0.730*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^0.500;
 
 "Shell Side Pressure Drop Friction Factor"
-	Shell.PressureDrop.FricFactor=3.50*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.476;
+	Shell.PressureDrop.FricFactor=3.50*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-0.476);
 	
 	when Shell.HeatTransfer.Re > 1000 switchto "range4";
 	
 	case "range4":
 	
 "Ji Factor"
-	Ji =0.370*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.396;
+	Ji =0.370*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^(-0.396);
 	
 "Shell Side Pressure Drop Friction Factor"
-	Shell.PressureDrop.FricFactor=0.333*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.136;
+	Shell.PressureDrop.FricFactor=0.333*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-0.136);
 
 	when Shell.HeatTransfer.Re > 10000 switchto "range5";
 
 	case "range5":
 
 "Ji Factor"
-	Ji =0.370*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.396;
+	Ji =0.370*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^(-0.396);
 	
 "Shell Side Pressure Drop Friction Factor"
-	Shell.PressureDrop.FricFactor=0.303*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.126;
+	Shell.PressureDrop.FricFactor=0.303*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-0.126);
 	
 	when Shell.HeatTransfer.Re < 10000 switchto "range4";
 	
@@ -626,37 +626,37 @@ switch ShellRange
 	case "range1":
 
 "Ji Factor"
-	Ji =0.970*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.667;
+	Ji =0.970*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^(-0.667);
 	
 "Shell Side Pressure Drop Friction Factor"	
-	Shell.PressureDrop.FricFactor=35*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-1;
+	Shell.PressureDrop.FricFactor=35*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-1);
 
 	when Shell.HeatTransfer.Re > 10 switchto "range2";
 	
 	case "range2":
 
 "Ji Factor"
-	Ji =0.900*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.631;
+	Ji =0.900*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^(-0.631);
 
 "Shell Side Pressure Drop Friction Factor"	
-	Shell.PressureDrop.FricFactor=32.10*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.963;
+	Shell.PressureDrop.FricFactor=32.10*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-0.963);
 
 	when Shell.HeatTransfer.Re > 100 switchto "range3";
 	
 	case "range3":
 
 "Ji Factor"
-	Ji =0.408*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.460;
+	Ji =0.408*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^(-0.460);
 
 "Shell Side Pressure Drop Friction Factor"	
-	Shell.PressureDrop.FricFactor=6.090*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.602;
+	Shell.PressureDrop.FricFactor=6.090*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-0.602);
 
 	when Shell.HeatTransfer.Re > 1000 switchto "range4";
 	
 	case "range4":
 	
 "Ji Factor"
-	Ji =0.107*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.266;
+	Ji =0.107*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^(-0.266);
 
 "Shell Side Pressure Drop Friction Factor"	
 	Shell.PressureDrop.FricFactor=0.0815*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^0.022;
@@ -666,10 +666,10 @@ switch ShellRange
 	case "range5":
 	
 "Ji Factor"
-	Ji =0.370*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.395;
+	Ji =0.370*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^(-0.395);
 
 "Shell Side Pressure Drop Friction Factor"	
-	Shell.PressureDrop.FricFactor=0.391*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.148;
+	Shell.PressureDrop.FricFactor=0.391*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^(-0.148);
 
 	when Shell.HeatTransfer.Re < 10000 switchto "range4";
 	
@@ -841,7 +841,7 @@ Model ShellandTubes_NTU 	as ShellandTubesBasic
 
 ATTRIBUTES
 	Pallete = true;
-	Icon 	= "icon/ShellandTubes_NTU";	
+	Icon 	= "icon/STHE";	
 	Brief  = "Shell and Tubes Heat Exchangers";
 	Info  =
 	"to be documented";
@@ -899,15 +899,15 @@ switch ShellType
 	case "Fshell":
 	
 "Effectiveness Correction for 2 pass shell side"
-	Method.Eft1 = 2*(1+Method.Cr+sqrt(1+Method.Cr^2)*((1+exp(-Method.NTU*sqrt(1+Method.Cr^2)))/(1-exp(-Method.NTU*sqrt(1+Method.Cr^2)))) )^-1;
+	Method.Eft1 = 2*(1+Method.Cr+sqrt(1+Method.Cr^2)*((1+exp(-Method.NTU*sqrt(1+Method.Cr^2)))/(1-exp(-Method.NTU*sqrt(1+Method.Cr^2)))) )^(-1);
 
 "TEMA F Shell Effectiveness"
-	Method.Eft = ( ((1-Method.Eft1*Method.Cr)/(1-Method.Eft1))^2 -1  )*( ((1-Method.Eft1*Method.Cr)/(1-Method.Eft1))^2 - Method.Cr )^-1; 
+	Method.Eft = ( ((1-Method.Eft1*Method.Cr)/(1-Method.Eft1))^2 -1  )*( ((1-Method.Eft1*Method.Cr)/(1-Method.Eft1))^2 - Method.Cr )^(-1); 
 
 	case "Eshell":
 	
 "TEMA E Shell Effectiveness"
-	Method.Eft = 2*(1+Method.Cr+sqrt(1+Method.Cr^2)*((1+exp(-Method.NTU*sqrt(1+Method.Cr^2)))/(1-exp(-Method.NTU*sqrt(1+Method.Cr^2)))) )^-1;
+	Method.Eft = 2*(1+Method.Cr+sqrt(1+Method.Cr^2)*((1+exp(-Method.NTU*sqrt(1+Method.Cr^2)))/(1-exp(-Method.NTU*sqrt(1+Method.Cr^2)))) )^(-1);
 #	Method.Eft = 1;
 
 "Variable not in use when 1 Pass Shell Side"
@@ -921,15 +921,16 @@ Model ShellandTubes_LMTD 	as ShellandTubesBasic
 
 ATTRIBUTES
 	Pallete = true;
-	Icon 	= "icon/ShellandTubes_LMTD";	
+	Icon 	= "icon/STHE";	
 	Brief  = "Shell and Tubes Heat Exchangers";
 	Info  =
 	"to be documented.";
 
 PARAMETERS
 
-LMTDcorrection 	as Switcher	(Brief="LMTD Correction Factor Model",Valid=["Bowmann","Fakeri"],Default="Bowmann");
-	
+LMTDcorrection 	as Switcher	(Brief="LMTD Correction Factor Model",Valid=["Bowmann","Fakeri" , "User Specified"],Default="Bowmann");
+FLMTDcorrection  as fraction (Default = 0.8);
+
 VARIABLES
 
 Method 	as LMTD_Basic;
@@ -995,6 +996,25 @@ switch ShellType
 	
 switch LMTDcorrection
 	
+	case "User Specified": #Just For Initialization
+	
+	Method.Fc = FLMTDcorrection;
+	
+" Variable not in use with this equation"
+	lambdaN =1;
+	
+" Variable not in use with this equation"
+	lambda1 =1;
+
+#" Variable not in use with this equation"
+#	Phi = 1;
+
+" Variable not in use with this equation"
+	Rho =1;
+
+" Variable not in use with this equation"
+	Pc = P;
+
 	case "Bowmann":
 	
 " Variable not in use with Bowmann equation"
@@ -1081,6 +1101,22 @@ end
 	Pc = P;
 	
 switch LMTDcorrection
+
+	case "User Specified": #Just For Initialization
+	
+	Method.Fc = FLMTDcorrection;
+	
+#" Variable not in use with this equation"
+#	lambdaN =1;
+	
+#" Variable not in use with this equation"
+#	lambda1 =1;
+
+#" Variable not in use with this equation"
+#	Phi = 1;
+
+" Variable not in use with this equation"
+	Rho =1;
 	
 	case "Bowmann":
 

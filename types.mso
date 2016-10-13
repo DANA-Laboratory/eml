@@ -26,14 +26,13 @@
 *----------------------------------------------------------------------------------*#
 
 # Constants
-binary as Integer (Brief = "Binary variables", Default=1, Lower=0, Upper=1);
 coefficient as Real (Brief = "General Coefficient", Default=1, Lower=-50, Upper=50);
 constant as Real (Brief = "General Constant", Default=10, Lower=-5000, Upper=5000);
 positive as Real (Brief = "Positive General Constant", Default=1.0, Lower=-1e-6);
 negative as Real (Brief = "Negative General Constant", Default=-1.0, Upper=1e-6);
 fraction as Real (Brief = "Fraction" , Default=0.5, Lower=-1e-6, Upper=1.00001);
 percent as Real (Brief = "Percent", Default=50, final Lower=0, final Upper=100);
-control_signal as Real (Brief = "Control Signal", Default=1, Lower=-1e9, Upper=1e9);
+control_signal as Real (Brief = "Control Signal", Default=1, Lower=-1e9, Upper=1e9, LineDashed=true);
 efficiency as Real (Brief = "Efficiency", Default=0.5, final Lower=0, final Upper=1);
 
 # Pressure
@@ -81,7 +80,9 @@ currency	as Real (Brief = "Currency", Default = 0, final Unit = 'US$');
 
 # elementary
 mass as positive (Brief = "Mass", Default=2.5, Upper=1e6, final Unit = 'kg');
-mol as positive (Brief = "Moles", Default=2.5, Upper=1e6, final Unit = 'kmol');
+#mol as positive (Brief = "Moles", Default=2500, Upper=1e9, final Unit = 'mol');
+mol as positive (Brief = "Moles", Default=2500, Upper=1e9, final Unit = 'kmol');
+kmol as positive (Brief = "Moles", Default=2.5, Upper=1e6, final Unit = 'kmol');
 molweight as Real (Brief = "Molar Weight", Default=75, Lower=1, Upper=1e8, final Unit = 'kg/kmol');
 molweight_inv as Real (Brief = "Moles Per Mass", Default=1, Lower=0, Upper=1e30, final Unit = 'kmol/kg');
 
@@ -112,8 +113,8 @@ cp_mol as Real (Brief = "Molar Heat Capacity", Default=100, Lower=1, Upper=1e4, 
 cv_mol as Real (Brief = "Molar Heat Capacity", Default=100, Lower=1, Upper=1e4, final Unit ='kJ/kmol/K');   
 
 # Enthalpy
-enth_mass as Real (Brief = "Mass Enthalpy", Default=500, Lower=-1e14, Upper=1e14, final Unit = 'kJ/kg');
-enth_mol as Real (Brief = "Molar Enthalpy", Default=500, Lower=-1e16, Upper=1e16, final Unit = 'kJ/kmol');
+enth_mass as Real (Brief = "Mass Enthalpy", Default=500, Lower=-10000, Upper=10000, final Unit = 'kJ/kg');
+enth_mol as Real (Brief = "Molar Enthalpy", Default=500, Lower=-1e9, Upper=1e9, final Unit = 'kJ/kmol');
 
 # Entropy
 entr_mol as Real (Brief = "Molar Entropy", Default=0, Lower=-1e4, Upper=1e4, final Unit = 'kJ/kmol/K');
@@ -129,7 +130,7 @@ heat_trans_coeff as positive (Brief = "Heat Transference Coefficient", Default=1
 energy as Real (Brief = "Energy", Default=10000, Lower=-1e11, Upper=1e11, final Unit = 'kJ');
 energy_mass as Real (Brief = "Energy per mass", Default=10000, Lower=-1e15, Upper=1e15, final Unit = 'kJ/kg');
 energy_mol as Real (Brief = "Energy per mol", Default=10000, Lower=-1e15, Upper=1e15, final Unit = 'kJ/kmol');
-power as Real (Brief = "Power", Default=10, Lower=-1e8, Upper=1e8, final Unit = 'kW');
+power as Real (Brief = "Power", Default=10, Lower=-1e8, Upper=1e8, final Unit = 'kW', Color="Red");
 
 
 

@@ -16,10 +16,10 @@
    height="297mm"
    sodipodi:docbase="C:\Documents and Settings\Administrador\Meus documentos\Bolsa Simulação\Desenhos Prontos 4"
    sodipodi:docname="HidraulicTurbine.svg"
-   inkscape:export-filename="C:\Documents and Settings\Administrador\Meus documentos\Bolsa Simulação\Desenhos Prontos 4\compressor.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="D:\Apps\repositorio\branches\gui\eml\pressure_changers\icon\CentrifugalCompressor.png"
+   inkscape:export-xdpi="108"
+   inkscape:export-ydpi="108">
   <metadata
      id="metadata2129">
     <rdf:RDF>
@@ -57,7 +57,7 @@
        x2="421.98465"
        y2="390.36218"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-0.704551,-1.383755e-8,1.970281e-8,-1.003186,677.866,986.2929)" />
+       gradientTransform="matrix(-1.5321645,0,0,0.9953023,924.76591,2.8065289)" />
   </defs>
   <sodipodi:namedview
      inkscape:window-height="900"
@@ -72,30 +72,26 @@
      pagecolor="#ffffff"
      id="base"
      showgrid="true"
-     inkscape:zoom="0.71648337"
+     inkscape:zoom="2.026521"
      inkscape:cx="372.04724"
-     inkscape:cy="526.18109"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4"
+     inkscape:cy="556.47932"
+     inkscape:window-x="0"
+     inkscape:window-y="97"
      inkscape:current-layer="svg2124" />
   <path
-     style="fill:url(#linearGradient3919);fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:3.36284566;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="M 438.31858,572.61704 L 438.31858,392.0436 L 339.68142,452.23475 L 339.68142,532.48961 L 438.31858,592.68076 L 438.31858,572.61704 L 438.31858,572.61704"
+     style="fill:url(#linearGradient3919);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.93958187;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 403.8298,413.23147 L 403.8298,592.38585 L 189.32672,532.66772 L 189.32672,453.04356 L 403.8298,393.32543 L 403.8298,413.23147 L 403.8298,413.23147"
      id="path2131" />
   <path
-     style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-     d="M 260.33264,492.36218 C 340.16736,492.36218 340.16736,492.36218 340.16736,492.36218"
-     id="path3921" />
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.8903805;stroke-linecap:square;stroke-linejoin:miter;marker-end:url(#EmptyTriangleOutL);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 388.03074,589.78862 C 387.5263,617.8318 387.5263,617.8318 387.5263,617.8318"
+     id="path2392" />
   <path
-     style="fill:none;fill-rule:evenodd;stroke:black;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="M 436.90786,491.05839 C 516.74258,491.05839 516.74258,491.05839 516.74258,491.05839"
-     id="path5693" />
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.8903805;stroke-linecap:square;stroke-linejoin:miter;marker-end:url(#EmptyTriangleOutL);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 202.74724,418.06574 C 202.2428,446.10892 202.2428,446.10892 202.2428,446.10892"
+     id="path4465" />
   <path
-     style="fill:black;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.61016744px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 252.30508,482.60285 L 252.30508,502.0571 L 282.92498,492.32998 L 252.30508,482.60285 z "
-     id="path5695" />
-  <path
-     style="fill:black;fill-opacity:1;fill-rule:evenodd;stroke:black;stroke-width:0.61016744px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 505.07502,480.66727 L 505.07502,500.12152 L 535.69492,490.3944 L 505.07502,480.66727 z "
-     id="path6582" />
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.47918963;stroke-linecap:square;stroke-linejoin:miter;marker-end:url(#EmptyTriangleOutL);stroke-miterlimit:4;stroke-dasharray:6.95837932, 6.95837932;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 404.40431,495.48679 C 508.82458,495.02782 508.82458,495.02782 508.82458,495.02782"
+     id="path4467" />
 </svg>

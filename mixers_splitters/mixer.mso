@@ -13,17 +13,88 @@
 * available at http://www.enq.ufrgs.br/alsoc.
 *
 *-------------------------------------------------------------------
-* Author: Maurício Carvalho Maciel
+* Author: Rafael de Pelegrini Soares
+*         Maurício Carvalho Maciel
 * $Id$
 *--------------------------------------------------------------------*#
 
 using "streams";
 
-Model mixer
+Model mixer2
 	ATTRIBUTES
 	Pallete 	= true;
 	Icon 		= "icon/mixer"; 
-	Brief 		= "Model of a mixer";
+	Brief 		= "Model of a mixer with 2 inputs";
+	Info 		=
+"== Assumptions ==
+* static
+* adiabatic
+
+== Specify ==
+* the inlet streams";
+	
+VARIABLES
+
+in  Inlet1 as stream (Brief = "Inlet stream 1", PosX=0, PosY=0.25, Symbol="_{in1}");
+in  Inlet2 as stream (Brief = "Inlet stream 2", PosX=0, PosY=0.75, Symbol="_{in2}");
+out Outlet as streamPH (Brief = "Outlet stream", PosX=1, PosY=0.5059, Symbol="_{out}");
+	
+EQUATIONS
+	
+"Flow"
+	Outlet.F = Inlet1.F + Inlet2.F;
+
+"Composition"
+    Outlet.F*Outlet.z = Inlet1.F*Inlet1.z + Inlet2.F*Inlet2.z;
+
+"Energy Balance"
+	Outlet.F*Outlet.h = Inlet1.F*Inlet1.h + Inlet2.F*Inlet2.h;
+
+"Pressure"
+	Outlet.P = min([Inlet1.P, Inlet2.P]);
+	
+end
+
+Model mixer3
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/mixer"; 
+	Brief 		= "Model of a mixer with 2 inputs";
+	Info 		=
+"== Assumptions ==
+* static
+* adiabatic
+
+== Specify ==
+* the inlet streams";
+	
+VARIABLES
+in  Inlet1 as stream (Brief = "Inlet stream 1", PosX=0, PosY=0.25, Symbol="_{in1}");
+in  Inlet2 as stream (Brief = "Inlet stream 2", PosX=0, PosY=0.5059, Symbol="_{in2}");
+in  Inlet3 as stream (Brief = "Inlet stream 3", PosX=0, PosY=0.75, Symbol="_{in3}");
+out Outlet as streamPH (Brief = "Outlet stream", PosX=1, PosY=0.5059, Symbol="_{out}");
+	
+EQUATIONS
+	
+"Flow"
+	Outlet.F = Inlet1.F + Inlet2.F + Inlet3.F;
+
+"Composition"
+    Outlet.F*Outlet.z = Inlet1.F*Inlet1.z + Inlet2.F*Inlet2.z + Inlet3.F*Inlet3.z;
+
+"Energy Balance"
+	Outlet.F*Outlet.h = Inlet1.F*Inlet1.h + Inlet2.F*Inlet2.h + Inlet3.F*Inlet3.h;
+
+"Pressure"
+	Outlet.P = min([Inlet1.P, Inlet2.P , Inlet3.P]);
+
+end
+
+Model mixer_n
+	ATTRIBUTES
+	Pallete 	= false;
+	Icon 		= "icon/mixer"; 
+	Brief 		= "Model of a generic mixer (NOT Handled By the GUI) ";
 	Info 		=
 "== Assumptions ==
 * static
@@ -45,7 +116,7 @@ out Outlet  			as streamPH (Brief = "Outlet stream", PosX=1, PosY=0.5059, Symbol
 	"Flow"
 	Outlet.F = sum(Inlet.F);
 
-	 for i in [1:NComp]
+	for i in [1:NComp] do
        
 		"Composition"
         Outlet.F*Outlet.z(i) = sum(Inlet.F*Inlet.z(i));

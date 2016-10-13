@@ -12,13 +12,13 @@
    id="svg2084"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   width="118.93273"
-   height="49.495449"
+   width="113.04742"
+   height="49.879261"
    sodipodi:docbase="/home/paula/BibliotecaSVN/eml"
    sodipodi:docname="SourceNoFlow.svg"
-   inkscape:export-filename="/Apps/repositorio/branches/gui/eml/icon/SourceNoFlow.png"
-   inkscape:export-xdpi="108.27314"
-   inkscape:export-ydpi="108.27314"
+   inkscape:export-filename="/home/bicca/apps/biblioteca/branches/gui/eml/icon/SourceNoFlow.png"
+   inkscape:export-xdpi="115.43829"
+   inkscape:export-ydpi="115.43829"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:modified="true"
    version="1.0">
@@ -53,13 +53,13 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient6760"
-       id="linearGradient3214"
+       id="linearGradient2585"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(-3.2240493e-3,0.1324068,-0.5686632,-7.5067732e-4,599.98304,556.08238)"
-       x1="342.53107"
-       y1="340.69449"
-       x2="343.64938"
-       y2="537.94733" />
+       x1="207.92532"
+       y1="446.30573"
+       x2="494.30014"
+       y2="444.79449" />
   </defs>
   <sodipodi:namedview
      inkscape:window-height="926"
@@ -74,11 +74,11 @@
      pagecolor="#ffffff"
      id="base"
      showgrid="false"
-     inkscape:zoom="3.0716314"
-     inkscape:cx="88.29373"
-     inkscape:cy="17.566744"
-     inkscape:window-x="4"
-     inkscape:window-y="71"
+     inkscape:zoom="4.3439428"
+     inkscape:cx="36.882384"
+     inkscape:cy="-8.4780477"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
      inkscape:current-layer="g6591"
      showguides="true"
      inkscape:guide-bbox="true"
@@ -92,29 +92,23 @@
   </sodipodi:namedview>
   <g
      id="g6591"
-     transform="translate(-293.91989,-578.37008)">
+     transform="translate(-293.08037,-578.06465)">
     <path
-       style="fill:url(#linearGradient3214);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 381.13596,579.39071 L 405.13826,601.18008 L 381.13597,626.80232 L 294.06989,626.95438 L 313.92953,601.18008 L 294.79795,579.05417 L 381.13596,579.39071 z"
+       style="fill:url(#linearGradient2585);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 381.13597,579.05417 C 381.13597,579.05417 404.77947,591.39329 405.13826,601.18008 C 405.52413,611.70557 381.13597,626.80232 381.13597,626.80232 L 294.06989,626.80232 C 294.06989,626.80232 314.26555,610.49639 313.92953,601.18008 C 313.59351,591.86377 294.06989,579.05417 294.06989,579.05417 L 381.13597,579.05417 z"
        id="rect2097"
-       sodipodi:nodetypes="ccccccc" />
+       sodipodi:nodetypes="csccscc" />
     <text
        xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="323.09329"
-       y="606.82721"
-       id="text3218"><tspan
+       style="font-size:17.62894821px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="384.68585"
+       y="514.75684"
+       id="text3218"
+       transform="scale(0.846921,1.1807476)"><tspan
          sodipodi:role="line"
          id="tspan3220"
-         x="323.09329"
-         y="606.82721">No Flow</tspan></text>
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.79999995;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#StopS);marker-mid:url(#DistanceStart);marker-end:url(#StopS);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 410.59372,579.31297 C 410.13331,626.96553 410.13331,626.96553 410.13331,626.96553"
-       id="path2457" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.79999995;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#StopS);marker-mid:url(#DistanceStart);marker-end:url(#StopS);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 406.20516,579.27008 C 405.74475,626.92264 405.74475,626.92264 405.74475,626.92264"
-       id="path6235" />
+         x="384.68585"
+         y="514.75684"
+         style="font-size:14px">No Flow</tspan></text>
   </g>
 </svg>

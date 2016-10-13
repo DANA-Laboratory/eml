@@ -41,27 +41,26 @@ PARAMETERS
 outer PP   					as Plugin	 		(Brief = "External Physical Properties", Type="PP");
 outer NComp   			as Integer		(Brief = "Number of chemical components", Lower = 1);
 	Rgas						as positive 		(Brief = "Constant of Gases", Unit= 'kJ/kmol/K', Default = 8.31451,Hidden=true);
-	Mw(NComp) 			as molweight 	(Brief = "Molar Weight");
-	CompressorType 	as Switcher		(Brief = "Compressor Model Type",Valid=["Polytropic With GPSA Method","Isentropic With GPSA Method","Isentropic With ASME Method","Polytropic With ASME Method"], Default="Isentropic With GPSA Method");
+	Mw(NComp) 			as molweight 	(Brief = "Molar Weight",Hidden=true);
+	CompressorOperation 	as Switcher		(Brief = "Compressor Operation Model",Valid=["Polytropic","Isentropic"], Default="Isentropic");
+	Method 	as Switcher		(Brief = "Method of Calculation",Valid=["GPSA Method","ASME Method"], Default="GPSA Method");
 
 VARIABLES
 
 	Pratio	 	as positive		(Brief = "Pressure Ratio", Lower = 1E-6, Symbol ="P_{ratio}");	
 	Pdrop		as press_delta	(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
 	Pincrease	as press_delta	(Brief = "Pressure Increase",Lower = 0,  DisplayUnit = 'kPa', Symbol ="P_{incr}");
-
-	Head 					as energy_mass	(Brief = "Actual Head");
-	HeadIsentropic 	as energy_mass	(Brief = "Isentropic Head");
-	HeadPolytropic 	as energy_mass	(Brief = "Polytropic Head");
-	HeadCorrection   as positive 			(Brief = "Schultz Polytropic Head Correction");
-	
 	EfficiencyOperation 	as positive 	(Brief = "Compressor efficiency - Polytropic or Isentropic (See Compressor Type)",Lower=1E-3,Upper=1);
 	MechanicalEff 			as positive 	(Brief = "Mechanical efficiency",Lower=1E-3,Upper=1);
-	
-	FluidPower	as power	(Brief = "Fluid Power");
-	BrakePower	as power	(Brief = "Brake Power");
 	PowerLoss	as power	(Brief = "Power Losses");
+	Head 					as energy_mass	(Brief = "Actual Head", Protected=true);
+	HeadIsentropic 	as energy_mass	(Brief = "Isentropic Head", Protected=true);
+	HeadPolytropic 	as energy_mass	(Brief = "Polytropic Head", Protected=true);
+	HeadCorrection   as positive 			(Brief = "Schultz Polytropic Head Correction", Protected=true);
 	
+	FluidPower	as power	(Brief = "Fluid Power", Protected=true);
+	BrakePower	as power	(Brief = "Brake Power", Protected=true);
+
 	PolyCoeff			as positive	(Brief = "Polytropic Coefficient", Lower=0.2,Protected=true);
 	IseCoeff 			as positive 	(Brief = "Isentropic Coefficient", Lower=0.2,Protected=true); 
 	PolytropicEff  	as positive 	(Brief = "Polytropic efficiency",Lower=1E-3,Upper=1,Protected=true);
@@ -76,10 +75,10 @@ VARIABLES
 	Zfac_in			as fraction    		(Brief = "Compressibility factor at inlet", Lower = 1E-3, Protected=true);
 	Zfac_out 		as fraction    		(Brief = "Compressibility factor at outlet", Lower = 1E-3, Protected=true);
 
-in	Inlet 	as stream	(Brief = "Inlet stream", PosX=0.437, PosY=1, Symbol="_{in}");
-out	Outlet 	as streamPH	(Brief = "Outlet stream", PosX=0.953, PosY=0.0, Symbol="_{out}");
+in	Inlet 	as stream	(Brief = "Inlet stream", PosX=0.16, PosY=1, Symbol="_{in}");
+out	Outlet 	as streamPH	(Brief = "Outlet stream", PosX=0.87, PosY=0.0, Symbol="_{out}");
 
-in 	WorkIn	as work_stream	(Brief = "Work Inlet", PosX=0, PosY=0.45);
+in 	WorkIn	as power	(Brief = "Work Inlet", PosX=0, PosY=0.45, Protected=true);
 
 SET
 
@@ -135,7 +134,7 @@ EQUATIONS
 	PP.VapourEntropy(Tisentropic, Outlet.P, Outlet.z) = PP.VapourEntropy(Inlet.T, Inlet.P, Inlet.z);
 
 "Brake Power"
-	BrakePower = -WorkIn.Work;
+	BrakePower = -WorkIn;
 
 "Brake Power"
 	BrakePower*MechanicalEff = FluidPower;
@@ -149,49 +148,13 @@ EQUATIONS
 "Fluid Power"
 	FluidPower = Head*Mwm*Inlet.F;
 
-switch CompressorType
+switch CompressorOperation
 
-	case "Isentropic With GPSA Method":
-
-"Efficiency"
-	EfficiencyOperation = IsentropicEff;
-
-"Polytropic Efficiency"
-	PolytropicEff*IseCoeff*(PolyCoeff-1) = PolyCoeff*(IseCoeff-1);
-
-"Isentropic Coefficient"
-	HeadIsentropic = (0.5*Zfac_in+0.5*Zfac_out)*(1/Mwm)*(IseCoeff/(IseCoeff-1.001))*Rgas*Inlet.T*((Pratio)^((IseCoeff-1.001)/IseCoeff) - 1);
-
-"Polytropic Coefficient"
-	HeadPolytropic = (0.5*Zfac_in+0.5*Zfac_out)*(1/Mwm)*(PolyCoeff/(PolyCoeff-1.001))*Rgas*Inlet.T*((Pratio)^((PolyCoeff-1.001)/PolyCoeff) - 1);
-
-"Head Correction"
-	HeadCorrection =1;
-
-"Isentropic Head"
-	HeadIsentropic = Head*IsentropicEff;
+	case "Isentropic":
 	
-	case "Polytropic With GPSA Method":
-
-"Efficiency"
-	EfficiencyOperation = PolytropicEff;
-
-"Polytropic Efficiency"
-	PolytropicEff*IseCoeff*(PolyCoeff-1) = PolyCoeff*(IseCoeff-1);
-
-"Isentropic Coefficient"
-	HeadIsentropic = (0.5*Zfac_in+0.5*Zfac_out)*(1/Mwm)*(IseCoeff/(IseCoeff-1.001))*Rgas*Inlet.T*((Pratio)^((IseCoeff-1.001)/IseCoeff) - 1);
-
-"Polytropic Coefficient"
-	HeadPolytropic = (0.5*Zfac_in+0.5*Zfac_out)*(1/Mwm)*(PolyCoeff/(PolyCoeff-1.001))*Rgas*Inlet.T*((Pratio)^((PolyCoeff-1.001)/PolyCoeff) - 1);
-
-"Head Correction"
-	HeadCorrection =1;
-
-"Isentropic Head"
-	HeadIsentropic = Head*IsentropicEff;
+switch Method
 	
-	case "Isentropic With ASME Method":
+	case "ASME Method":
 
 "Efficiency"
 	EfficiencyOperation = IsentropicEff;
@@ -210,8 +173,54 @@ switch CompressorType
 
 "Schultz Polytropic Head Correction"
 	HeadCorrection*Mwm*(IseCoeff/(IseCoeff-1.001))*(Outlet.P/rho_ise -Inlet.P/rho_in) = (hise-Inlet.h);
+	
+	case "GPSA Method":
 
-	case "Polytropic With ASME Method":
+"Efficiency"
+	EfficiencyOperation = IsentropicEff;
+
+"Polytropic Efficiency"
+	PolytropicEff*IseCoeff*(PolyCoeff-1) = PolyCoeff*(IseCoeff-1);
+
+"Isentropic Coefficient"
+	HeadIsentropic*Mwm*((IseCoeff-1.001)/IseCoeff) = (0.5*Zfac_in+0.5*Zfac_out)*Rgas*Inlet.T*((Pratio)^((IseCoeff-1.001)/IseCoeff) - 1);
+
+"Polytropic Coefficient"
+	HeadPolytropic*Mwm*((PolyCoeff-1.001)/PolyCoeff) = (0.5*Zfac_in+0.5*Zfac_out)*Rgas*Inlet.T*((Pratio)^((PolyCoeff-1.001)/PolyCoeff) - 1);
+
+"Head Correction"
+	HeadCorrection =1;
+
+"Isentropic Head"
+	HeadIsentropic = Head*IsentropicEff;
+
+end
+
+	case "Polytropic":
+
+switch Method
+
+	case "GPSA Method":
+
+"Efficiency"
+	EfficiencyOperation = PolytropicEff;
+
+"Polytropic Efficiency"
+	PolytropicEff*IseCoeff*(PolyCoeff-1) = PolyCoeff*(IseCoeff-1);
+
+"Isentropic Coefficient"
+	HeadIsentropic*Mwm*((IseCoeff-1.001)/IseCoeff) = (0.5*Zfac_in+0.5*Zfac_out)*Rgas*Inlet.T*((Pratio)^((IseCoeff-1.001)/IseCoeff) - 1);
+
+"Polytropic Coefficient"
+	HeadPolytropic*Mwm*((PolyCoeff-1.001)/PolyCoeff) = (0.5*Zfac_in+0.5*Zfac_out)*Rgas*Inlet.T*((Pratio)^((PolyCoeff-1.001)/PolyCoeff) - 1);
+
+"Head Correction"
+	HeadCorrection =1;
+
+"Isentropic Head"
+	HeadIsentropic = Head*IsentropicEff;
+	
+	case "ASME Method":
 
 "Efficiency"
 	EfficiencyOperation = PolytropicEff;
@@ -230,6 +239,7 @@ switch CompressorType
 	
 "Schultz Polytropic Head Correction"
 	HeadCorrection*Mwm*(IseCoeff/(IseCoeff-1.001))*(Outlet.P/rho_ise -Inlet.P/rho_in) =  (hise-Inlet.h);
+end
 
 end
 

@@ -44,8 +44,9 @@ Model HeatExchanger_LMTD_cost as Heatex_LMTD
 
 	EQUATIONS
 	"Average pressure"
-	Pmax = max( [OutletHot.P , OutletCold.P] );
+	Pmax = max( [(0.5*InletHot.P+0.5*OutletHot.P) , (0.5*InletCold.P+0.5*OutletCold.P)] );
 	
+
 	"Capital Cost"
 	Ce = Cb*Fd*Fp*Fm;
 	
@@ -73,7 +74,7 @@ Model HeatExchanger_LMTD_cost as Heatex_LMTD
 	
 	"Cost Factor based on the construction material"
 	Fm = Cost(8,1) + Cost(8,2)*ln(A/'m^2');
-	
+
 end
 
 Model Shell_and_tubes_LMTD_cost as Heatex_LMTD
@@ -103,7 +104,7 @@ ExchangerType = "Shell and Tube";
 
 	EQUATIONS
 	"Average pressure"
-	Pmax = max( [OutletHot.P , OutletCold.P] );
+	Pmax = max( [(0.5*InletHot.P+0.5*OutletHot.P) , (0.5*InletCold.P+0.5*OutletCold.P)] );
 	
 	"Capital Cost"
 	Ce = Cb*Fd*Fp*Fm;
@@ -158,7 +159,7 @@ Model HeatExchanger_NTU_cost as Heatex_NTU
 
 	EQUATIONS
 	"Average pressure"
-	Pmax = max( [OutletHot.P , OutletCold.P] );
+	Pmax = max( [(0.5*InletHot.P+0.5*OutletHot.P) , (0.5*InletCold.P+0.5*OutletCold.P)] );
 	
 	"Capital Cost"
 	Ce = Cb*Fd*Fp*Fm;
@@ -217,7 +218,7 @@ ExchangerType = "Shell and Tube";
 
 	EQUATIONS
 	"Average pressure"
-	Pmax = max( [OutletHot.P , OutletCold.P] );
+		Pmax = max( [(0.5*InletHot.P+0.5*OutletHot.P) , (0.5*InletCold.P+0.5*OutletCold.P)] );
 	
 	"Capital Cost"
 	Ce = Cb*Fd*Fp*Fm;
@@ -246,6 +247,6 @@ ExchangerType = "Shell and Tube";
 	
 	"Cost Factor based on the construction material"
 	Fm = Cost(8,1) + Cost(8,2)*ln(A/'m^2');
-	
+
 end
 

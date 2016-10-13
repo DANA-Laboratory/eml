@@ -21,9 +21,9 @@ using "streams";
 
 Model sepComp_n
 	ATTRIBUTES
-	Pallete 	= true;
+	Pallete 	= false;
 	Icon 		= "icon/splitter_n"; 
-	Brief 		= "Model of a separator of components";
+	Brief 		= "Model of a separator of components (NOT Handled by the GUI)";
 	Info 		=
 "== Assumptions ==
 * thermodynamics equilibrium
@@ -68,7 +68,7 @@ EQUATIONS
 	sum(Outlet.F) = Inlet.F;
 	
 	
-for i in [1:NOutlet-1]
+for i in [1:NOutlet-1] do
 
 "Mol fraction normalisation"
 	sum(Outlet(i).z) = 1;
@@ -76,7 +76,7 @@ for i in [1:NOutlet-1]
 end
 	
 	
-for i in [1:NComp]
+for i in [1:NComp] do
 	
 "Composition"
 	sum(Outlet.F*Outlet.z(i)) = Inlet.F*Inlet.z(i);
@@ -84,7 +84,7 @@ for i in [1:NComp]
 end	
 	
 	
-for i in [1:NOutlet]
+for i in [1:NOutlet] do
 	
 "Flow"
 	Outlet(i).F = Inlet.F*frac(i);
@@ -113,68 +113,64 @@ end
 Model sepComp
 	ATTRIBUTES
 	Pallete 	= true;
-	Icon 		= "icon/splitter"; 
+	Icon 		= "icon/SepComp"; 
 	Brief 		= "Model of a separator of components";
 	Info 		=
 "== Assumptions ==
 * thermodynamics equilibrium
-* adiabatic
 	
 == Specify ==
 * the inlet stream
-* (NComp - 1) molar fractions to 1 of the outlet streams
-* the fraction of split of the outlet streams
+* (NComp) Overhead_Splits or (NComp) Bottom_Splits 
+* the Pressure and Temperature of the outlet streams
 ";
 
 PARAMETERS
 
-outer PP   			as Plugin 	(Brief = "External Physical Properties", Type="PP");
-outer	NComp 		as Integer 	(Brief = "Number of chemical components", Lower = 1); 
-		mainComp 	as Integer 	(Brief = "Component specified", Default = 1, Lower = 1);
+outer 	PP   			as Plugin 	(Brief = "External Physical Properties", Type="PP");
+outer	NComp 	as Integer (Brief = "Number of chemical components"); 
 	
 VARIABLES
 
-in		Inlet   	as stream (Brief = "Inlet stream", PosX=0, PosY=0.5001, Symbol="_{in}");
-out 	Outlet1 	as stream (Brief = "Outlet stream 1", PosX=1, PosY=0.3027, Symbol="_{out1}");
-out 	Outlet2 	as stream (Brief = "Outlet stream 2", PosX=1, PosY=0.7141, Symbol="_{out2}");
-	
-	frac 			as fraction (Brief = "Fraction to Outlet 1", Symbol="\phi");
-	recovery 		as fraction (Brief = "Recovery of the component specified", Symbol="\eta");
+in		Inlet   					as stream 		(Brief = "Inlet stream", PosX=0, PosY=0.5001, Symbol="_{Inlet}");
+out 	Overhead_Outlet 	as streamPH 	(Brief = "Overhead_Outlet stream", PosX=0.5, PosY=0, Symbol="_{Overhead}");
+out 	Bottom_Outlet 		as streamPH 	(Brief = "Bottom_Outlet stream", PosX=0.5, PosY=1, Symbol="_{Bottom}");
+in		InletQ 					as power 		(Brief="Rate of heat supply", PosX=1, PosY=0.7559, Symbol="_{in}");
 
-	EQUATIONS
+	Overhead_Splits(NComp) 	as fraction 	(Brief = "Fraction to Overhead_Outlet", Symbol="\phi_{overhead}");
+	Bottom_Splits(NComp) 		as fraction 	(Brief = "Fraction to Bottom_Outlet", Symbol="\phi_{bottom}");
 	
-"Flow"
-	Outlet1.F = Inlet.F * frac;
-	Outlet1.F + Outlet2.F = Inlet.F;
-	
-	recovery*Inlet.z(mainComp) = frac*Outlet1.z(mainComp);
-	
-	sum(Outlet1.z) = 1;
-	
-for i in [1:NComp]
-	
- "Composition"
-	Outlet1.F*Outlet1.z(i) + Outlet2.F*Outlet2.z(i) = Inlet.F*Inlet.z(i);
+EQUATIONS
 
-end
-	
-"Pressure"
-	Outlet1.P = Inlet.P;
-	Outlet2.P = Inlet.P;
-	
-"Enthalpy"
-	Outlet1.h = (1-Outlet1.v)*PP.LiquidEnthalpy(Outlet1.T, Outlet1.P, Outlet1.z) + 
-				Outlet1.v*PP.VapourEnthalpy(Outlet1.T, Outlet1.P, Outlet1.z);
-	Outlet2.h = (1-Outlet2.v)*PP.LiquidEnthalpy(Outlet2.T, Outlet2.P, Outlet2.z) + 
-				Outlet2.v*PP.VapourEnthalpy(Outlet2.T, Outlet2.P, Outlet2.z);
-	
-"Temperature"
-	Outlet1.T = Inlet.T;
-	Outlet2.T = Inlet.T;
-	
-"Vapourization Fraction"
-	Outlet1.v = PP.VapourFraction(Outlet1.T, Outlet1.P, Outlet1.z);
-	Outlet2.v = PP.VapourFraction(Outlet2.T, Outlet2.P, Outlet2.z);
+"Composition Overhead"
+	Overhead_Outlet.F*Overhead_Outlet.z = Inlet.F * Inlet.z*Overhead_Splits;
+
+"Bottom Composition Constraints"
+	sum(Bottom_Outlet.z) = 1;
+
+"Sum Of Splits"
+	Overhead_Splits+Bottom_Splits = 1;
+
+"Overhead Composition Constraints"
+	sum(Overhead_Outlet.z) = 1;
+
+ "Global Composition"
+	Overhead_Outlet.F*Overhead_Outlet.z + Bottom_Outlet.F*Bottom_Outlet.z = Inlet.F*Inlet.z;
+
+"Energy Balance"
+	Inlet.F*Inlet.h = Overhead_Outlet.F*Overhead_Outlet.h + Bottom_Outlet.F*Bottom_Outlet.h - InletQ;
+
+#"Overhead Pressure"
+#	Overhead_Outlet.P = Inlet.P;
+
+#"Bottom Pressure"
+#	Bottom_Outlet.P = Inlet.P;
+
+#"Overhead Temperature"
+#	Overhead_Outlet.T = Inlet.T;
+
+#"Bottom Temperature"
+#	Bottom_Outlet.T = Inlet.T;
 
 end
 

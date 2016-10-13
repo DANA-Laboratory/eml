@@ -22,7 +22,7 @@ using "types";
 Model Lead_lag
 
 ATTRIBUTES
-	Pallete 	= true;
+	Pallete 	= false;
 	Icon 		= "icon/Lead_Lag"; 
 	Brief 		= "Model Lead lag.";
 	Info 		=

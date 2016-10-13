@@ -13,31 +13,20 @@
 * available at http://www.enq.ufrgs.br/alsoc.
 *
 *----------------------------------------------------------------------
-* Authors: Andrey Copat, Estefane S. Horn, Marcos L. Alencastro
+* Authors: Rafael de Pelegrini Soares
+*          Andrey Copat, Estefane S. Horn, Marcos L. Alencastro
 * $Id$
 *--------------------------------------------------------------------*#
 
 using "streams";
 
-Model Hidraulic_Turbine
+#Needs to be reformulated
+
+Model HidraulicTurbine
 	ATTRIBUTES
 	Pallete 	= true;
 	Icon 		= "icon/HidraulicTurbine"; 
-	Brief 		= "Model of a Hidraulic Turbine.";
-	Info 		=
-"== Assumptions ==
-* Steady State;
-* Only Liquid;
-* Adiabatic;
-* Isentropic.
-	
-== Specify ==
-* the inlet stream;
-* the Pressure Increase (Pdiff) OR the outlet pressure (Outlet.P);
-* the Turbine efficiency (Eff);
-* the Brake efficiency (Meff);
-* the Volumetric expansivity (Beta).
-";
+	Brief 		= "Testing Model of a Hidraulic Turbine.";
 	
 	PARAMETERS
 outer NComp   	as Integer			(Brief = "Number of chemical components", Lower = 1);
@@ -51,14 +40,14 @@ outer PP   		as Plugin			(Brief = "External Physical Properties", Type="PP");
 	Head	as head				(Brief = "Head Developed");
 	FPower 	as power			(Brief = "Fluid Power");
 	BPower 	as power			(Brief = "Brake Power");
-	EPower 	as power			(Brief = "Eletrical Potency");
 	Pratio 	as positive			(Brief = "Pressure Ratio");
 	Pdrop	as press_delta		(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
 	Mwm 	as molweight		(Brief = "Mixture Molar Weight");
 	rho		as dens_mass  		(Brief = "Specific Mass");
 	Cp		as cp_mol			(Brief = "Heat Capacity");
-in	Inlet 	as stream			(Brief = "Inlet stream", PosX=0, PosY=0.5086, Symbol="_{in}");
-out	Outlet 	as stream			(Brief = "Outlet stream", PosX=1, PosY=0.5022, Symbol="_{out}");
+in		Inlet 		as stream		(Brief = "Inlet stream", PosX=0.05, PosY=0.0, Symbol="_{in}");
+out	Outlet 		as stream	(Brief = "Outlet stream", PosX=0.65, PosY=1, Symbol="_{out}");
+out WorkOut		as power	 	(Brief = "Work Outlet", PosX=1, PosY=0.46);
 
 	SET
 	Mw = PP.MolecularWeight();	
@@ -89,8 +78,7 @@ out	Outlet 	as stream			(Brief = "Outlet stream", PosX=1, PosY=0.5022, Symbol="_
 	"Calculate Brake Power"
 	BPower = FPower * Eff;
 	
-	"Calculate Eletric Power"
-	EPower = BPower * Meff;
+	BPower = WorkOut;
 	
 	"Calculate Outlet Temperature"
 	(Outlet.T - Inlet.T) * rho * Cp = (Outlet.h - Inlet.h) * rho
@@ -108,3 +96,32 @@ out	Outlet 	as stream			(Brief = "Outlet stream", PosX=1, PosY=0.5022, Symbol="_
 	"Calculate Head"
 	Head = Outlet.h - Inlet.h;
 end
+
+Model HidraulicTurbineGenerator as HidraulicTurbine
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/HidraulicTurbine"; 
+	Brief 		= "Model of a Hidraulic Turbine.";
+	Info 		=
+"== Assumptions ==
+* Steady State;
+* Only Liquid;
+* Adiabatic;
+* Isentropic.
+	
+== Specify ==
+* the inlet stream;
+* the Pressure Increase (Pdiff) OR the outlet pressure (Outlet.P);
+* the Turbine efficiency (Eff);
+* the Brake efficiency (Meff);
+* the Volumetric expansivity (Beta).
+";
+	
+	VARIABLES
+	EPower 	as power			(Brief = "Eletrical Potency");
+	
+	EQUATIONS
+	"Calculate Eletric Power"
+	EPower = BPower * Meff;
+end
+

@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:cc="http://web.resource.org/cc/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -11,15 +11,14 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg2040"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.44.1"
    width="210mm"
    height="297mm"
    sodipodi:docbase="C:\Documents and Settings\Administrador\Meus documentos\Bolsa Simulação\Controle"
    sodipodi:docname="Sum.svg"
    inkscape:export-filename="C:\Documents and Settings\Administrador\Meus documentos\Bolsa Simulação\Controle\Ratio.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:export-ydpi="90">
   <metadata
      id="metadata2045">
     <rdf:RDF>
@@ -48,6 +47,16 @@
          offset="1"
          style="stop-color:#341dff;stop-opacity:1;" />
     </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient39204"
+       gradientUnits="userSpaceOnUse"
+       x1="372.57718"
+       y1="509.53915"
+       x2="370.8418"
+       y2="591.71429"
+       gradientTransform="translate(-52.61819,-80.81515)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient6760"

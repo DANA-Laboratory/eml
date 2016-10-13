@@ -1,0 +1,57 @@
+ #*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*---------------------------------------------------------------------
+* Author: Gerson B. Bicca
+*$Id:$									
+*-------------------------------------------------------------------*#
+
+using "streams";
+	
+Model heat_flow
+
+ATTRIBUTES
+	Pallete = true;
+	Icon 	= "icon/heat_flow"; 
+	Brief 	= "Model of a very simple valve for setting the energy flow with a controller.";
+	Info 	=
+"== ASSUMPTIONS ==
+* nothing happens in this valve
+
+== SET ==
+* MinHeatFlow: the Minimum Heat Flow Allowable in the valve;
+* MaxHeatFlow: the Maximum Heat Flow Allowable in the valve;
+
+== SPECIFY ==
+* the HeatFlowFraction (the model requires an inlet signal, also you can use a controller for setting the HeatFlowFraction)
+";
+
+PARAMETERS
+
+	MinHeatFlow 	as power	(Brief="Minimum of Heat Flow",Default=-1000);
+	MaxHeatFlow 	as power	(Brief="Maximum of Heat Flow",Default=1000);
+	
+VARIABLES
+
+out HeatFlow 			as power	(Brief="Heat Flow", PosX=0, PosY=0.60,Protected=true);
+in	HeatFlowFraction 	as fraction (Brief="Flow Signal", PosX=0.50, PosY=0,Protected=true);
+	
+EQUATIONS
+"Heat Flow"
+	HeatFlow = MinHeatFlow + HeatFlowFraction*(MaxHeatFlow-MinHeatFlow);
+
+end
+
+
+

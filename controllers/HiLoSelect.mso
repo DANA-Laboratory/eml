@@ -21,7 +21,7 @@ using "types";
 Model HiLoSelect
 
 ATTRIBUTES
-	Pallete 	= true;
+	Pallete 	= false;
 	Icon 		= "icon/HiLoSelect"; 
 	Brief 		= "Model HiLo Select.";
 	Info 		=

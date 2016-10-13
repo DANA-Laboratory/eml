@@ -21,7 +21,7 @@ using "types";
 Model Ratio
 	
 	ATTRIBUTES
-	Pallete 	= true;
+	Pallete 	= false;
 	Icon 		= "icon/Ratio"; 
 	Brief 		= "Model Ratio.";
 	Info 		=

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -11,15 +12,15 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg12831"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
-   width="210mm"
-   height="297mm"
-   sodipodi:docbase="C:\Documents and Settings\Administrador\Meus documentos\Bolsa Simulação\EMSO\mso\trunk\eml\pressure_changers\icon"
+   inkscape:version="0.47pre4 r22446"
+   width="90.370758"
+   height="85.400627"
    sodipodi:docname="Valve.svg"
-   inkscape:export-filename="C:\Documents and Settings\Administrador\Meus documentos\Bolsa Simulação\Desenhos Prontos 4\valve_quick.png"
+   inkscape:export-filename="/home/rafael/src/simulador/EMSO/mso/eml/pressure_changers/icon/Valve.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0">
   <metadata
      id="metadata12836">
     <rdf:RDF>
@@ -28,11 +29,27 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <defs
      id="defs12834">
+    <linearGradient
+       id="linearGradient12884">
+      <stop
+         style="stop-color:#3447ff;stop-opacity:1;"
+         offset="0"
+         id="stop12886" />
+      <stop
+         id="stop12888"
+         offset="0.00234719"
+         style="stop-color:white;stop-opacity:0.94117647;" />
+      <stop
+         style="stop-color:#3447ff;stop-opacity:1;"
+         offset="1"
+         id="stop12890" />
+    </linearGradient>
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient10543"
@@ -69,27 +86,527 @@
          style="stop-color:#341dff;stop-opacity:1;" />
     </linearGradient>
     <linearGradient
+       id="linearGradient3236">
+      <stop
+         style="stop-color:#3447ff;stop-opacity:1;"
+         offset="0"
+         id="stop3238" />
+      <stop
+         id="stop3242"
+         offset="0.50793654"
+         style="stop-color:#ffffff;stop-opacity:1;" />
+      <stop
+         id="stop3240"
+         offset="1"
+         style="stop-color:#3447ff;stop-opacity:1;" />
+    </linearGradient>
+    <clipPath
+       id="clipPathl">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 293.75,362.51843 c 41.28358,0 82.44189,0 124.21875,0"
+         id="path3225"
+         transform="matrix(0,-0.6486081,-1.1956131,0,804.18249,1088.2645)"
+         sodipodi:nodetypes="cc" />
+    </clipPath>
+    <filter
+       id="filterK"
+       height="2"
+       width="1.9"
+       x="-0.5"
+       y="-0.5"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         stdDeviation="5.0"
+         id="feGaussianBlur3294" />
+    </filter>
+    <clipPath
+       id="clipPaths">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.88061589;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         d="m 5.6649772,898.15665 c 0,-26.77686 0,-53.47247 0,-80.56928"
+         id="path3227"
+         sodipodi:nodetypes="cc" />
+    </clipPath>
+    <filter
+       id="filterv"
+       height="2"
+       width="1.9"
+       x="-0.5"
+       y="-0.5"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         stdDeviation="5.0"
+         id="feGaussianBlur3299" />
+    </filter>
+    <clipPath
+       id="clipPathm">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path4440"
+         d="m 292.39114,658.61218 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </clipPath>
+    <filter
+       id="filterS"
+       height="2"
+       width="1.9"
+       x="-0.5"
+       y="-0.5"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         stdDeviation="5.0"
+         id="feGaussianBlur5022" />
+    </filter>
+    <clipPath
+       id="clipPathQ">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path3306"
+         d="m 293.75006,362.51843 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    </clipPath>
+    <filter
+       id="filterV"
+       height="2"
+       width="1.9"
+       x="-0.5"
+       y="-0.5"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         stdDeviation="5.0"
+         id="feGaussianBlur5032" />
+    </filter>
+    <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient6760"
-       id="linearGradient3676"
+       xlink:href="#linearGradient3236"
+       id="linearGradient16347"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.727169,0,0,1.666775,-309.2338,-995.5458)"
-       x1="331.37308"
-       y1="976.83051"
-       x2="365.76541"
-       y2="976.83051" />
+       gradientTransform="matrix(0,0.1347951,-0.1420539,0,-32.24805,157.34497)"
+       x1="-894.9718"
+       y1="-386.76801"
+       x2="-592.21912"
+       y2="-386.76801" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient12884"
+       id="radialGradient16355"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1.0640244,0.00443756,-0.00271008,-0.4411443,1135.7651,310.47498)"
+       cx="548.01935"
+       cy="218.15364"
+       fx="548.01935"
+       fy="218.15364"
+       r="142.33749" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient6760"
-       id="linearGradient3678"
+       id="linearGradient16357"
        gradientUnits="userSpaceOnUse"
-       x1="384.94772"
-       y1="948.68036"
-       x2="409.34"
-       y2="948.68036" />
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16359"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16361"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16363"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16365"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16367"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16369"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10543"
+       id="linearGradient16371"
+       gradientUnits="userSpaceOnUse"
+       x1="-42.013222"
+       y1="895.25244"
+       x2="66.722748"
+       y2="895.25244" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16373"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10543"
+       id="linearGradient16375"
+       gradientUnits="userSpaceOnUse"
+       x1="-42.013222"
+       y1="895.25244"
+       x2="66.722748"
+       y2="895.25244" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16377"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16379"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16381"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16383"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16385"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16387"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16389"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16391"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10543"
+       id="linearGradient16393"
+       gradientUnits="userSpaceOnUse"
+       x1="-42.013222"
+       y1="895.25244"
+       x2="66.722748"
+       y2="895.25244" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16395"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10543"
+       id="linearGradient16397"
+       gradientUnits="userSpaceOnUse"
+       x1="-42.013222"
+       y1="895.25244"
+       x2="66.722748"
+       y2="895.25244" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16399"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16401"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16403"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16405"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16407"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16409"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16411"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16413"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10543"
+       id="linearGradient16415"
+       gradientUnits="userSpaceOnUse"
+       x1="-42.013222"
+       y1="895.25244"
+       x2="66.722748"
+       y2="895.25244" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16417"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10543"
+       id="linearGradient16419"
+       gradientUnits="userSpaceOnUse"
+       x1="-42.013222"
+       y1="895.25244"
+       x2="66.722748"
+       y2="895.25244" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16421"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16423"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16425"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16427"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16429"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16431"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16433"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16436"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10543"
+       id="linearGradient16438"
+       gradientUnits="userSpaceOnUse"
+       x1="-42.013222"
+       y1="895.25244"
+       x2="66.722748"
+       y2="895.25244" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16440"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10543"
+       id="linearGradient16442"
+       gradientUnits="userSpaceOnUse"
+       x1="-42.013222"
+       y1="895.25244"
+       x2="66.722748"
+       y2="895.25244" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16444"
+       gradientUnits="userSpaceOnUse"
+       x1="228.69115"
+       y1="870.7868"
+       x2="707.32397"
+       y2="870.7868" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3236"
+       id="linearGradient7055"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0,0.1347951,0.1420539,0,122.61881,157.34497)"
+       x1="-887.98303"
+       y1="-387.40445"
+       x2="-593.96631"
+       y2="-387.40445" />
   </defs>
   <sodipodi:namedview
-     inkscape:window-height="900"
+     inkscape:window-height="824"
      inkscape:window-width="1280"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -101,51 +618,532 @@
      pagecolor="#ffffff"
      id="base"
      showgrid="true"
-     inkscape:zoom="1.5012033"
-     inkscape:cx="282.76409"
-     inkscape:cy="425.45987"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4"
-     inkscape:current-layer="svg12831" />
+     inkscape:zoom="4.2460441"
+     inkscape:cx="65.231322"
+     inkscape:cy="57.488017"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:current-layer="svg12831"
+     units="px"
+     inkscape:document-units="cm"
+     inkscape:snap-global="false"
+     inkscape:window-maximized="0" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:1.5692209px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="m 45.086838,56.897272 0.582223,-38.81865"
+     id="path8187"
+     sodipodi:nodetypes="cc"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
   <g
-     transform="matrix(1.727169,0,0,1.666775,-309.2338,-995.5458)"
+     transform="matrix(1.727169,0,0,1.666775,-657.55561,-1613.6528)"
      id="g6062"
-     style="fill:url(#linearGradient26088);fill-opacity:1;fill-rule:nonzero" />
+     style="fill:url(#linearGradient26088);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <path
+     style="fill:url(#linearGradient16347);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.25973693;stroke-miterlimit:4;stroke-opacity:1"
+     d="m 45.257838,56.978974 -0.23552,0.265698 -44.89244954,28.026087 0,-52.078632 45.12796954,23.786847 z"
+     id="rect7487"
+     sodipodi:nodetypes="ccccc"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
   <g
-     id="g3668"
-     transform="matrix(0.595125,0,0,0.618354,100.4451,248.3235)">
-    <path
-       style="fill:none;fill-opacity:0.96745564;fill-rule:nonzero;stroke:black;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 267.06993,602.13913 L 319.67716,602.13913"
-       id="path6072" />
-    <path
-       id="path6064"
-       d="M 265.26249,648.9151 L 265.26249,616.3067 L 320.34593,648.9151 L 320.34593,616.3067 L 265.26249,648.9151 z "
-       style="fill:url(#linearGradient3676);fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <path
-       id="path6066"
-       d="M 265.26249,632.61089 L 249.83913,632.61089"
-       style="fill:none;fill-opacity:0.96745564;fill-rule:nonzero;stroke:black;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <path
-       id="path6068"
-       d="M 320.34593,632.61089 L 333.56596,632.61089"
-       style="fill:none;fill-opacity:0.96745564;fill-rule:nonzero;stroke:black;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <path
-       style="fill:none;fill-opacity:0.96745564;fill-rule:nonzero;stroke:black;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 292.54567,632.91215 L 292.54567,603.65043 L 291.71811,603.65043"
-       id="path6070" />
-    <path
-       sodipodi:type="arc"
-       style="fill:url(#linearGradient3678);fill-opacity:1;fill-rule:nonzero;stroke:black;stroke-width:1.43753016;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="path6074"
-       sodipodi:cx="397.17349"
-       sodipodi:cy="956.45258"
-       sodipodi:rx="14.117196"
-       sodipodi:ry="9.7510529"
-       d="M 385.81883,950.65846 A 14.117196,9.7510529 0 0 1 408.4689,950.60346"
-       sodipodi:start="3.777868"
-       sodipodi:end="5.6398786"
-       transform="matrix(2.168457,0,0,2.733703,-567.7601,-1997.531)"
-       sodipodi:open="true" />
+     transform="matrix(0,-2.0833608,-3.4908256,0,6307.9042,557.63381)"
+     style="fill:url(#linearGradient16444);fill-opacity:1;fill-rule:nonzero"
+     id="g5069"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(-4.8084133,0,0,5.4229275,5677.3941,-4840.7332)"
+     id="g16167"
+     style="fill:url(#linearGradient16442);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(0,-3.2120486,-2.9196951,0,4396.5689,654.39458)"
+     style="fill:url(#linearGradient16440);fill-opacity:1;fill-rule:nonzero"
+     id="g36698"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(-4.0217134,0,0,8.3608688,3869.2161,-7668.6081)"
+     id="g36742"
+     style="fill:url(#linearGradient16438);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     id="g26091"
+     style="fill:url(#linearGradient16436);fill-opacity:1;fill-rule:nonzero"
+     transform="matrix(0,-1.7831686,-3.4914249,-2.6754041e-8,4917.7475,2465.1997)"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(0,-2.0833608,-3.4908256,0,4917.1813,2444.5161)"
+     id="g3324"
+     clip-path="url(#clipPathl)"
+     style="fill:url(#linearGradient16433);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g3326"
+       style="fill:url(#linearGradient16431)">
+      <path
+         sodipodi:nodetypes="cc"
+         transform="matrix(0,-0.6486081,-1.1956131,0,804.18249,1088.2645)"
+         id="path3328"
+         d="m 293.75,362.51843 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterK)" />
+    </g>
   </g>
+  <g
+     transform="matrix(0,-2.0833608,-3.4908256,0,4917.1813,2444.5161)"
+     id="g3330"
+     clip-path="url(#clipPaths)"
+     style="fill:url(#linearGradient16429);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g3332"
+       style="fill:url(#linearGradient16427)">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path3334"
+         d="m 5.6649772,898.15665 c 0,-26.77686 0,-53.47247 0,-80.56928"
+         style="fill:none;stroke:#404040;stroke-width:10;stroke-opacity:1;filter:url(#filterv)" />
+    </g>
+  </g>
+  <g
+     id="g3688"
+     style="fill:url(#linearGradient16425);fill-opacity:1;fill-rule:nonzero"
+     transform="matrix(2.9196951,0,0,3.2120506,1883.6567,-633.20773)"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(2.2641778,0,0,2.4908934,1118.2395,769.11412)"
+     clip-path="url(#clipPathm)"
+     id="g5068"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g5070">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path5072"
+         d="m 292.39114,658.61218 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterS)" />
+    </g>
+  </g>
+  <g
+     transform="matrix(2.2641778,0,0,2.4908934,1118.2395,769.11412)"
+     clip-path="url(#clipPathQ)"
+     id="g5080"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g5082">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path5084"
+         d="m 293.75006,362.51843 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterV)" />
+    </g>
+  </g>
+  <g
+     transform="matrix(0,-1.7831686,-3.4914249,-2.6754041e-8,5293.7786,1189.9478)"
+     style="fill:url(#linearGradient16423);fill-opacity:1;fill-rule:nonzero;stroke:#0000ff;stroke-opacity:1"
+     id="g5600"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(0,-2.0833608,-3.4908256,0,4621.7919,502.47379)"
+     style="fill:url(#linearGradient16421);fill-opacity:1;fill-rule:nonzero"
+     id="g12980"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(-4.8084133,0,0,5.4229275,3991.2817,-4895.8933)"
+     id="g12982"
+     style="fill:url(#linearGradient16419);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(0,-3.2120486,-2.9196951,0,2710.4567,599.23457)"
+     style="fill:url(#linearGradient16417);fill-opacity:1;fill-rule:nonzero"
+     id="g12988"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(-4.0217134,0,0,8.3608688,2183.1037,-7723.7682)"
+     id="g12990"
+     style="fill:url(#linearGradient16415);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     id="g12992"
+     style="fill:url(#linearGradient16413);fill-opacity:1;fill-rule:nonzero"
+     transform="matrix(0,-1.7831686,-3.4914249,-2.6754041e-8,3231.6352,2410.0397)"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(0,-2.0833608,-3.4908256,0,3231.0689,2389.356)"
+     id="g12994"
+     clip-path="url(#clipPathl)"
+     style="fill:url(#linearGradient16411);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g12996"
+       style="fill:url(#linearGradient16409)">
+      <path
+         sodipodi:nodetypes="cc"
+         transform="matrix(0,-0.6486081,-1.1956131,0,804.18249,1088.2645)"
+         id="path12998"
+         d="m 293.75,362.51843 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterK)" />
+    </g>
+  </g>
+  <g
+     transform="matrix(0,-2.0833608,-3.4908256,0,3231.0689,2389.356)"
+     id="g13000"
+     clip-path="url(#clipPaths)"
+     style="fill:url(#linearGradient16407);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g13002"
+       style="fill:url(#linearGradient16405)">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path13004"
+         d="m 5.6649772,898.15665 c 0,-26.77686 0,-53.47247 0,-80.56928"
+         style="fill:none;stroke:#404040;stroke-width:10;stroke-opacity:1;filter:url(#filterv)" />
+    </g>
+  </g>
+  <g
+     id="g13006"
+     style="fill:url(#linearGradient16403);fill-opacity:1;fill-rule:nonzero"
+     transform="matrix(2.9196951,0,0,3.2120506,197.54431,-688.36774)"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(2.2641778,0,0,2.4908934,-567.87288,713.95411)"
+     clip-path="url(#clipPathm)"
+     id="g13008"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g13010">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path13012"
+         d="m 292.39114,658.61218 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterS)" />
+    </g>
+  </g>
+  <g
+     transform="matrix(2.2641778,0,0,2.4908934,-567.87288,713.95411)"
+     clip-path="url(#clipPathQ)"
+     id="g13014"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g13016">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path13018"
+         d="m 293.75006,362.51843 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterV)" />
+    </g>
+  </g>
+  <g
+     transform="matrix(0,-1.7831686,-3.4914249,-2.6754041e-8,3607.6662,1134.7877)"
+     style="fill:url(#linearGradient16401);fill-opacity:1;fill-rule:nonzero;stroke:#0000ff;stroke-opacity:1"
+     id="g13020"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(0,-2.0833608,-3.4908256,0,5961.9886,4560.2586)"
+     style="fill:url(#linearGradient16399);fill-opacity:1;fill-rule:nonzero"
+     id="g9322"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(-4.8084133,0,0,5.4229275,5331.4785,-838.10807)"
+     id="g9324"
+     style="fill:url(#linearGradient16397);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(0,-3.2120486,-2.9196951,0,4050.6532,4657.0196)"
+     style="fill:url(#linearGradient16395);fill-opacity:1;fill-rule:nonzero"
+     id="g9364"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(-4.0217134,0,0,8.3608688,3523.3004,-3665.9831)"
+     id="g9368"
+     style="fill:url(#linearGradient16393);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     id="g9392"
+     style="fill:url(#linearGradient16391);fill-opacity:1;fill-rule:nonzero"
+     transform="matrix(0,-1.7831686,-3.4914249,-2.6754041e-8,4571.8319,6467.8249)"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(0,-2.0833608,-3.4908256,0,4571.2656,6447.1413)"
+     id="g9394"
+     clip-path="url(#clipPathl)"
+     style="fill:url(#linearGradient16389);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g9396"
+       style="fill:url(#linearGradient16387)">
+      <path
+         sodipodi:nodetypes="cc"
+         transform="matrix(0,-0.6486081,-1.1956131,0,804.18249,1088.2645)"
+         id="path9398"
+         d="m 293.75,362.51843 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterK)" />
+    </g>
+  </g>
+  <g
+     transform="matrix(0,-2.0833608,-3.4908256,0,4571.2656,6447.1413)"
+     id="g9400"
+     clip-path="url(#clipPaths)"
+     style="fill:url(#linearGradient16385);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g9402"
+       style="fill:url(#linearGradient16383)">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path9404"
+         d="m 5.6649772,898.15665 c 0,-26.77686 0,-53.47247 0,-80.56928"
+         style="fill:none;stroke:#404040;stroke-width:10;stroke-opacity:1;filter:url(#filterv)" />
+    </g>
+  </g>
+  <g
+     id="g9406"
+     style="fill:url(#linearGradient16381);fill-opacity:1;fill-rule:nonzero"
+     transform="matrix(2.9196951,0,0,3.2120506,1537.741,3369.4173)"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(2.2641778,0,0,2.4908934,772.32378,4771.739)"
+     clip-path="url(#clipPathm)"
+     id="g9408"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g9410">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path9412"
+         d="m 292.39114,658.61218 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterS)" />
+    </g>
+  </g>
+  <g
+     transform="matrix(2.2641778,0,0,2.4908934,772.32378,4771.739)"
+     clip-path="url(#clipPathQ)"
+     id="g9414"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g9416">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path9418"
+         d="m 293.75006,362.51843 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterV)" />
+    </g>
+  </g>
+  <g
+     transform="matrix(0,-1.7831686,-3.4914249,-2.6754041e-8,4947.8629,5192.5727)"
+     style="fill:url(#linearGradient16379);fill-opacity:1;fill-rule:nonzero;stroke:#0000ff;stroke-opacity:1"
+     id="g9423"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(0,-2.0833608,-3.4908256,0,3502.1156,558.76901)"
+     style="fill:url(#linearGradient16377);fill-opacity:1;fill-rule:nonzero"
+     id="g11595"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(-4.8084133,0,0,5.4229275,2871.6055,-4839.5979)"
+     id="g11597"
+     style="fill:url(#linearGradient16375);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(0,-3.2120486,-2.9196951,0,1590.7805,655.52978)"
+     style="fill:url(#linearGradient16373);fill-opacity:1;fill-rule:nonzero"
+     id="g11601"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(-4.0217134,0,0,8.3608688,1063.4276,-7667.4728)"
+     id="g11603"
+     style="fill:url(#linearGradient16371);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     id="g11605"
+     style="fill:url(#linearGradient16369);fill-opacity:1;fill-rule:nonzero"
+     transform="matrix(0,-1.7831686,-3.4914249,-2.6754041e-8,2111.9589,2466.3351)"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(0,-2.0833608,-3.4908256,0,2111.3926,2445.6515)"
+     id="g11607"
+     clip-path="url(#clipPathl)"
+     style="fill:url(#linearGradient16367);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g11609"
+       style="fill:url(#linearGradient16365)">
+      <path
+         sodipodi:nodetypes="cc"
+         transform="matrix(0,-0.6486081,-1.1956131,0,804.18249,1088.2645)"
+         id="path11611"
+         d="m 293.75,362.51843 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterK)" />
+    </g>
+  </g>
+  <g
+     transform="matrix(0,-2.0833608,-3.4908256,0,2111.3926,2445.6515)"
+     id="g11613"
+     clip-path="url(#clipPaths)"
+     style="fill:url(#linearGradient16363);fill-opacity:1;fill-rule:nonzero"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g11615"
+       style="fill:url(#linearGradient16361)">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path11617"
+         d="m 5.6649772,898.15665 c 0,-26.77686 0,-53.47247 0,-80.56928"
+         style="fill:none;stroke:#404040;stroke-width:10;stroke-opacity:1;filter:url(#filterv)" />
+    </g>
+  </g>
+  <g
+     id="g11619"
+     style="fill:url(#linearGradient16359);fill-opacity:1;fill-rule:nonzero"
+     transform="matrix(2.9196951,0,0,3.2120506,-922.13187,-632.07253)"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <g
+     transform="matrix(2.2641778,0,0,2.4908934,-1687.5491,770.24932)"
+     clip-path="url(#clipPathm)"
+     id="g11621"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g11623">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path11625"
+         d="m 292.39114,658.61218 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterS)" />
+    </g>
+  </g>
+  <g
+     transform="matrix(2.2641778,0,0,2.4908934,-1687.5491,770.24932)"
+     clip-path="url(#clipPathQ)"
+     id="g11627"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300">
+    <g
+       id="g11629">
+      <path
+         sodipodi:nodetypes="cc"
+         id="path11631"
+         d="m 293.75006,362.51843 c 41.28358,0 82.44189,0 124.21875,0"
+         style="fill:none;stroke:#c0c0c0;stroke-width:10;stroke-opacity:1;filter:url(#filterV)" />
+    </g>
+  </g>
+  <g
+     transform="matrix(0,-1.7831686,-3.4914249,-2.6754041e-8,2487.99,1191.083)"
+     style="fill:url(#linearGradient16357);fill-opacity:1;fill-rule:nonzero;stroke:#0000ff;stroke-opacity:1"
+     id="g11633"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <path
+     sodipodi:nodetypes="ccccc"
+     id="path7053"
+     d="m 45.112918,56.978974 -0.180813,-0.06737 45.308785,28.359153 0,-52.078632 -45.127972,23.786847 z"
+     style="fill:url(#linearGradient7055);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.25973693;stroke-miterlimit:4;stroke-opacity:1"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300" />
+  <path
+     sodipodi:type="arc"
+     style="fill:url(#radialGradient16355);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.18166089;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     id="path7499"
+     sodipodi:cx="550"
+     sodipodi:cy="217.20593"
+     sodipodi:rx="166.87285"
+     sodipodi:ry="61.71875"
+     d="m 716.87285,217.20593 a 166.87285,61.71875 0 0 1 -333.62829,2.31476 L 550,217.20593 z"
+     transform="matrix(0.2415975,0,0,-0.2932151,-88.01347,81.942183)"
+     inkscape:export-filename="/home/rafael/src/biblioteca/trunk/eml/pressure_changers/icon/Valve.png"
+     inkscape:export-xdpi="300"
+     inkscape:export-ydpi="300"
+     sodipodi:start="0"
+     sodipodi:end="3.1040789" />
 </svg>

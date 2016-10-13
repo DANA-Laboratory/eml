@@ -18,13 +18,21 @@
 
 using "streams";
 
-Model heater_basic
+Model heater
 
  ATTRIBUTES
-	Pallete 	= false;
-	Brief 	= "Basic model for Heater or Cooler Operation";
+	Pallete 	= true;
+	Icon 		= "icon/heater";	
+	Brief 	= "Heater";
 	Info 		=
 "Determines thermal and phase conditions of an outlet stream.
+
+== Specify ==
+* The Inlet stream
+* Specify: 
+**The outlet temperature and the outlet pressure or
+** The outlet temperature and the inlet energy stream or
+** The outlet pressure and the inlet energy stream
 ";
 
  PARAMETERS
@@ -40,15 +48,16 @@ Model heater_basic
 	Pratio 			as positive		(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
 	Pdrop			as press_delta	(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
 
-in  Inlet 			as stream 		(Brief = "Inlet Stream", PosX=0, PosY=0.45, Symbol="^{in}");
-out Outlet  		as streamPH		(Brief = "Outlet Stream", PosX=1, PosY=0.45, Symbol="^{out}");
-	
+in  Inlet 			as stream 		(Brief = "Inlet Stream", PosX=0, PosY=0.40, Symbol="^{in}");
+out Outlet  		as streamPH		(Brief = "Outlet Stream", PosX=1, PosY=0.40, Symbol="^{out}");
+in  Heat    		as power	(Brief ="Inlet Heat Stream", PosX=0.5, PosY=1, Symbol="_{out}");
+
  EQUATIONS
 
  "Flow"
 	Outlet.F = Inlet.F;	
 
- for j in [1 : NComp] 
+ for j in [1 : NComp] do
 	
  "Composition"
 	Outlet.F*Outlet.z(j) = Inlet.F*Inlet.z(j);	
@@ -82,37 +91,12 @@ out Outlet  		as streamPH		(Brief = "Outlet Stream", PosX=1, PosY=0.45, Symbol="
 
  end
 
-end
-
-Model heater as heater_basic
-
- ATTRIBUTES
-	Pallete 	= true;
-	Icon 		= "icon/heater";	
-	Brief 	= "Heater";
-	Info 		=
-"Determines thermal and phase conditions of an outlet stream.
-
-== Specify ==
-* The Inlet stream
-* Specify: 
-**The outlet temperature and the outlet pressure or
-** The outlet temperature and the inlet energy stream or
-** The outlet pressure and the inlet energy stream
-";
-
- VARIABLES
-
-in  InletQ    		as energy_stream	(Brief ="Inlet Heat Stream", PosX=0.5, PosY=1, Symbol="_{out}");
-
- EQUATIONS
-
  "Duty Specification"
-	InletQ.Q = Duty;
+	Heat = Duty;
 
 end
 
-Model cooler as heater_basic
+Model cooler
 
  ATTRIBUTES
 	Pallete 	= true;
@@ -129,13 +113,64 @@ Model cooler as heater_basic
 ** The outlet pressure and the inlet energy stream
 ";
 
- VARIABLES
+ PARAMETERS
+	outer PP	as Plugin	(Brief="Physical Properties", Type="PP");
+	outer NComp	as Integer 	(Brief="Number of Components");	
+	Kvalues		as Switcher (Brief="Option for Display Phase Equilibrium K-values",Valid=["yes","no"], Default="yes");
 
-out  OutletQ    		as energy_stream	(Brief ="Inlet Heat Stream", PosX=0.5, PosY=0, Symbol="_{out}");
+ VARIABLES
+	Duty    		as power		(Brief = "Actual Duty",Symbol="Q_{Duty}");
+	Vfrac			as fraction 	(Brief = "Vapor fraction Outlet Stream",Symbol="V_{frac}");
+	Lfrac			as fraction 	(Brief = "Liquid fraction Outlet Stream",Symbol="L_{frac}");
+	Kvalue(NComp)	as Real		 	(Brief = "Phase Equilibrium K-values",Lower=1E-30,Upper=1E30,Symbol="K_{value}");
+	Pratio 			as positive		(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+	Pdrop			as press_delta	(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+
+in  Inlet 			as stream 		(Brief = "Inlet Stream", PosX=0, PosY=0.615, Symbol="^{in}");
+out Outlet  		as streamPH		(Brief = "Outlet Stream", PosX=1, PosY=0.615, Symbol="^{out}");
+out  Heat    		as power	(Brief ="Inlet Heat Stream", PosX=0.5, PosY=0, Symbol="_{out}");
 
  EQUATIONS
 
+ "Flow"
+	Outlet.F = Inlet.F;	
+
+ for j in [1 : NComp] do
+	
+ "Composition"
+	Outlet.F*Outlet.z(j) = Inlet.F*Inlet.z(j);	
+	
+ end
+
+ "Vapor fraction Outlet Stream"
+	Vfrac = Outlet.v;
+
+ "Liquid fraction Outlet Stream"
+	Lfrac = 1-Vfrac;
+
+ "Heat Duty"
+	Duty = Outlet.F*Outlet.h - Inlet.F*Inlet.h;
+
+ "Pressure Drop"
+	Outlet.P = Inlet.P - Pdrop;
+
+ "Pressure Ratio"
+	Outlet.P = Inlet.P * Pratio;
+	
+ switch Kvalues # Fix for better convergence !!!
+
+	case "yes":
+ "K-values Phase Equilibrium"
+	Kvalue*Outlet.x = Outlet.y;
+
+	case "no":
+ "K-values Phase Equilibrium"
+	Kvalue = 1;
+
+ end
+
+
  "Duty Specification"
-	OutletQ.Q = -Duty;
+	Heat = -Duty;
 
 end

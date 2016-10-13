@@ -52,7 +52,7 @@ Based in 2 geometry and 2 configurations/orientations
 ";
 	
 	PARAMETERS
-	pi      	as positive	(Brief="Pi value", Default=3.141593, Symbol="\pi", Hidden=true);
+	pi      	as positive	(Brief="Pi value", Default=3.141593, Symbol="\pi");
 	Geometry	as Switcher	(Brief="Tank head type", Valid=["flat","spherical"], Default="flat");
 	Orientation	as Switcher(Brief="Tank orientation", Valid=["vertical","horizontal"], Default="vertical");
 	
@@ -89,7 +89,7 @@ Based in 2 geometry and 2 configurations/orientations
 				"Tank volume"
 					Vt = pi/4*(D^2)*L;
 				"Level tank volume"
-					V = ((D^2)*acos((D - 2*Level)/D)/4/"rad" - 
+					V = ((D^2)*acos((D - 2*Level)/D)/4/'rad' - 
 					(D - 2*Level)*sqrt(D*Level - Level^2)/2)*L;
 			
 				case "spherical":

@@ -14,7 +14,7 @@
 *
 *--------------------------------------------------------------------
 * Author: Gerson Balbueno Bicca 
-* $Id: Heatex.mso 574 2008-07-25 14:18:50Z rafael $
+* $Id$
 *--------------------------------------------------------------------*#
 
 using "heat_exchangers/HEX_Engine";
@@ -44,10 +44,10 @@ outer NComp   	as Integer  (Brief="Number of Components");
 	
 VARIABLES
 
-in  InletHot		as stream 			(Brief="Inlet Hot Stream", PosX=0, PosY=0.4915, Symbol="^{inHot}");
-out OutletHot	as streamPH  	(Brief="Outlet Hot Stream", PosX=1, PosY=0.4915, Symbol="^{outHot}");
-in  InletCold		as stream 			(Brief="Inlet Cold Stream", PosX=0.5237, PosY=1, Symbol="^{inCold}");
-out OutletCold	as streamPH  	(Brief="Outlet Cold Stream", PosX=0.5237, PosY=0, Symbol="^{outCold}");
+in  InletHot		as stream 			(Brief="Inlet Hot Stream", PosX=0, PosY=0.508, Symbol="^{inHot}");
+out OutletHot	as streamPH  	(Brief="Outlet Hot Stream", PosX=1, PosY=0.508, Symbol="^{outHot}");
+in  InletCold		as stream 			(Brief="Inlet Cold Stream", PosX=0.50, PosY=1, Symbol="^{inCold}");
+out OutletCold	as streamPH  	(Brief="Outlet Cold Stream", PosX=0.50, PosY=0, Symbol="^{outCold}");
 
 	A 		as area						(Brief="Exchange Surface Area");
 	Q	   	as power					(Brief="Duty", Default=7000, Lower=1e-6, Upper=1e10);
@@ -93,7 +93,7 @@ Model Heatex_LMTD  as Heatex_Basic
 
 ATTRIBUTES
 	Pallete 	= true;
-	Icon 		= "icon/HeatExchanger_LMTD";	
+	Icon 		= "icon/Heatex";	
 	Brief 	= "Simplified model for Heat Exchangers";
 	Info 		=
 "This model perform material and heat balance using the Log Mean Temperature Difference Approach. 
@@ -259,7 +259,7 @@ Model Heatex_NTU  	as Heatex_Basic
 
 ATTRIBUTES
 	Pallete 	= true;
-	Icon 		= "icon/HeatExchanger_NTU";	
+	Icon 		= "icon/Heatex";	
 	Brief 	= "Simplified model for Heat Exchangers";
 	Info 		=
 "This model perform material and heat balance using the NTU-Effectiveness Approach. 

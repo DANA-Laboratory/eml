@@ -11,23 +11,6 @@
 *
 * EMSO is distributed under the therms of the ALSOC LICENSE as
 * available at http://www.enq.ufrgs.br/alsoc.
-*
-*-------------------------------------------------------------------
-* Model of tanks
-*-------------------------------------------------------------------- 
-*	Streams:
-*		* an inlet stream
-*		* an outlet stream
-*
-*	Specify:
-*		* the Inlet stream
-*		* the Outlet flow
-*		* the tank Q
-*
-*	Initial:
-*		* the tank temperature (OutletL.T)
-*		* the tank level (h)
-*		* (NoComps - 1) Outlet compositions
 *----------------------------------------------------------------------
 * Author: Paula B. Staudt
 * $Id$
@@ -35,123 +18,674 @@
 
 using "streams";
 
-Model tank
-	ATTRIBUTES
-	Pallete 	= true;
-	Icon 		= "icon/Tank"; 
-	Brief 		= "Model of a cylindrical tank.";
+Model VesselVolume
+
+ATTRIBUTES
+	Pallete 	= false;
+	Brief 		= "Model to calculate vessel total volume and vessel filled volume from 
+different geometries and orientations.";
 	Info 		=
-"== Specify ==
-* the Inlet stream;
-* the outlet flow;
-* the tank Q.
-
-== Initial Conditions ==
-* the tank initial temperature (OutletL.T);
-* the tank initial level (Level);
-* (NoComps - 1) OutletL (OR OutletV) compositions.
+"== SET ==
+*Orientation: vessel position - vertical or horizontal;
+*Heads (bottom and top heads are identical)
+**elliptical: 2:1 elliptical heads (25% of vessel diameter);
+**hemispherical: hemispherical heads (50% of vessel diameter);
+**flat: flat heads (0% of vessel diameter);
+*Diameter: Vessel diameter;
+*Lenght: Side length of the cylinder shell;
 ";
+	
+PARAMETERS
+	Pi      		as positive		(Brief="Pi value", Default=3.141593,Hidden=true, Symbol="\pi");
+	Gconst 			as acceleration (Brief="Gravity Acceleration",Default=9.81,Hidden=true);
 
-	PARAMETERS
-	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
-	outer NComp as Integer;
-	Across as area (Brief="Tank cross section area", Default=2);
+	Orientation 	as Switcher 	(Valid=["vertical","horizontal"],Default="vertical");
+	Heads 			as Switcher 	(Valid=["elliptical","hemispherical","flat"],Default="flat");
+	Diameter 		as length 		(Brief="Vessel diameter", Default= 2, Symbol="D_{i}");
+	Lenght 			as length 		(Brief="Side length of the cylinder shell", Default= 6,  Symbol="L_{vessel}");
 	
-	VARIABLES
-in	Inlet  as stream (Brief = "Inlet stream", PosX=0.3037, PosY=0, Symbol="_{in}");
-out	Outlet as liquid_stream (Brief = "Outlet liquid stream", PosX=1, PosY=1, Symbol="_{out}");
-in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7859, Symbol="_{in}"); 
-	Level    as length(Brief="Tank level");
-	M(NComp) as mol (Brief="Molar Holdup in the tank");
-	E as energy (Brief="Total Energy Holdup on tank");
-	vL as volume_mol (Brief="Liquid Molar Volume");
+	Vhead_elliptical 		as volume 		(Brief="Elliptical Head Total Volume",Hidden=true, Symbol="V_{head}^{elliptical}");
+	Vhead_hemispherical 	as volume 		(Brief="Hemispherical Head Total Volume",Hidden=true, Symbol="V_{head}^{hemispherical}");
+	Vcylinder 				as volume 		(Brief="Cylinder Total Volume",Hidden=true, Symbol="V_{cylinder}");
+	radius 					as length		(Brief="Vessel radius",Hidden=true, Symbol="R_{cylinder}");
 
-	EQUATIONS
-	"Mass balance"
-	diff(M) = Inlet.F*Inlet.z - Outlet.F*Outlet.z;
-	
-	"Energy balance"
-	diff(E) = Inlet.F*Inlet.h - Outlet.F*Outlet.h + InletQ.Q;
+SET
 
-	"Energy Holdup"
-	E = sum(M)*Outlet.h;
+	Gconst = 9.81 * 'm/(s^2)';
+	Vhead_elliptical 	= (Pi*Diameter^3)/12;
+	Vhead_hemispherical = (Pi*Diameter^3)/6;
+	Vcylinder = 0.25*(Pi*Diameter^2)*Lenght;
+	radius = 0.5*Diameter;
+	
+VARIABLES
 
-	"Mechanical Equilibrium"
-	Inlet.P = Outlet.P;
+	Vtotal 		as volume 		(Brief="Vessel total volume",Protected=true, Symbol="V_{total}");
+	Vfilled 	as volume 		(Brief="Vessel volume content",Protected=true, Symbol="V_{filled}");
+	Level 		as length 		(Brief="liquid height", Protected=true);
+	Across 		as area 		(Brief="Vessel cylinder shell Cross section area", Hidden=true, Symbol="A_{cross}");
 	
-	"Liquid Volume"
-	vL = PP.LiquidVolume(Outlet.T, Outlet.P, Outlet.z);
-	
-	"Composition"
-	M = Outlet.z*sum(M);
-	
-	"Level of liquid phase"
-	Level = sum(M)*vL/Across;
+EQUATIONS
+
+switch Orientation
+
+case "vertical":
+
+"Vessel Cross Section Area"
+	Across = 0.25*(Pi*Diameter^2);
+
+switch Heads
+
+case "elliptical":
+
+"Vessel Total Volume"
+	Vtotal = Vhead_elliptical +	Vcylinder;
+
+if Level < 0.25*Diameter then
+
+"Vessel Filled Volume"
+	Vfilled = 0.25*Pi*(((Diameter*Level)/(0.25*Diameter))^2)*(0.25*Diameter-Level/3);
+
+else
+
+"Vessel Filled Volume"
+	Vfilled = 0.25*Pi*(Diameter^2)*(Level - 0.25*Diameter/3);
+
 end
 
-#*----------------------------------------------------------
-*
-*Model of a tank with a lain cylinder geometry
-*
-*---------------------------------------------------------*#
-Model tank_cylindrical
-	ATTRIBUTES
-	Pallete 	= true;
-	Icon 		= "icon/TankHorizontal"; 
-	Brief 		= "Model of a tank with a lain cylinder geometry.";
-	Info 		=
-"== Specify ==
-* the Inlet stream;
-* the outlet flow;
-* the tank Q.
+case "hemispherical":
 
-== Initial Conditions ==
-* the tank initial temperature (OutletL.T);
-* the tank initial level (Level);
-* (NoComps - 1) OutletL (OR OutletV) compositions.
+"Vessel Total Volume"
+	Vtotal = Vhead_hemispherical + Vcylinder;
+
+if Level < 0.5*Diameter then
+
+"Vessel Filled Volume"
+	Vfilled = 0.25*Pi*(Level^2)*(2*Diameter-4*Level/3);
+
+else
+
+"Vessel Filled Volume"
+	Vfilled = 0.25*Pi*((2/3)*((0.5*Diameter)^3) - (0.25*(Diameter)^3) + Level*Diameter^2);
+
+end
+
+case "flat":
+
+"Vessel Total Volume"
+	Vtotal = Vcylinder;
+
+"Vessel Filled Volume"
+	Vfilled = Across*Level;
+
+end
+
+case "horizontal":
+
+"Vessel Cross Section Area"
+	Across = (radius^2)*acos((radius-Level)/radius)/'rad'-(radius-Level)*sqrt((2*radius*Level-Level^2));
+
+switch Heads
+
+case "elliptical":
+
+"Vessel Total Volume"
+	Vtotal = Vhead_elliptical +	Vcylinder;
+
+"Vessel Filled Volume"
+	Vfilled = 0.5236*Level^2*(1.5*Diameter-Level) +	Across*Lenght;
+
+case "hemispherical":
+
+"Vessel Total Volume"
+	Vtotal = Vhead_hemispherical + Vcylinder;
+
+"Vessel Filled Volume"
+	Vfilled = 1.0472*Level^2*(1.5*Diameter-Level) +	Across*Lenght;
+
+case "flat":
+
+"Vessel Total Volume"
+	Vtotal = Vcylinder;
+
+"Vessel Filled Volume"
+	Vfilled = Across*Lenght;
+
+end
+
+end
+
+end
+
+Model TankVL
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/TankVL"; 
+	Brief 		= "Model of a Tank With Thermodynamic Equilibrium.";
+	Info 		=
+"== ASSUMPTIONS ==
+* perfect mixing of both phases;
+* thermodynamics equilibrium.
+
+== SET ==
+*Orientation: vessel position - vertical or horizontal;
+*Heads (bottom and top heads are identical)
+**elliptical: 2:1 elliptical heads (25% of vessel diameter);
+**hemispherical: hemispherical heads (50% of vessel diameter);
+**flat: flat heads (0% of vessel diameter);
+*Diameter: Vessel diameter;
+*Lenght: Side length of the cylinder shell;
+	
+== SPECIFY ==
+* the Inlet stream;
+* the outlet flows: OutletVapour.F and OutletLiquid.F;
+* the InletQ (the model requires an energy stream, also you can use a controller for setting the heat duty using the heat_flow model).
+
+== OPTIONAL ==
+* the TankVL model has three control ports
+** TI OutletLiquid Temperature Indicator;
+** PI OutletLiquid Pressure Indicator;
+** LI Level Indicator;
+
+== INITIAL CONDITIONS ==
+* Initial_Temperature :  the Tank temperature (OutletLiquid.T);
+* Levelpercent_Initial : the Tank liquid level in percent (LI);
+* Initial_Composition : (NoComps) OutletLiquid compositions.
 ";
 	
-	PARAMETERS
-	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
-	outer NComp as Integer;
-	radius as length(Brief="Tank radius");
-	L as length(Brief="Tank length");
-	
-	VARIABLES
-in	Inlet  as stream (Brief = "Inlet stream", PosX=0.1825, PosY=0, Symbol="_{in}");
-out	Outlet as liquid_stream (Brief = "Outlet liquid stream", PosX=1, PosY=1, Symbol="_{out}");
-in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.6160, Symbol="_{in}"); 
-	Level    as length(Brief="Tank level");
-	Across as area (Brief="Tank cross section area", Default=2);
-	M(NComp) as mol (Brief="Molar Holdup in the tank");
-	E as energy (Brief="Total Energy Holdup on tank");
-	vL as volume_mol (Brief="Liquid Molar Volume");
+PARAMETERS
+outer PP 		as Plugin 	(Brief = "External Physical Properties", Type="PP");
+outer NComp 	as Integer 	(Brief = "Number of components", Lower = 1); 
 
-	EQUATIONS
-	"Mass balance"
-	diff(M) = Inlet.F*Inlet.z - Outlet.F*Outlet.z;
-	
-	"Energy balance"
-	diff(E) = Inlet.F*Inlet.h - Outlet.F*Outlet.h + InletQ.Q;
+	Mw(NComp) 		as molweight	(Brief="Mol Weight", Hidden=true);
 
-	"Energy Holdup"
-	E = sum(M)*Outlet.h;
+	Gconst 		as acceleration (Brief="Gravity Acceleration",Default=9.81,Hidden=true);
+	low_flow  	as flow_mol 	(Brief = "Low Flow",Default = 1E-6, Hidden=true);
+	zero_flow 	as flow_mol 	(Brief = "No Flow",Default = 0, Hidden=true);
+	KfConst 	as Real 		(Brief="Constant for K factor pressure drop", Unit= 'mol/(s*(Pa^0.5))',Default = 1, Hidden=true);
+	Kfactor as positive (Brief="K factor for pressure drop", Lower = 1E-8, Default = 2);
 	
-	"Mechanical Equilibrium"
-	Inlet.P = Outlet.P;
-	
-	"Liquid Volume"
-	vL = PP.LiquidVolume(Outlet.T, Outlet.P, Outlet.z);
-	
-	"Composition"
-	M = Outlet.z*sum(M);
-	
-	"Cylindrical Area"
-	Across = radius^2 * (asin(1) - asin((radius-Level)/radius) ) + 
-				(Level-radius)*sqrt(Level*(2*radius - Level));
+	NormalFlow 	as Switcher	(Brief="Normal Flow", Valid = ["on", "off"], Default = "on",Hidden=true);
 
-	"Level of liquid phase"
-	L*Across = sum(M)*vL;
+	Levelpercent_Initial 			as positive 	(Brief="Initial liquid height in Percent", Default = 0.70);
+	Temperature_Initial				as temperature	(Brief="Initial Liquid Temperature", Default = 330);
+	Composition_Initial(NComp) 		as fraction		(Brief="Initial Composition", Default = 0.10);
+
+SET
+
+	Mw=PP.MolecularWeight();
+	Gconst = 9.81 * 'm/(s^2)';
+	low_flow = 1E-6 * 'kmol/h';
+	zero_flow = 0 * 'kmol/h';
+	KfConst = 1*'mol/(s*(Pa^0.5))';
+
+VARIABLES
+
+	Geometry 		as VesselVolume (Brief="Vessel Geometry", Symbol=" ");
+
+in	Inlet 			as stream			(Brief="Feed Stream", PosX=0.22, PosY=0, Symbol="_{in}");
+out	OutletLiquid 	as liquid_stream	(Brief="Liquid outlet stream", PosX=0.43, PosY=1, Symbol="_{out}^{Liquid}");
+out	OutletVapour 	as vapour_stream	(Brief="Vapour outlet stream", PosX=0.68, PosY=0, Symbol="_{out}^{Vapour}");
+in	InletQ 			as power			(Brief="Heat Duty", PosX=0.735, PosY=1, Protected =true,Symbol="Q_{in}");
+
+	TotalHoldup(NComp) 		as mol 	(Brief="Molar Holdup in the Vessel", Protected=true);
+	LiquidHoldup 			as mol 	(Brief="Molar liquid holdup", Protected=true);
+	VapourHoldup 			as mol 	(Brief="Molar vapour holdup", Protected=true);
+	
+	E 			as energy 		(Brief="Total Energy Holdup in the Vessel", Protected=true);
+	vL 			as volume_mol 	(Brief="Liquid Molar Volume", Protected=true);
+	vV 			as volume_mol 	(Brief="Vapour Molar volume", Protected=true);
+	Pdrop 		as press_delta 	(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P", Protected=true);
+	Peq			as pressure		(Brief="Equilibrium pressure on the liquid surface", Protected=true, Symbol="\Delta P_{eq}");
+	Pstatic		as pressure		(Brief="Static head at the bottom of the tank", Protected = true, Symbol="P_{static}^{Liquid}");
+
+out	TI as control_signal	(Brief="Temperature Indicator", PosX=0.525, PosY=0, Protected=true);
+out	PI as control_signal	(Brief="Pressure Indicator", PosX=0.368, PosY=0, Protected=true);
+out	LI as control_signal	(Brief="Level Indicator", PosX=1, PosY=0.6, Protected=true);
+
+INITIAL
+
+"Initial level Percent"
+	LI = Levelpercent_Initial;
+	
+"Initial Outlet Liquid Temperature"
+	OutletLiquid.T = Temperature_Initial;
+	
+"Initial Outlet Liquid Composition Normalized"
+	OutletLiquid.z(1:NComp - 1) = Composition_Initial(1:NComp - 1)/sum(Composition_Initial);
+
+EQUATIONS
+
+switch NormalFlow
+
+case "on":
+	Inlet.F = Kfactor *sqrt(Pdrop)*KfConst;
+
+	when Inlet.F < low_flow switchto "off";
+
+case "off":
+	Inlet.F = zero_flow;
+
+	when Inlet.P > OutletVapour.P switchto "on";
+
+end
+
+"Component Molar Balance"
+	diff(TotalHoldup)=Inlet.F*Inlet.z - OutletLiquid.F*OutletLiquid.z - OutletVapour.F*OutletVapour.z;
+	
+"Energy Balance"
+	diff(E) = Inlet.F*Inlet.h - OutletLiquid.F*OutletLiquid.h - OutletVapour.F*OutletVapour.h + InletQ;
+	
+"Molar Holdup"
+	TotalHoldup = LiquidHoldup*OutletLiquid.z + VapourHoldup*OutletVapour.z; 
+	
+"Energy Holdup"
+	E = LiquidHoldup*OutletLiquid.h + VapourHoldup*OutletVapour.h - OutletLiquid.P*Geometry.Vtotal;
+	
+"Mol fraction normalisation"
+	sum(OutletLiquid.z)=1.0;
+
+"Mol fraction normalisation"
+	sum(OutletLiquid.z)=sum(OutletVapour.z);
+
+"Liquid Volume"
+	vL = PP.LiquidVolume(OutletLiquid.T, Peq, OutletLiquid.z);
+
+"Vapour Volume"
+	vV = PP.VapourVolume(OutletVapour.T, Peq, OutletVapour.z);
+	
+"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletLiquid.T, Peq, OutletLiquid.z)*OutletLiquid.z = 
+		PP.VapourFugacityCoefficient(OutletVapour.T, Peq, OutletVapour.z)*OutletVapour.z;
+	
+"Thermal Equilibrium"
+	OutletVapour.T = OutletLiquid.T;
+	
+"Mechanical Equilibrium"
+	OutletVapour.P = Peq;
+
+"Static Head"	
+	Pstatic = PP.LiquidDensity(OutletLiquid.T, Peq, OutletLiquid.z) * Gconst * Geometry.Level;
+
+"Mechanical Equilibrium for the Liquid Phase"
+	OutletLiquid.P = Peq + Pstatic;	
+
+"Pressure Drop"
+	Pdrop = Inlet.P - OutletVapour.P;
+
+"Geometry Constraint"
+	Geometry.Vtotal = LiquidHoldup * vL + VapourHoldup * vV;
+
+"Temperature indicator"
+	TI * 'K' = OutletLiquid.T;
+
+"Pressure indicator"
+	PI * 'atm' = OutletLiquid.P;
+
+"Level indicator"
+	LI*Geometry.Vtotal= Geometry.Vfilled;
+
+"Liquid Level"
+	LiquidHoldup * vL = Geometry.Vfilled;
+
+end
+
+Model TankL
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/TankL"; 
+	Brief 		= "Model of a Tank.";
+	Info 		=
+"== ASSUMPTIONS ==
+* liquid phase only;
+
+== SET ==
+*Orientation: vessel position - vertical or horizontal;
+*Heads (bottom and top heads are identical)
+**elliptical: 2:1 elliptical heads (25% of vessel diameter);
+**hemispherical: hemispherical heads (50% of vessel diameter);
+**flat: flat heads (0% of vessel diameter);
+*Diameter: Vessel diameter;
+*Lenght: Side length of the cylinder shell;
+	
+== SPECIFY ==
+* the Inlet stream;
+* the OutletLiquid.F;
+* the InletQ (the model requires an energy stream, also you can use a controller for setting the heat duty using the heat_flow model).
+
+== OPTIONAL ==
+* the TankL model has three control ports
+** TI OutletLiquid Temperature Indicator;
+** PI OutletLiquid Pressure Indicator;
+** LI Level Indicator;
+
+== INITIAL CONDITIONS ==
+* Initial_Temperature :  the Tank temperature (OutletLiquid.T);
+* Levelpercent_Initial : the Tank liquid level in percent (LI);
+* Initial_Composition : (NoComps) OutletLiquid compositions.
+";
+	
+PARAMETERS
+outer PP 		as Plugin 	(Brief = "External Physical Properties", Type="PP");
+outer NComp 	as Integer 	(Brief = "Number of components", Lower = 1); 
+
+	Gconst 			as acceleration (Brief="Gravity Acceleration",Default=9.81,Hidden=true);
+	low_flow  	as flow_mol 	(Brief = "Low Flow",Default = 1E-6, Hidden=true);
+	zero_flow 	as flow_mol 	(Brief = "No Flow",Default = 0, Hidden=true);
+	KfConst 	as Real 		(Brief="Constant for K factor pressure drop", Unit= 'mol/(s*(Pa^0.5))',Default = 1, Hidden=true);
+	Kfactor as positive (Brief="K factor for pressure drop", Lower = 1E-8, Default = 2);
+	
+	NormalFlow 	as Switcher	(Brief="Normal Flow", Valid = ["on", "off"], Default = "on",Hidden=true);
+
+
+	Levelpercent_Initial 			as positive 	(Brief="Initial liquid height in Percent", Default = 0.70);
+	Temperature_Initial				as temperature	(Brief="Initial Liquid Temperature", Default = 330);
+	Composition_Initial(NComp) 		as fraction		(Brief="Initial Composition", Default = 0.10);
+
+SET
+
+	Gconst = 9.81 * 'm/(s^2)';
+	low_flow = 1E-6 * 'kmol/h';
+	zero_flow = 0 * 'kmol/h';
+	KfConst = 1*'mol/(s*(Pa^0.5))';
+
+VARIABLES
+
+	Geometry 		as VesselVolume (Brief="Vessel Geometry", Symbol=" ");
+
+in	Inlet 			as stream			(Brief="Feed Stream", PosX=0.22, PosY=0, Symbol="_{in}");
+out	OutletLiquid 	as liquid_stream	(Brief="Liquid outlet stream", PosX=0.43, PosY=1, Symbol="_{out}^{Liquid}");
+in	InletQ 			as power			(Brief="Heat Duty", PosX=0.735, PosY=1, Protected =true,Symbol="Q_{in}");
+
+	TotalHoldup(NComp) 		as mol 	(Brief="Molar Holdup in the Vessel", Protected=true);
+	
+	E 			as energy 		(Brief="Total Energy Holdup in the Vessel", Protected=true);
+	vL 			as volume_mol 	(Brief="Liquid Molar Volume", Protected=true);
+	Pstatic		as pressure		(Brief="Static head at the bottom of the tank", Protected = true, Symbol="P_{static}^{Liquid}");
+
+out	TI as control_signal	(Brief="Temperature Indicator", PosX=0.525, PosY=0, Protected=true);
+out	PI as control_signal	(Brief="Pressure Indicator", PosX=0.368, PosY=0, Protected=true);
+out	LI as control_signal	(Brief="Level Indicator", PosX=1, PosY=0.6, Protected=true);
+
+INITIAL
+
+"Initial level Percent"
+	LI = Levelpercent_Initial;
+	
+"Initial Outlet Liquid Temperature"
+	OutletLiquid.T = Temperature_Initial;
+	
+"Initial Outlet Liquid Composition Normalized"
+	OutletLiquid.z(1:NComp - 1) = Composition_Initial(1:NComp - 1)/sum(Composition_Initial);
+
+EQUATIONS
+
+#*
+switch NormalFlow
+
+case "on":
+	Inlet.F = Kfactor *sqrt(Pstatic)*KfConst;
+
+	when Inlet.F < low_flow switchto "off";
+
+case "off":
+	Inlet.F = zero_flow;
+
+	when Inlet.P > OutletLiquid.P switchto "on";
+
+end
+*#
+"Component Molar Balance"
+	diff(TotalHoldup)=Inlet.F*Inlet.z - OutletLiquid.F*OutletLiquid.z;
+	
+"Energy Balance"
+	diff(E) = Inlet.F*Inlet.h - OutletLiquid.F*OutletLiquid.h + InletQ;
+
+"Energy Holdup"
+	E = sum(TotalHoldup)*OutletLiquid.h;
+
+"Static Head"	
+	Pstatic = PP.LiquidDensity(OutletLiquid.T, Inlet.P, OutletLiquid.z) * Gconst * Geometry.Level;
+
+"Mechanical Equilibrium"
+	Inlet.P + Pstatic = OutletLiquid.P;
+
+"Liquid Volume"
+	vL = PP.LiquidVolume(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
+
+"Molar Holdup"
+	TotalHoldup = OutletLiquid.z*sum(TotalHoldup); 
+	
+"Liquid Level"
+	Geometry.Vfilled = sum(TotalHoldup) * vL;
+	
+"Temperature indicator"
+	TI * 'K' = OutletLiquid.T;
+
+"Pressure indicator"
+	PI * 'atm' = OutletLiquid.P;
+
+"Level indicator"
+	LI*Geometry.Vtotal= Geometry.Vfilled;
+
+end
+
+Model SumpTank
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/SumpTank"; 
+	Brief 		= "Model of a tank with 2 material inlet streams and with thermodynamic equilibrium.";
+	Info 		=
+"== ASSUMPTIONS ==
+* perfect mixing of both phases;
+* thermodynamics equilibrium.
+
+== SET ==
+*Orientation: vessel position - vertical or horizontal;
+*Heads (bottom and top heads are identical)
+**elliptical: 2:1 elliptical heads (25% of vessel diameter);
+**hemispherical: hemispherical heads (50% of vessel diameter);
+**flat: flat heads (0% of vessel diameter);
+*Diameter: Vessel diameter;
+*Lenght: Side length of the cylinder shell;
+	
+== SPECIFY ==
+* the Inlet stream;
+* the outlet flows: OutletVapour.F and OutletLiquid.F;
+* the InletQ (the model requires an energy stream, also you can use a controller for setting the heat duty using the heat_flow model).
+
+== OPTIONAL ==
+* the SumpTank model has three control ports
+** TI OutletLiquid Temperature Indicator;
+** PI OutletLiquid Pressure Indicator;
+** LI Level Indicator;
+
+== INITIAL CONDITIONS ==
+* Initial_Temperature :  the Tank temperature (OutletLiquid.T);
+* Levelpercent_Initial : the Tank liquid level in percent (LI);
+* Initial_Composition : (NoComps) OutletLiquid compositions.
+";
+	
+PARAMETERS
+outer PP 		as Plugin 	(Brief = "External Physical Properties", Type="PP");
+outer NComp 	as Integer 	(Brief = "Number of components", Lower = 1); 
+
+	Mw(NComp) 		as molweight	(Brief="Mol Weight", Hidden=true);
+	pi      		as positive		(Brief="Pi value", Default=3.141593,Hidden=true, Symbol="\pi");
+	g 				as acceleration 	(Brief="Gravity Acceleration",Default=9.81,Hidden=true);
+	
+	Heads 			as Switcher 	(Valid=["elliptical","hemispherical","flat"],Default="flat");
+	Diameter 		as length 		(Brief="Vessel diameter", Symbol="D_{i}");
+	Lenght 			as length 		(Brief="Side length of the cylinder shell", Symbol="L_{vessel}");
+	
+	Vhead_elliptical 		as volume 		(Brief="Elliptical Head Total Volume",Hidden=true, Symbol="V_{head}^{elliptical}");
+	Vhead_hemispherical 	as volume 		(Brief="Hemispherical Head Total Volume",Hidden=true, Symbol="V_{head}^{hemispherical}");
+	Vcylinder 				as volume 		(Brief="Cylinder Total Volume",Hidden=true, Symbol="V_{cylinder}");
+	radius 					as length		(Brief="Vessel radius",Hidden=true, Symbol="R_{cylinder}");
+	
+	Levelpercent_Initial 			as positive 	(Brief="Initial liquid height in Percent", Default = 0.70);
+	Temperature_Initial				as temperature	(Brief="Initial Liquid Temperature", Default = 330);
+	Composition_Initial(NComp) 		as fraction		(Brief="Initial Composition", Default = 0.10);
+
+SET
+
+	Mw=PP.MolecularWeight();
+
+	g = 9.81 * 'm/(s^2)';
+	Vhead_elliptical 	= (pi*Diameter^3)/12;
+	Vhead_hemispherical = (pi*Diameter^3)/6;
+	Vcylinder = 0.25*(pi*Diameter^2)*Lenght;
+	radius = 0.5*Diameter;
+
+VARIABLES
+
+in	InletLiquid 	as stream			(Brief="Feed Stream", PosX=0.22, PosY=0, Symbol="_{in}");
+out	OutletLiquid 	as liquid_stream	(Brief="Liquid outlet stream", PosX=0.50, PosY=1, Symbol="_{out}^{Liquid}");
+in	InletVapour 	as stream			(Brief="Vapour outlet stream", PosX=1, PosY=0.20, Symbol="_{out}^{Vapour}");
+out	OutletVapour 	as vapour_stream	(Brief="Vapour outlet stream", PosX=0.68, PosY=0, Symbol="_{out}^{Vapour}");
+	InletQ 			as power			(Brief="Heat Duty", Protected =false,Symbol="Q_{in}");
+
+	Vtotal 			as volume 			(Brief="Vessel total volume",Protected=true, Symbol="V_{total}");
+	Vfilled 		as volume 			(Brief="Vessel volume content",Protected=true, Symbol="V_{filled}");
+
+	TotalHoldup(NComp) 		as mol 	(Brief="Molar Holdup in the Vessel", Protected=true);
+	LiquidHoldup 			as mol 	(Brief="Molar liquid holdup", Protected=true);
+	VapourHoldup 			as mol 	(Brief="Molar vapour holdup", Protected=true);
+	
+	E 			as energy 		(Brief="Total Energy Holdup in the Vessel", Protected=true);
+	vL 			as volume_mol 	(Brief="Liquid Molar Volume", Protected=true);
+	vV 			as volume_mol 	(Brief="Vapour Molar volume", Protected=true);
+	Level 		as length 		(Brief="liquid height", Protected=true);
+	Across 		as area 		(Brief="Vessel cylinder shell Cross section area", Hidden=true, Symbol="A_{cross}");
+	#Pdrop 		as press_delta 	(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P", Protected=true);
+
+	Peq		as pressure		(Brief="Equilibrium pressure on the liquid surface", Protected=true, Symbol="P_{eq}");
+	Pstatic		as pressure		(Brief="Static head at the bottom of the tank", Protected = true, Symbol="P_{static}^{Liquid}");
+
+out	LI as control_signal	(Brief="Level Indicator", PosX=1, PosY=0.73, Protected=true);
+out	TI as control_signal	(Brief="Temperature Indicator", PosX=1, PosY=0.40, Protected=true);
+
+INITIAL
+
+"Initial level Percent"
+	LI = Levelpercent_Initial;
+	
+"Initial Outlet Liquid Temperature"
+	OutletLiquid.T = Temperature_Initial;
+	
+"Initial Outlet Liquid Composition Normalized"
+	OutletLiquid.z(1:NComp - 1) = Composition_Initial(1:NComp - 1)/sum(Composition_Initial);
+
+EQUATIONS
+
+"Vessel Cross Section Area"
+	Across = 0.25*(pi*Diameter^2);
+
+switch Heads
+
+case "elliptical":
+
+"Vessel Total Volume"
+	Vtotal = Vhead_elliptical +	Vcylinder;
+
+if Level < 0.25*Diameter then
+
+"Vessel Filled Volume"
+	Vfilled = 0.25*pi*(((Diameter*Level)/(0.25*Diameter))^2)*(0.25*Diameter-Level/3);
+
+else
+
+"Vessel Filled Volume"
+	Vfilled = 0.25*pi*(Diameter^2)*(Level - 0.25*Diameter/3);
+
+end
+
+case "hemispherical":
+
+"Vessel Total Volume"
+	Vtotal = Vhead_hemispherical + Vcylinder;
+
+if Level < 0.5*Diameter then
+
+"Vessel Filled Volume"
+	Vfilled = 0.25*pi*(Level^2)*(2*Diameter-4*Level/3);
+
+else
+
+"Vessel Filled Volume"
+	Vfilled = 0.25*pi*((2/3)*((0.5*Diameter)^3) - (0.25*(Diameter)^3) + Level*Diameter^2);
+
+end
+
+case "flat":
+
+"Vessel Total Volume"
+	Vtotal = Vcylinder;
+
+"Vessel Filled Volume"
+	Vfilled = Across*Level;
+
+end
+
+"Component Molar Balance"
+	diff(TotalHoldup) = InletLiquid.F*InletLiquid.z + InletVapour.F*InletVapour.z- OutletLiquid.F*OutletLiquid.z - OutletVapour.F*OutletVapour.z;
+	
+"Energy Balance"
+	diff(E) = InletLiquid.F*InletLiquid.h + InletVapour.F*InletVapour.h - OutletLiquid.F*OutletLiquid.h - OutletVapour.F*OutletVapour.h + InletQ;
+	
+"Molar Holdup"
+	TotalHoldup = LiquidHoldup*OutletLiquid.z + VapourHoldup*OutletVapour.z; 
+	
+"Energy Holdup"
+	E = LiquidHoldup*OutletLiquid.h + VapourHoldup*OutletVapour.h - OutletLiquid.P*Vtotal;
+	
+"Mol fraction normalisation"
+	sum(OutletLiquid.z)=1.0;
+
+"Mol fraction normalisation"
+	sum(OutletLiquid.z)=sum(OutletVapour.z);
+
+"Liquid Volume"
+	vL = PP.LiquidVolume(OutletLiquid.T, Peq, OutletLiquid.z);
+
+"Vapour Volume"
+	vV = PP.VapourVolume(OutletVapour.T, Peq, OutletVapour.z);
+	
+"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletLiquid.T, Peq, OutletLiquid.z)*OutletLiquid.z = 
+		PP.VapourFugacityCoefficient(OutletVapour.T, Peq, OutletVapour.z)*OutletVapour.z;
+	
+"Thermal Equilibrium"
+	OutletVapour.T = OutletLiquid.T;
+	
+"Mechanical Equilibrium for the Vapour Phase"
+	OutletVapour.P = Peq;
+	
+"Static Head"	
+	Pstatic = PP.LiquidDensity(OutletLiquid.T, Peq, OutletLiquid.z) * g * Level;
+
+"Mechanical Equilibrium for the Liquid Phase"
+	OutletLiquid.P = Peq + Pstatic;	
+
+#*"Pressure Drop"
+	Pdrop = min([InletLiquid.P,InletVapour.P]) - OutletLiquid.P;
+	#OutletLiquid.P  = InletLiquid.P - Pdrop;
+*#
+
+"Geometry Constraint"
+	Vtotal = LiquidHoldup * vL + VapourHoldup * vV;
+
+"Level indicator"
+	LI*Vtotal= Vfilled;
+
+"Temperature indicator"
+	TI * 'K' = OutletVapour.T;
+
+"Liquid Level"
+	LiquidHoldup * vL = Vfilled;
+
 end
 
 Model tank_simplified
@@ -182,61 +716,4 @@ out	Fout as flow_vol(Brief="Output flow", PosX=1, PosY=1);
 
 	"Valve equation"
 	Fout = k*sqrt(Level);		
-end
-
-Model tank_feed
-	ATTRIBUTES
-	Pallete 	= true;
-	Icon 		= "icon/Tank"; 
-	Brief 		= "Model of a tank with feed stream.";
-	Info 		=
-"== Specify ==
-* the Inlet stream;
-* the Feed stream;
-* the outlet flow;
-* the tank Q.
-
-== Initial Conditions ==
-* the tank initial temperature (OutletL.T);
-* the tank initial level (Level);
-* (NoComps - 1) OutletL (OR OutletV) compositions.
-";
-
-	PARAMETERS
-	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
-	outer NComp as Integer;
-	Across as area (Brief="Tank cross section area", Default=2);
-	
-	VARIABLES
-in	Feed as stream (Brief = "Feed stream", PosX=0.32, PosY=0, Symbol="_{feed}");	
-in	Inlet  as stream (Brief = "Inlet stream", PosX=0.3037, PosY=0, Symbol="_{in}");
-out	Outlet as liquid_stream (Brief = "Outlet liquid stream", PosX=1, PosY=1, Symbol="_{out}");
-in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7859, Symbol="_{in}"); 
-
-	Level    as length(Brief="Tank level");
-	M(NComp) as mol (Brief="Molar Holdup in the tank");
-	E as energy (Brief="Total Energy Holdup on tank");
-	vL as volume_mol (Brief="Liquid Molar Volume");
-
-	EQUATIONS
-	"Mass balance"
-	diff(M) = Feed.F*Feed.z + Inlet.F*Inlet.z - Outlet.F*Outlet.z;
-	
-	"Energy balance"
-	diff(E) = Feed.F*Feed.h + Inlet.F*Inlet.h - Outlet.F*Outlet.h + InletQ.Q;
-
-	"Energy Holdup"
-	E = sum(M)*Outlet.h;
-
-	"Mechanical Equilibrium"
-	Inlet.P = Outlet.P;
-	
-	"Liquid Volume"
-	vL = PP.LiquidVolume(Outlet.T, Outlet.P, Outlet.z);
-	
-	"Composition"
-	M = Outlet.z*sum(M);
-	
-	"Level of liquid phase"
-	Level = sum(M)*vL/Across;
 end

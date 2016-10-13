@@ -15,11 +15,17 @@
 *-----------------------------------------------------------------------
 * Author: Núbia do Carmo Ferreira
 * $Id: column.mso 210 2007-03-15 12:52:28Z arge $
-*---------------------------------------------------------------------*#
+*---------------------------------------------------------------------#
 
 using "stage_separators/column";
 
-#*----------------------------------------------------------------------
+
+
+
+				Needs to be Updated !!!!!!!
+
+
+#----------------------------------------------------------------------
 * Model of cost of a distillation column containing:
 *	- NTrays like tray;
 *	- a kettle reboiler;
@@ -32,7 +38,7 @@ using "stage_separators/column";
 *	   17.57m < Lt < 51.82m
 *	   0.6m < D < 4.8m
 *
-*---------------------------------------------------------------------*# 
+*---------------------------------------------------------------------# 
 
 Model Distillation_kettle_cond_cost as Distillation_kettle_cond
 	ATTRIBUTES
@@ -155,7 +161,7 @@ end
 *	- a splitter which separate reflux and distillate;
 *	- a pump in reflux stream.
 *
-* ------------------------------------------------------------------*#
+* ------------------------------------------------------------------#
 Model Distillation_thermosyphon_subcooling_cost as Distillation_thermosyphon_subcooling
 	ATTRIBUTES
 	Pallete 	= true;
@@ -278,7 +284,7 @@ end
 *	- a splitter which separate reflux and distillate;
 *	- a pump in reflux stream.
 *
-* ------------------------------------------------------------------*#
+* ------------------------------------------------------------------#
 Model Distillation_thermosyphon_cond_cost as Distillation_thermosyphon_cond
 	ATTRIBUTES
 	Pallete 	= true;
@@ -398,7 +404,7 @@ end
 *	- a splitter which separate reflux and distillate;
 *	- a pump in reflux stream.
 *
-* ------------------------------------------------------------------*#
+* ------------------------------------------------------------------#
 Model Distillation_kettle_subcooling_cost as Distillation_kettle_subcooling
 	ATTRIBUTES
 	Pallete 	= true;
@@ -508,3 +514,5 @@ Model Distillation_kettle_subcooling_cost as Distillation_kettle_subcooling
 	"Equipment Weight"
 	Ws = dens_mass_material*Di*(Lt + 0.8116*Di)*Tp*Pi;
 end
+
+*#

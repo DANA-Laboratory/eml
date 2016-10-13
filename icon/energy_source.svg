@@ -16,9 +16,9 @@
    height="62.906914"
    sodipodi:docbase="/home/paula/BibliotecaSVN/eml"
    sodipodi:docname="energy_source.svg"
-   inkscape:export-filename="E:\Documentos Pessoais\Gerson\repositorio\branches\gui\eml\icon\energy_source.png"
-   inkscape:export-xdpi="108.27314"
-   inkscape:export-ydpi="108.27314"
+   inkscape:export-filename="/home/ubuntu/repositorio/alsoc/biblioteca/branches/gui/eml/icon/energy_source.png"
+   inkscape:export-xdpi="115.43829"
+   inkscape:export-ydpi="115.43829"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:modified="true"
    version="1.0">
@@ -56,10 +56,10 @@
        id="linearGradient3214"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(-3.2240493e-3,0.1324068,-0.5686632,-7.5067732e-4,599.98304,556.08238)"
-       x1="342.53107"
-       y1="340.69449"
-       x2="343.64938"
-       y2="537.94733" />
+       x1="504.81"
+       y1="444.21771"
+       x2="205.77925"
+       y2="446.43027" />
   </defs>
   <sodipodi:namedview
      inkscape:window-height="926"
@@ -78,12 +78,12 @@
      inkscape:cx="59.336548"
      inkscape:cy="11.247215"
      inkscape:window-x="0"
-     inkscape:window-y="44"
+     inkscape:window-y="41"
      inkscape:current-layer="g6591"
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="false"
-     showborder="false">
+     showborder="true">
     <inkscape:grid
        type="xygrid"
        id="grid3216"
@@ -94,20 +94,21 @@
      id="g6591"
      transform="translate(-293.08037,-578.06465)">
     <path
-       style="fill:url(#linearGradient3214);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.3;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="M 381.13596,579.39071 L 405.13826,601.18008 L 381.13597,626.80232 L 294.06989,626.95438 L 313.92953,601.18008 L 294.79795,579.05417 L 381.13596,579.39071 z"
+       style="fill:url(#linearGradient3214);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.29999999999999999;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 381.13597,579.05417 C 381.13597,579.05417 404.77947,591.39329 405.13826,601.18008 C 405.52413,611.70557 381.13597,626.80232 381.13597,626.80232 L 294.06989,626.80232 C 294.06989,626.80232 314.28007,610.89906 313.92953,601.18008 C 313.60803,592.26643 294.06989,579.05417 294.06989,579.05417 L 381.13597,579.05417 z"
        id="rect2097"
-       sodipodi:nodetypes="ccccccc" />
+       sodipodi:nodetypes="csccscc" />
     <text
        xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;stroke-miterlimit:4;stroke-dasharray:none"
-       x="327"
-       y="605.36218"
-       id="text3218"><tspan
+       style="font-size:15.65586281px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="338.82449"
+       y="579.47491"
+       id="text3218"
+       transform="scale(0.9547557,1.0473883)"><tspan
          sodipodi:role="line"
          id="tspan3220"
-         x="327"
-         y="605.36218">energy</tspan></text>
+         x="338.82449"
+         y="579.47491">Energy</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:28px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;stroke-miterlimit:4;stroke-dasharray:none"

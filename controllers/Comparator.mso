@@ -21,7 +21,7 @@ using "types";
 Model comparator
 
 ATTRIBUTES
-	Pallete 	= true;
+	Pallete 	= false;
 	Icon 		= "icon/Comparator"; 
 	Brief 		= "Model Comparator.";
 	Info 		=

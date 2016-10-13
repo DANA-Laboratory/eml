@@ -174,7 +174,7 @@ ATTRIBUTES
 	"to be documented";
 	
 VARIABLES
-Re 		as positive				(Brief="Shell Side Reynolds Number",Default=100,Lower=1);
+Re 		as positive				(Brief="Shell Side Reynolds Number",Default=100,Lower=1E-6);
 PR 		as positive				(Brief="Shell Side Prandtl Number",Default=0.7,Lower=1e-6);
 hshell  	as heat_trans_coeff	(Brief="Shell Side Film Coefficient",Default=1,Lower=1e-12, Upper=1e6);
 Phi    	as positive				(Brief="Phi Correction",Default=1,Lower=1e-3);
@@ -226,14 +226,14 @@ ATTRIBUTES
 
 VARIABLES
 
-Ch   as positive	(Brief="Hot Stream Heat Capacity",Lower=1e-3,Default=1e3,Unit='W/K');
-Cc   as positive	(Brief="Cold Stream Heat Capacity",Lower=1e-3,Default=1e3,Unit='W/K');
-Cr    	as positive 	(Brief="Heat Capacity Ratio",Default=0.5,Lower=1e-6);
-Cmin  as positive 	(Brief="Minimum Heat Capacity",Lower=1e-10,Default=1e3,Unit='W/K');
-Cmax as positive 	(Brief="Maximum Heat Capacity",Lower=1e-10,Default=1e3,Unit='W/K');
-NTU	as positive	(Brief="Number of Units Transference",Default=0.05,Lower=1e-10);
-Eft	as positive  (Brief="Effectiveness",Default=0.5,Lower=1e-8,Upper=1, Symbol ="\varepsilon");
-Eft1	as positive  (Brief="Effectiveness Correction",Lower=1e-8,Default=0.5, Symbol ="\hat {\varepsilon}");
+Ch   		as positive	(Brief="Hot Stream Heat Capacity",Lower=1e-3,Default=1e3,Unit='W/K',Protected=true);
+Cc   		as positive	(Brief="Cold Stream Heat Capacity",Lower=1e-3,Default=1e3,Unit='W/K',Protected=true);
+Cr    		as positive 	(Brief="Heat Capacity Ratio",Default=0.5,Lower=1e-6,Protected=true);
+Cmin  	as positive 	(Brief="Minimum Heat Capacity",Lower=1e-10,Default=1e3,Unit='W/K',Protected=true);
+Cmax 	as positive 	(Brief="Maximum Heat Capacity",Lower=1e-10,Default=1e3,Unit='W/K',Protected=true);
+NTU		as positive	(Brief="Number of Units Transference",Default=0.05,Lower=1e-10,Protected=true);
+Eft		as positive  	(Brief="Effectiveness",Default=0.5,Lower=1e-8,Upper=1, Symbol ="\varepsilon",Protected=true);
+Eft1		as positive  	(Brief="Effectiveness Correction",Lower=1e-8,Default=0.5, Symbol ="\hat {\varepsilon}",Protected=true);
 
 end
 
@@ -243,32 +243,29 @@ ATTRIBUTES
 	Pallete = false;
 	Brief = "Log Mean Temperature Difference Method.";
 	Info =
-	"to be documented";
+	"This model should be used as submodel when the LMTD needs to be calculating";
 	
 VARIABLES
 
-DT0     	as temp_delta	(Brief="Temperature Difference at Inlet",Lower=1e-6, Symbol ="\Delta T_0");
-DTL		as temp_delta	(Brief="Temperature Difference at Outlet",Lower=1e-6, Symbol ="\Delta T_L");
-LMTD		as temp_delta	(Brief="Logarithmic Mean Temperature Difference",Lower=1e-6);
-Fc			as positive		(Brief="LMTD Correction Factor",Lower=0.1);
+DT0     	as temp_delta	(Brief="Temperature Difference at Inlet",Lower=1e-6, Symbol ="\Delta T_0",Protected=true);
+DTL		as temp_delta	(Brief="Temperature Difference at Outlet",Lower=1e-6, Symbol ="\Delta T_L",Protected=true);
+LMTD	as temp_delta	(Brief="Logarithmic Mean Temperature Difference",Lower=1e-6,Protected=true);
+Fc			as positive		(Brief="LMTD Correction Factor",Lower=0.1,Protected=true);
 
 EQUATIONS
 
-if abs(DT0 - DTL) > 0.05*max(abs([DT0,DTL])) 
+if DT0*DTL <= 0 * 'K^2' then
+
+"Log Mean Temperature Difference"
+	LMTD = 0.5*(DT0+DTL);
+
+else if abs(DT0 - DTL) > 0.05*max(abs([DT0,DTL])) then
 	
-	then
 "Log Mean Temperature Difference"
 	LMTD= (DT0-DTL)/ln(DT0/DTL);
 
-	else
-	
-if DT0*DTL equal 0
-	
-	then
-"Log Mean Temperature Difference"
-	LMTD = 0.5*(DT0+DTL);
-	
-	else
+else
+
 "Log Mean Temperature Difference"
 	LMTD = 0.5*(DT0+DTL)*(1-(DT0-DTL)^2/(DT0*DTL)*(1+(DT0-DTL)^2/(DT0*DTL)/2)/12);
 	

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2040"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   width="139.64253"
+   height="163.02676"
+   sodipodi:docbase="C:\Documents and Settings\Administrador\Meus documentos\Bolsa Simulação\Controle"
+   sodipodi:docname="ConstSignal.svg"
+   inkscape:export-filename="C:\Documents and Settings\Anyone\Desktop\ConstSignal.png"
+   inkscape:export-xdpi="153.39166"
+   inkscape:export-ydpi="153.39166"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0">
+  <metadata
+     id="metadata2045">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs2043">
+    <marker
+       inkscape:stockid="Arrow1Sstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Sstart"
+       style="overflow:visible">
+      <path
+         id="path3183"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(0.2,0,0,0.2,1.2,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mstart"
+       style="overflow:visible">
+      <path
+         id="path3195"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.97309,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z"
+         transform="scale(0.6,0.6)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend"
+       style="overflow:visible">
+      <path
+         id="path3180"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend"
+       style="overflow:visible">
+      <path
+         id="path3174"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective23" />
+    <linearGradient
+       id="linearGradient6760">
+      <stop
+         id="stop12971"
+         offset="0"
+         style="stop-color:#3447ff;stop-opacity:1;" />
+      <stop
+         style="stop-color:white;stop-opacity:0.94117647;"
+         offset="0.51282054"
+         id="stop22168" />
+      <stop
+         id="stop6764"
+         offset="1"
+         style="stop-color:#341dff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient39204"
+       gradientUnits="userSpaceOnUse"
+       x1="372.57718"
+       y1="509.53915"
+       x2="370.8418"
+       y2="591.71429"
+       gradientTransform="translate(-52.61819,-80.81515)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient8318"
+       x1="218.81"
+       y1="485.76477"
+       x2="358.45251"
+       y2="485.76477"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-218.81,-431.17218)" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="900"
+     inkscape:window-width="1280"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showgrid="true"
+     inkscape:zoom="4.053042"
+     inkscape:cx="69.097328"
+     inkscape:cy="109.12055"
+     inkscape:window-x="0"
+     inkscape:window-y="97"
+     inkscape:current-layer="svg2040"
+     borderlayer="false"
+     inkscape:snap-intersection-grid-guide="true"
+     showguides="true"
+     showborder="false" />
+  <rect
+     style="fill:url(#linearGradient8318);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.38000011;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="rect2047"
+     width="137.26253"
+     height="106.80521"
+     x="1.1900001"
+     y="1.1900001"
+     inkscape:export-filename="E:\Documentos Pessoais\Gerson\repositorio\branches\gui\eml\controllers\icon\path2396.png"
+     inkscape:export-xdpi="89"
+     inkscape:export-ydpi="89" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:#e90000;stroke-width:2.16120648;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 13.250443,60.628601 C 94.770004,60.628601 94.770004,60.628601 94.770004,60.628601"
+     id="path2934"
+     inkscape:export-filename="E:\Documentos Pessoais\Gerson\repositorio\branches\gui\eml\controllers\icon\path2396.png"
+     inkscape:export-xdpi="89"
+     inkscape:export-ydpi="89" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow1Mend);stroke-opacity:1"
+     d="M 11.63419,10.290827 C 12.12765,96.645717 12.12765,96.645717 12.12765,96.645717 L 112.29932,96.645717"
+     id="path2396"
+     inkscape:export-xdpi="89"
+     inkscape:export-ydpi="89" />
+  <rect
+     style="opacity:1;fill:#000000;fill-opacity:1;stroke:#e90000;stroke-width:3.02700000000000010;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stroke-linecap:square;"
+     id="rect2408"
+     width="3.4541957"
+     height="10.856044"
+     x="136.68745"
+     y="48.544853"
+     inkscape:export-filename="E:\Documentos Pessoais\Gerson\repositorio\branches\gui\eml\controllers\icon\path2396.png"
+     inkscape:export-xdpi="89"
+     inkscape:export-ydpi="89" />
+</svg>

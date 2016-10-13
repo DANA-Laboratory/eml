@@ -42,12 +42,12 @@ outer NComp as Integer 	(Brief="Number of components", Default=1);
 	
 	VARIABLES
 in	Inlet 	as stream	(Brief="Inlet stream", PosX=0, PosY=0, Symbol="_{in}");
-	Outletm	as stream	(Brief="Intermediary outlet stream", Symbol="_{outm}", Hidden=true);
+	Outletm	as stream	(Brief="Intermediary outlet stream", Symbol="_{outm}");
 	Tank	as vol_tank	(Brief="Routine to volume tank calculation", Symbol="_{tank}");
 	
-	M(NComp)as mol		(Brief="Component molar holdup", Protected=true);
-	Mt		as mol		(Brief="Total component molar holdup", Protected=true);
-	E		as energy	(Brief="Internal energy", Protected=true);
+	M(NComp)as mol		(Brief="Component molar holdup");
+	Mt		as mol		(Brief="Total component molar holdup");
+	E		as energy	(Brief="Internal energy");
 	Q		as heat_rate(Brief="Reactor duty", Default=0);
 	
 	EQUATIONS
@@ -122,16 +122,16 @@ outer NComp 	as Integer 	(Brief="Number of components", Default=1);
 
 	VARIABLES
 in	Inlet	 as stream			(Brief="Inlet stream", PosX=0, PosY=0, Symbol="_{in}");
-	OutletmL as liquid_stream	(Brief="Intermediary liquid outlet stream", Symbol="_{outmL}", Hidden=true);
+	OutletmL as liquid_stream	(Brief="Intermediary liquid outlet stream", Symbol="_{outmL}");
 out	OutletV  as vapour_stream 	(Brief="Outlet vapour stream", Symbol="_{outV}");
 	Tank	 as vol_tank		(Brief="Routine to volume tank calculation", Symbol="_{tank}");
 	
-	M(NComp)as mol			(Brief="Component molar holdup", Protected=true);
-	ML 		as mol 			(Brief="Molar liquid holdup", Protected=true);
-	MV 		as mol 			(Brief="Molar vapour holdup", Protected=true);
-	E		as energy		(Brief="Internal energy", Protected=true);
+	M(NComp)as mol			(Brief="Component molar holdup");
+	ML 		as mol 			(Brief="Molar liquid holdup");
+	MV 		as mol 			(Brief="Molar vapour holdup");
+	E		as energy		(Brief="Internal energy");
 	Q		as heat_rate	(Brief="Reactor duty", Default=0);
-	vL 		as volume_mol 	(Brief="Liquid Molar Volume", Protected=true);
+	vL 		as volume_mol 	(Brief="Liquid Molar Volume");
 	
 	EQUATIONS
 	"Component molar balance"

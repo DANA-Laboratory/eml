@@ -9,21 +9,20 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   id="svg2084"
+   id="svg2040"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   width="86.93808"
-   height="41.139137"
-   sodipodi:docbase="/home/paula/BibliotecaSVN/eml"
+   width="155.15796"
+   height="129.51805"
+   sodipodi:docbase="C:\Documents and Settings\Administrador\Meus documentos\Bolsa Simulação\Controle"
    sodipodi:docname="Info_Stream.svg"
-   inkscape:export-filename="/home/ubuntu/repositorio/alsoc/biblioteca/trunk/eml/icon/Info_Stream.png"
-   inkscape:export-xdpi="140.78986"
-   inkscape:export-ydpi="140.78986"
+   inkscape:export-filename="/home/bicca/apps/biblioteca/branches/gui/eml/icon/Info_Stream.png"
+   inkscape:export-xdpi="102.01756"
+   inkscape:export-ydpi="102.01756"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   sodipodi:modified="true"
    version="1.0">
   <metadata
-     id="metadata2089">
+     id="metadata2045">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -34,7 +33,7 @@
     </rdf:RDF>
   </metadata>
   <defs
-     id="defs2087">
+     id="defs2043">
     <linearGradient
        id="linearGradient6760">
       <stop
@@ -53,19 +52,18 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient6760"
-       id="linearGradient3246"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-2.3895395e-3,0.1258574,-0.4214708,-7.1354538e-4,523.70701,555.19622)"
-       x1="340.91721"
-       y1="316.51749"
-       x2="349.89819"
-       y2="579.95593" />
+       id="linearGradient3198"
+       x1="4.4411087"
+       y1="105.53908"
+       x2="4.4411087"
+       y2="19.677643"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <sodipodi:namedview
-     inkscape:window-height="930"
-     inkscape:window-width="1278"
+     inkscape:window-height="900"
+     inkscape:window-width="1264"
      inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="0"
      guidetolerance="10.0"
      gridtolerance="10.0"
      objecttolerance="10.0"
@@ -73,39 +71,60 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     showgrid="true"
-     inkscape:zoom="6.1432628"
-     inkscape:cx="72.80869"
-     inkscape:cy="42.078158"
+     showgrid="false"
+     inkscape:zoom="4.0530418"
+     inkscape:cx="90.991117"
+     inkscape:cy="59.91293"
      inkscape:window-x="0"
-     inkscape:window-y="25"
-     inkscape:current-layer="g6591"
+     inkscape:window-y="50"
+     inkscape:current-layer="svg2040"
+     borderlayer="false"
+     inkscape:snap-intersection-grid-guide="true"
      showguides="true"
-     inkscape:guide-bbox="true">
+     showborder="true"
+     width="183.71px">
     <inkscape:grid
        type="xygrid"
-       id="grid3216"
+       id="grid21485"
        visible="true"
        enabled="true" />
   </sodipodi:namedview>
-  <g
-     id="g6591"
-     transform="translate(-287.53542,-576.35638)">
-    <path
-       style="fill:url(#linearGradient3246);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.34317097;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 362.51652,577.49903 L 362.51652,617.53421 L 297.78144,617.53421 L 297.51568,577.03163 L 362.51652,577.49903 z"
-       id="rect2097"
-       sodipodi:nodetypes="ccccc" />
-    <text
-       xml:space="preserve"
-       style="font-size:14.24546909px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="383.40237"
-       y="469.8244"
-       id="text3218"
-       transform="scale(0.7767478,1.2874192)"><tspan
-         sodipodi:role="line"
-         id="tspan3220"
-         x="383.40237"
-         y="469.8244">Info Stream</tspan></text>
-  </g>
+  <path
+     sodipodi:type="arc"
+     style="opacity:1;fill:url(#linearGradient3198);fill-opacity:1;stroke:#000000;stroke-width:0.69999999;stroke-linecap:round;stroke-linejoin:round;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:0.175, 0.175;stroke-dashoffset:0;stroke-opacity:1"
+     id="path2396"
+     sodipodi:cx="4.4411087"
+     sodipodi:cy="61.621449"
+     sodipodi:rx="51.07275"
+     sodipodi:ry="49.345654"
+     d="M 55.513859,61.621449 A 51.07275,49.345654 0 1 1 -46.631641,61.621449 A 51.07275,49.345654 0 1 1 55.513859,61.621449 z"
+     transform="translate(72.877791,2.8331378)" />
+  <text
+     xml:space="preserve"
+     style="font-size:12px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+     x="30.646698"
+     y="69.256866"
+     id="text11790"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan11792"
+       x="30.646698"
+       y="69.256866"
+       style="font-size:14px;-inkscape-font-specification:DejaVu Sans Bold">Info Stream</tspan></text>
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.39352047;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 78.53994,0.69676024 C 78.62793,19.336618 78.53994,19.336618 78.53994,19.336618 L 78.45194,19.000767"
+     id="path21455" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.39400005;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 0.69700003,65.148072 C 26.460969,65.081549 26.460969,65.148072 26.460969,65.148072 L 25.996757,65.214603"
+     id="path2420" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.39352047;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 78.53994,110.18143 C 78.62793,128.82129 78.53994,128.82129 78.53994,128.82129 L 78.45194,128.48544"
+     id="path4392" />
+  <path
+     id="path3243"
+     d="M 128.69699,65.148072 C 154.46096,65.081549 154.46096,65.148072 154.46096,65.148072 L 153.99675,65.214603"
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.39400005;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
 </svg>

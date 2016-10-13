@@ -9,20 +9,48 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   id="svg10172"
+   id="svg2064"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   width="325.34012"
-   height="250.71156"
-   sodipodi:docbase="D:\User\Arge\PROJETOS\Alsoc\EMSO\mso\eml\heat_exchangers\icon"
+   width="86.766106"
+   height="72.601578"
+   sodipodi:docbase="C:\Documents and Settings\Administrador\Meus documentos\Bolsa Simulação\EMSO\mso\trunk\eml\stage_separators\icon"
    sodipodi:docname="cooler.svg"
+   inkscape:export-filename="/home/ubuntu/repositorio/alsoc/biblioteca/branches/gui/eml/heat_exchangers/icon/cooler.png"
+   inkscape:export-xdpi="201.59"
+   inkscape:export-ydpi="201.59"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="D:\Apps\repositorio\branches\gui\eml\heat_exchangers\icon\cooler.png"
-   inkscape:export-xdpi="52.401367"
-   inkscape:export-ydpi="52.401367"
    version="1.0">
+  <sodipodi:namedview
+     inkscape:window-height="926"
+     inkscape:window-width="1270"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showgrid="false"
+     showguides="true"
+     inkscape:zoom="5.731867"
+     inkscape:cx="71.180249"
+     inkscape:cy="43.387453"
+     inkscape:window-x="0"
+     inkscape:window-y="41"
+     inkscape:current-layer="svg2064"
+     inkscape:guide-bbox="true"
+     inkscape:showpageshadow="false">
+    <inkscape:grid
+       enabled="true"
+       visible="true"
+       id="grid21746"
+       type="xygrid" />
+  </sodipodi:namedview>
   <metadata
-     id="metadata10177">
+     id="metadata2069">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -33,81 +61,69 @@
     </rdf:RDF>
   </metadata>
   <defs
-     id="defs10175">
+     id="defs2067">
+    <inkscape:path-effect
+       effect="skeletal"
+       id="path-effect5873"
+       prop_scale="1" />
     <linearGradient
-       id="linearGradient6760">
+       id="linearGradient3827">
       <stop
-         id="stop12971"
+         id="stop3829"
          offset="0"
          style="stop-color:#3447ff;stop-opacity:1;" />
       <stop
          style="stop-color:white;stop-opacity:0.94117647;"
-         offset="0.51282054"
-         id="stop22168" />
+         offset="0"
+         id="stop3831" />
       <stop
-         id="stop6764"
+         id="stop3833"
          offset="1"
-         style="stop-color:#341dff;stop-opacity:1;" />
+         style="stop-color:#3447ff;stop-opacity:1;" />
     </linearGradient>
-    <linearGradient
+    <radialGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient6760"
-       id="linearGradient14653"
+       xlink:href="#linearGradient3827"
+       id="radialGradient11050"
        gradientUnits="userSpaceOnUse"
-       x1="298.27155"
-       y1="352.14737"
-       x2="502.1149"
-       y2="352.14737" />
+       gradientTransform="matrix(0.9989462,1.1304476e-7,-6.196224e-8,0.4346623,0.5795858,122.79462)"
+       cx="550"
+       cy="217.20593"
+       fx="550"
+       fy="217.20593"
+       r="142.33749" />
   </defs>
-  <sodipodi:namedview
-     inkscape:window-height="975"
-     inkscape:window-width="1280"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     guidetolerance="10.0"
-     gridtolerance="10.0"
-     objecttolerance="10.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     showgrid="true"
-     inkscape:zoom="1.4329667"
-     inkscape:cx="311.3198"
-     inkscape:cy="187.0072"
-     inkscape:window-x="0"
-     inkscape:window-y="22"
-     inkscape:current-layer="svg10172" />
   <path
-     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.77660394;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#EmptyTriangleOutL);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="M 264.65998,145.96838 C 323.45181,146.56803 323.45181,146.56803 323.45181,146.56803"
-     id="path13752" />
+     style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.64225686;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 70.321128,45.315945 L 86.444977,45.315945 L 86.444977,45.315945 L 86.444977,45.315945"
+     id="path12666" />
   <path
      sodipodi:type="arc"
-     style="fill:url(#linearGradient14653);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:4.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="path10179"
-     sodipodi:cx="400.19324"
-     sodipodi:cy="352.14737"
-     sodipodi:rx="100.17168"
-     sodipodi:ry="100.17168"
-     d="M 500.36491,352.14737 A 100.17168,100.17168 0 1 1 300.02156,352.14737 A 100.17168,100.17168 0 1 1 500.36491,352.14737 z"
-     transform="matrix(-1.2112799e-2,0.9999266,0.9999266,1.2112799e-2,-184.4516,-259.46043)" />
+     style="fill:url(#radialGradient11050);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.02366376;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path7218"
+     sodipodi:cx="550"
+     sodipodi:cy="217.20593"
+     sodipodi:rx="142.1875"
+     sodipodi:ry="61.71875"
+     transform="matrix(0.1889607,0,0,-0.4545235,-60.638217,143.10243)"
+     inkscape:export-filename="/home/ubuntu/repositorio/alsoc/biblioteca/branches/gui/eml/heat_exchangers/icon/HeatExchanger_LMTD.png"
+     inkscape:export-xdpi="359.76093"
+     inkscape:export-ydpi="359.76093"
+     sodipodi:start="0"
+     sodipodi:end="6.2722661"
+     inkscape:path-effect="#path-effect5873"
+     sodipodi:open="true" />
   <path
-     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="M 280.38774,34.19162 L 129.30859,122.3681 L 198.94007,153.21379 L 47.860921,241.39027"
-     id="path11973" />
+     id="path11036"
+     d="M 0.32112843,45.315945 L 16.444977,45.315945 L 16.444977,45.315945 L 16.444977,45.315945"
+     style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.64225686;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   <path
-     style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.29729998px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 50.410691,234.06927 L 57.168241,245.08197 L 37.301501,250.06292 L 50.410691,234.06927 z"
-     id="path10086"
-     inkscape:transform-center-x="-7.806366"
-     inkscape:transform-center-y="50.694172" />
+     style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.64225686;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 42.967019,16.444978 L 42.967019,0.32112843 L 42.967019,0.32112843 L 42.967019,0.32112843"
+     id="path11040" />
   <path
-     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.77660394;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#EmptyTriangleOutL);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="M 1.888302,144.70821 C 60.680132,145.30786 60.680132,145.30786 60.680132,145.30786"
-     id="path4468" />
-  <path
-     style="fill:none;fill-rule:evenodd;stroke:#021b1b;stroke-width:3.16819501;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#EmptyTriangleOutL);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="M 163.54367,43.538014 C 164.1554,2.9798033 164.1554,2.9798033 164.1554,2.9798033"
-     id="path4470" />
+     style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#ff0000;stroke-width:1.4384656;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow1Send);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 69.247269,16.881016 L 27.978399,43.205492 C 55.627809,43.300849 46.207269,42.902751 56.961679,42.998108 L 17.877099,71.324389"
+     id="path8652"
+     sodipodi:nodetypes="cccc" />
 </svg>

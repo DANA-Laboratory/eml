@@ -1,0 +1,132 @@
+using "types";
+	
+Model PI_simple
+	
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/PI"; 
+
+PARAMETERS
+	Kp         	as Real 	(Brief="Controller gain", Default=0.5);
+	Ki    	   	as Real 	(Brief="Integral time constant", Unit='s');
+	bias       	as Real 	(Brief="Previous scaled bias",Default=0.5);
+
+	MinInput   as control_signal(Default=-1000);
+	MaxInput   as control_signal(Default=1000);
+	
+VARIABLES
+	in	Input     as control_signal 	(Brief="Previous scaled input signal", Default=0.5, PosX=0, PosY=0.5, Protected=true);
+	out	Output    as control_signal 	(Brief="Scaled output signal", Default=0, PosX=0.54, PosY=1, Protected=true);
+	
+	input	   	as Real    (Brief="Scaled input variable", Hidden=true);
+	setPoint	as Real    (Brief="Scaled set point", Hidden=true);
+	intTerm    	as Real    (Brief="Integral term", Default=0, Protected=true);
+	outps      	as Real    (Brief="Variable outp scaled between 0 and 1", Hidden=true);
+	
+	SetPoint   as Real     (Brief="Scaled setPoint", Lower=0, Upper=1, Default=0.5);
+
+EQUATIONS
+
+"Calculate integral term"
+	Ki*diff(intTerm) = setPoint - input;
+	
+"Sum of proportional, integral and derivative terms"
+	outps = bias + Kp*(setPoint - input) + intTerm;
+	
+	input*(MaxInput-MinInput) = Input-MinInput;
+	setPoint*(MaxInput-MinInput) = SetPoint-MinInput;
+
+	if outps > 1 then
+		Output = 1;
+	else
+		if outps < 0 then
+			Output = 0;
+		else
+			Output = outps;
+		end
+	end
+
+INITIAL
+	intTerm = 0;
+
+end
+
+Model PI
+	
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/PI"; 
+
+PARAMETERS
+
+	Action	   		as Switcher 			(Brief="Controller action", Valid=["Direct","Reverse"], Default = "Reverse");
+	Mode       	as Switcher 			(Brief="Controller mode", Valid=["Automatic","Manual"], Default = "Automatic");
+	bias       		as positive 				(Brief="Previous scaled bias", Lower=0, Upper=1, Default=0.5);
+	beta       		as positive 				(Brief="Proportional term setPoint change filter", Default=1);
+	gain       		as positive 		 		(Brief="Controller gain", Lower=0, Upper=1, Default=0.5);
+	intTime    	as Real     		 		(Brief="Integral time constant", Unit='s');
+	MinInput   	as control_signal	(Default=-1000);
+	MaxInput   	as control_signal	(Default=1000);
+	
+VARIABLES
+
+in	Input      		as control_signal 	(Brief="Previous scaled input signal", Default=0.5, PosX=0, PosY=0.5, Protected=true);
+out	Output     as control_signal 	(Brief="Scaled output signal", Default=0, PosX=0.54, PosY=1, Protected=true);
+		SetPoint  as Real     		 		(Brief="Scaled setPoint", Lower=0, Upper=1, Default=0.5);
+	
+	propTerm   	as Real    		 		(Brief="Proportional term", Default=0, Protected=true);
+	intTerm    	as Real     		 		(Brief="Integral term", Default=0, Protected=true);
+	input	   		as Real     				(Brief="Scaled input variable", Hidden=true);
+	setPoint	   	as Real     				(Brief="Scaled set point", Hidden=true);
+	action	   		as Real     				(Brief="Controller action: (-1) Direct,(1) Reverse", Default=-1, Hidden=true);
+	outp       		as control_signal 	(Brief="Sum of proportional, integral and derivative terms", Hidden=true);
+	error      		as Real     		 		(Brief="Error definition for proportional term", Hidden=true);
+	outps      		as Real           		(Brief="Variable outp scaled between -1 and 1", Hidden=true);
+	
+EQUATIONS
+	
+	input*(MaxInput-MinInput) = Input-MinInput;
+	setPoint*(MaxInput-MinInput) = SetPoint-MinInput;
+
+switch Mode
+	case "Automatic": 
+		"Error definition"	
+		error = beta*setPoint - input;
+	case "Manual": 
+		"Error definition"
+		error = input*(beta-1.0);
+	end
+
+	switch Action
+	case "Direct":
+		action = -1.0;
+	case "Reverse":
+		action = 1.0;
+	end
+
+	"Calculate proportional term"
+	propTerm=error;
+	
+	"Scale outp" 
+	#outps=2*outp-1;
+	outps=outp;
+	
+	if outps > 1 then
+		Output = 1;
+	else
+		if outps < -1 then
+			Output = -1;
+		else
+			Output = outps;
+		end
+	end
+		
+	"Calculate integral term"
+	intTime*diff(intTerm) = setPoint - input;
+	
+	"Sum of proportional, integral and derivative terms"
+	outp = bias + action*gain*(propTerm + intTerm);
+
+	INITIAL
+	intTerm = 0;	
+end

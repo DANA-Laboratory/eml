@@ -22,7 +22,7 @@ using "types";
 Model Lag_1
 
 ATTRIBUTES
-	Pallete 	= true;
+	Pallete 	= false;
 	Icon 		= "icon/Lag_1"; 
 	Brief 		= "Model Lag.";
 	Info 		=

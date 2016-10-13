@@ -22,7 +22,7 @@ using "types";
 Model Multiply
 
 ATTRIBUTES
-	Pallete 	= true;
+	Pallete 	= false;
 	Icon 		= "icon/Multiply"; 
 	Brief 		= "Model Multiply.";
 	Info 		=
@@ -34,9 +34,9 @@ ATTRIBUTES
 ";
 	
 	VARIABLES
-	input1 as Real (Brief="input signal 1");
-	input2 as Real (Brief="input signal 2");
-	output as Real (Brief="output signal");
+in	input1 as control_signal (Brief="input signal 1", PosX=0, PosY=0.75);
+in	input2 as control_signal (Brief="input signal 2", PosX=0, PosY=0.25);
+out	output as control_signal (Brief="output signal", PosX=1, PosY=0.5);
 	
 	EQUATIONS
 	

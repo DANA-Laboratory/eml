@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:cc="http://web.resource.org/cc/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -11,15 +11,14 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg29096"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.44.1"
    width="210mm"
    height="297mm"
    sodipodi:docbase="C:\Documents and Settings\Administrador\Meus documentos\Bolsa Simulação\EMSO\mso\trunk\eml\heat_exchangers\icon"
    sodipodi:docname="ShellandTubes_NTU.svg"
    inkscape:export-filename="C:\Documents and Settings\Administrador\Meus documentos\Bolsa Simulação\EMSO\mso\trunk\eml\heat_exchangers\icon\ShellandTubes_LMTD.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:export-ydpi="90">
   <metadata
      id="metadata29101">
     <rdf:RDF>
@@ -33,6 +32,15 @@
   </metadata>
   <defs
      id="defs29099">
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient14653"
+       gradientUnits="userSpaceOnUse"
+       x1="298.27155"
+       y1="352.14737"
+       x2="502.1149"
+       y2="352.14737" />
     <linearGradient
        id="linearGradient6760">
       <stop
@@ -48,6 +56,45 @@
          offset="1"
          style="stop-color:#341dff;stop-opacity:1;" />
     </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient4967"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(231.5005,-71.49966)"
+       x1="372.57718"
+       y1="509.53915"
+       x2="370.8418"
+       y2="591.71429" />
+    <linearGradient
+       id="linearGradient10543">
+      <stop
+         style="stop-color:#6496d3;stop-opacity:1;"
+         offset="0"
+         id="stop10545" />
+      <stop
+         style="stop-color:#969696;stop-opacity:1;"
+         offset="1"
+         id="stop10547" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10543"
+       id="linearGradient4906"
+       gradientUnits="userSpaceOnUse"
+       x1="572.07037"
+       y1="465.08713"
+       x2="652.34576"
+       y2="465.08713" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient4560"
+       gradientUnits="userSpaceOnUse"
+       x1="572.07037"
+       y1="465.08713"
+       x2="652.34576"
+       y2="465.08713" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient6760"

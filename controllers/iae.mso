@@ -22,7 +22,7 @@ using "types";
 Model IAE
 
 ATTRIBUTES
-	Pallete 	= true;
+	Pallete 	= false;
 	Icon 		= "icon/IAE"; 
 	Brief 		= "Model IAE.";
 	Info 		=

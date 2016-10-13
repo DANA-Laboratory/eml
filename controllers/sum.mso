@@ -21,7 +21,7 @@ using "types";
 Model Sum
 	
 ATTRIBUTES
-	Pallete 	= true;
+	Pallete 	= false;
 	Icon 		= "icon/Sum"; 
 	Brief 		= "Model Sum.";
 	Info 		=

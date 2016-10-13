@@ -83,7 +83,7 @@ out Outlet		  as vapour_stream(Brief="Outlet stream", PosX=1, PosY=1, Symbol="_{
 	"Energy balance"
 	Outlet.F*Outlet.h = Outletm.F*Outletm.h;
 	
-	for i in [1:NComp]
+	for i in [1:NComp] do
 	  if (Outletm.z(i) > 1e-16) then
 	    "Molar conversion"
 	    Outlet.F*Outlet.z(i) = Outletm.F*Outletm.z(i)*(1 - conv(i));
@@ -146,7 +146,7 @@ out Outlet		  as liquid_stream(Brief="Outlet stream", PosX=1, PosY=1, Symbol="_{
 	"Energy balance"
 	Outlet.F*Outlet.h = Outletm.F*Outletm.h;
 	
-	for i in [1:NComp]
+	for i in [1:NComp] do
 	  if (Outletm.z(i) > 0) then
 	    "Molar conversion"
 	    Outlet.F*Outlet.z(i) = Outletm.F*Outletm.z(i)*(1 - conv(i));

@@ -61,16 +61,16 @@ Model equil_vap as tank_vap
 	PARAMETERS
 	NReac		as Integer 		(Brief="Number of reactions", Default=1);
     stoic(NComp,NReac) as Real 	(Brief="Stoichiometric matrix", Symbol="\nu");
-	Rg			as Real			(Brief="Universal gas constant", Unit='J/mol/K', Default=8.314, Hidden=true);
-	fs(NComp) 	as pressure 	(Brief="Fugacity in standard state", Default=1, DisplayUnit='atm', Hidden=true);
-	To			as temperature  (Brief="Reference temperature", Default=298.15, Hidden=true);
+	Rg			as Real			(Brief="Universal gas constant", Unit='J/mol/K', Default=8.314);
+	fs(NComp) 	as pressure 	(Brief="Fugacity in standard state", Default=1, DisplayUnit='atm');
+	To			as temperature  (Brief="Reference temperature", Default=298.15);
 
 	VARIABLES
 out Outlet		as vapour_stream(Brief="Outlet stream", PosX=1, PosY=1, Symbol="_{out}");
 
-	G(NComp)	as energy_mol 	(Brief="Gibbs free-energy of formation", Protected=true);
-	K(NReac)	as Real			(Brief="Equillibrium constant", Lower=0, Default=1.5, Protected=true);
-	activ(NComp)as Real 		(Brief="Activity", Symbol="\hat{a}", Lower=0, Default=0.2, Protected=true);
+	G(NComp)	as energy_mol 	(Brief="Gibbs free-energy of formation");
+	K(NReac)	as Real			(Brief="Equillibrium constant", Lower=0, Default=1.5);
+	activ(NComp)as Real 		(Brief="Activity", Symbol="\hat{a}", Lower=0, Default=0.2);
 	
 	rate(NComp) as reaction_mol (Brief="Overall component rate of reaction");
 	extent(NReac) as flow_mol 	(Brief="Extent of reaction", Symbol="\xi");
@@ -96,7 +96,7 @@ out Outlet		as vapour_stream(Brief="Outlet stream", PosX=1, PosY=1, Symbol="_{ou
 #	G = PP.IdealGasGibbsOfFormationAt25C()*Outlet.T/To
 #		+ PP.IdealGasEnthalpyOfFormationAt25C()*(1 - Outlet.T/To);
 
-	for j in [1:NReac]
+	for j in [1:NReac] do
 	"Gibbs free energy of reaction"
 		sumt(G*stoic(:,j)) = -Rg*Outlet.T*ln(K(j));
 #		K(j) = exp(-sumt(G*stoic(:,j))/(Rg*Outlet.T));
@@ -105,12 +105,12 @@ out Outlet		as vapour_stream(Brief="Outlet stream", PosX=1, PosY=1, Symbol="_{ou
 		K(j) = prod(activ^stoic(:,j));
 	end
 
-	for i in [1:NComp]
+	for i in [1:NComp] do
 	"Outlet molar fraction"
 		Outlet.F*Outlet.z(i) = (Inlet.F*Inlet.z(i) + sumt(stoic(i,:)*extent));
 	end	
 
-	for i in [1:NComp]
+	for i in [1:NComp] do
 	  if (Outletm.z(i) > 1e-16) then
 	    "Molar conversion"
 	    Outlet.F*Outlet.z(i) = Outletm.F*Outletm.z(i)*(1 - conv(i));
@@ -152,16 +152,16 @@ Model equil_liq as tank_liq
 	PARAMETERS
 	NReac		as Integer 		(Brief="Number of reactions", Default=1);
     stoic(NComp,NReac) as Real 	(Brief="Stoichiometric matrix", Symbol="\nu");
-	Rg			as Real			(Brief="Universal gas constant", Unit='J/mol/K', Default=8.314, Hidden=true);
-	Ps			as pressure 	(Brief="Standard pressure", Default=1, DisplayUnit='bar', Hidden=true);
-	To			as temperature  (Brief="Reference temperature", Default=298.15, Hidden=true);
+	Rg			as Real			(Brief="Universal gas constant", Unit='J/mol/K', Default=8.314);
+	Ps			as pressure 	(Brief="Standard pressure", Default=1, DisplayUnit='bar');
+	To			as temperature  (Brief="Reference temperature", Default=298.15);
 
 	VARIABLES
 out Outlet		as liquid_stream(Brief="Outlet stream", PosX=1, PosY=1, Symbol="_{out}");
 
-	G(NReac)	as enth_mol 	(Brief="Gibbs free-energy of formation", Protected=true);
-	K(NReac)	as fraction		(Brief="Equillibrium constant", Protected=true);
-	activ(NComp)as Real 		(Brief="Activity", Symbol="\hat{a}", Protected=true);
+	G(NReac)	as enth_mol 	(Brief="Gibbs free-energy of formation");
+	K(NReac)	as fraction		(Brief="Equillibrium constant");
+	activ(NComp)as Real 		(Brief="Activity", Symbol="\hat{a}");
 	
 	rate(NComp) as reaction_mol (Brief="Overall component rate of reaction");
 	extent(NReac)as flow_mol 	(Brief="Extent of reaction", Symbol="\xi");
@@ -191,17 +191,17 @@ out Outlet		as liquid_stream(Brief="Outlet stream", PosX=1, PosY=1, Symbol="_{ou
 	sumt(G*stoic) = -Rg*Outlet.T*ln(K);
 #	K = exp(-sumt(G*stoic)/(Rg*Outlet.T));
 	
-	for j in [1:NReac]
+	for j in [1:NReac] do
 	"Equilibrium constant"
 		K(j) = prod(activ^stoic(:,j));
 	end
 	
-	for i in [1:NComp]
+	for i in [1:NComp] do
 	"Outlet molar fraction"
 		Outlet.F*Outlet.z(i) = (Inlet.F*Inlet.z(i) + sumt(stoic(i,:)*extent));
 	end	
 
-	for i in [1:NComp]
+	for i in [1:NComp] do
 	  if (Outletm.z(i) > 1e-16) then
 	    "Molar conversion"
 	    Outlet.F*Outlet.z(i) = Outletm.F*Outletm.z(i)*(1 - conv(i));

@@ -239,7 +239,7 @@ end
 
 INITIAL
 
-for i in [1:NumberOfTrays]
+for i in 1:NumberOfTrays
 	
 "The initial temperature of the trays"
 	trays(i).OutletL.T = TopTemperature+(TbottomTemperature-TopTemperature)*((i-1)/(NumberOfTrays-1));
@@ -249,9 +249,9 @@ for i in [1:NumberOfTrays]
 
 end
 
-for i in [1:NComp-1]
+for i in 1:NComp-1
 	
-for j in [1:NumberOfTrays]
+for j in 1:NumberOfTrays 
 
 "The initial composition of the trays"
 	trays(j).OutletL.z(i) = TopComposition(i) +(BottomComposition(i)-TopComposition(i) )*((j-1)/(NumberOfTrays-1));

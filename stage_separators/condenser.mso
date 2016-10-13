@@ -14,141 +14,155 @@
 *
 *----------------------------------------------------------------------
 * Author: Paula B. Staudt
-* $Id$
+* $Id: condenser.mso 555 2008-07-18 19:01:13Z rafael $
 *--------------------------------------------------------------------*#
 
-using "streams";
+using "tank";
 
-Model condenser
-	ATTRIBUTES
-	Pallete 	= true;
-	Icon 		= "icon/Condenser"; 
-	Brief 		= "Model of a dynamic condenser.";
-	Info 		=
-"== Assumptions ==
-* perfect mixing of both phases;
-* thermodynamics equilibrium.
-	
-== Specify ==
-* the inlet stream;
-* the outlet flows: OutletV.F and OutletL.F;
-* the heat supply.
-	
-== Initial Conditions ==
-* the condenser temperature (OutletL.T);
-* the condenser liquid level (Level);
-* (NoComps - 1) OutletL (OR OutletV) compositions.
-";	
-	
-	PARAMETERS
-	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
-	outer NComp as Integer;
-	V as volume (Brief="Condenser total volume");
-	Across as area (Brief="Cross Section Area of reboiler");
-
-	VARIABLES
-in	InletV as stream(Brief="Vapour inlet stream", PosX=0.1164, PosY=0, Symbol="_{inV}");
-out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4513, PosY=1, Symbol="_{outL}");
-out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4723, PosY=0, Symbol="_{outV}");
-in	InletQ as energy_stream (Brief="Cold supplied", PosX=1, PosY=0.6311, Symbol="_{in}");
-
-	M(NComp) as mol (Brief="Molar Holdup in the tray");
-	ML as mol (Brief="Molar liquid holdup");
-	MV as mol (Brief="Molar vapour holdup");
-	E as energy (Brief="Total Energy Holdup on tray");
-	vL as volume_mol (Brief="Liquid Molar Volume");
-	vV as volume_mol (Brief="Vapour Molar volume");
-	Level as length (Brief="Level of liquid phase");
-
-	EQUATIONS
-	"Component Molar Balance"
-	diff(M) = InletV.F*InletV.z - OutletL.F*OutletL.z
-				- OutletV.F*OutletV.z;
-
-	"Energy Balance"
-	diff(E) = InletV.F*InletV.h - OutletL.F*OutletL.h
-				- OutletV.F*OutletV.h + InletQ.Q;
-
-	"Molar Holdup"
-	M = ML*OutletL.z + MV*OutletV.z; 
-	
-	"Energy Holdup"
-	E = ML*OutletL.h + MV*OutletV.h - OutletV.P*V;
-	
-	"Mol fraction normalisation"
-	sum(OutletL.z)=1.0;
-	sum(OutletL.z)=sum(OutletV.z);
-
-	"Liquid Volume"
-	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
-	"Vapour Volume"
-	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
-
-	"Chemical Equilibrium"
-	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
-		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
-
-	"Thermal Equilibrium"
-	OutletL.T = OutletV.T;
-
-	"Mechanical Equilibrium"
-	OutletV.P = OutletL.P;
-
-	"Geometry Constraint"
-	V = ML*vL + MV*vV;
-
-	"Level of liquid phase"
-	Level = ML*vL/Across;
-end
-
-
-#*----------------------------------------------------------------------
-* Model of a  Steady State condenser with no thermodynamics equilibrium
-*---------------------------------------------------------------------*# 
 Model condenserSteady
-	ATTRIBUTES
+
+ATTRIBUTES
 	Pallete 	= true;
 	Icon 		= "icon/CondenserSteady"; 
 	Brief 		= "Model of a  Steady State condenser with no thermodynamics equilibrium.";
 	Info 		=
-"== Assumptions ==
+"== ASSUMPTIONS ==
 * perfect mixing of both phases;
 * no thermodynamics equilibrium.
-	
-== Specify ==
-* the inlet stream;
+
+== SET ==
 * the pressure drop in the condenser;
-* the heat supply.
+
+== SPECIFY ==
+* the InletVapour stream;
+* the InletQ (the model requires an energy stream, also you can use a controller for setting the heat duty using the heat_flow model).
+
+== OPTIONAL ==
+* the condenser model has two control ports
+** TI OutletLiquid Temperature Indicator;
+** PI OutletLiquid Pressure Indicator;
 ";
-	
-	PARAMETERS
-	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
-	outer NComp as Integer;
 
-	VARIABLES
-in	InletV as stream(Brief="Vapour inlet stream", PosX=0.3431, PosY=0, Symbol="_{inV}");
-out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.34375, PosY=1, Symbol="_{outL}");
-in	InletQ as energy_stream (Brief="Cold supplied", PosX=1, PosY=0.5974, Symbol="_{in}");
-	DP as press_delta (Brief="Pressure Drop in the condenser");
+PARAMETERS
+	outer PP 	as Plugin	(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer 	(Brief = "Number of Components");
 
-	EQUATIONS
-	"Molar Balance"
-	InletV.F = OutletL.F;
-	InletV.z = OutletL.z;
-		
-	"Energy Balance"
-	InletV.F*InletV.h = OutletL.F*OutletL.h + InletQ.Q;
-	
-	"Pressure"
-	DP = InletV.P - OutletL.P;
+	Pdrop 	as press_delta 	(Brief="Pressure Drop in the condenser",Default=0, Symbol="\Delta _P");
+
+VARIABLES
+	in	InletVapour 	as stream			(Brief="Vapour inlet stream", PosX=0.16, PosY=0, Symbol="_{in}^{Vapour}");
+	out	OutletLiquid 	as liquid_stream	(Brief="Liquid outlet stream", PosX=0.53, PosY=1, Symbol="_{out}^{Liquid}");
+	in	InletQ 			as power 			(Brief="Heat Duty", PosX=1, PosY=0.08, Symbol="Q_{in}",Protected=true);
+
+	Tbubble	as temperature	(Brief ="Bubble Temperature",Protected=true, Symbol ="T_{bubble}");
+	Deg_Subcooled	as temp_delta	(Brief ="Degrees subcooled",Symbol ="\Delta T_{subcooled}");
+
+	out	TI as control_signal	(Brief="Temperature  Indicator of Condenser", Protected = true, PosX=0.50, PosY=0);
+	out	PI as control_signal	(Brief="Pressure  Indicator of Condenser", Protected = true, PosX=0.32, PosY=0);
+
+EQUATIONS
+
+"Molar Flow Balance"
+	InletVapour.F = OutletLiquid.F;
+
+"Molar Composition Balance"
+	InletVapour.z = OutletLiquid.z;
+
+"Energy Balance"
+	InletVapour.F*InletVapour.h  + InletQ = OutletLiquid.F*OutletLiquid.h;
+
+"Pressure Drop"
+	OutletLiquid.P = InletVapour.P - Pdrop;
+
+"Bubble Temperature"
+	Tbubble = PP.BubbleT(OutletLiquid.P,OutletLiquid.z);
+
+"Temperature"
+	OutletLiquid.T = Tbubble-Deg_Subcooled;
+
+"Temperature indicator"
+	TI * 'K' = OutletLiquid.T;
+
+"Pressure indicator"
+	PI * 'atm' = OutletLiquid.P;
+
 end
 
-#*-------------------------------------------------------------------
-* Condenser with reaction in liquid phase
-*--------------------------------------------------------------------*#
+Model condenserSteady_fakeH
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/CondenserSteady"; 
+	Brief 		= "Model of a  Steady State condenser with fake calculation of outlet conditions.";
+	Info 		=
+"Model of a  Steady State condenser with fake calculation of output temperature, but with a real 
+calculation of the output stream enthalpy.
+
+== ASSUMPTIONS ==
+* perfect mixing of both phases;
+* no thermodynamics equilibrium.
+
+== SET ==
+* the fake Outlet temperature ;
+* the pressure drop in the condenser;
+
+== SPECIFY ==
+* the InletVapour stream;
+* the InletQ (the model requires an energy stream, also you can use a controller for setting the heat duty using the heat_flow model).
+
+== OPTIONAL ==
+* the condenser model has two control ports
+** TI OutletLiquid Temperature Indicator;
+** PI OutletLiquid Pressure Indicator;
+";
+
+PARAMETERS
+	outer PP 	as Plugin	(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer 	(Brief = "Number of Components");
+
+	Pdrop 	as press_delta 	(Brief="Pressure Drop in the condenser",Default=0, Symbol="\Delta _P");
+	Fake_Temperature 		as temperature 	(Brief="Fake temperature", Symbol = "T_{fake}");
+
+
+VARIABLES
+	in	InletVapour 	as stream	(Brief="Vapour inlet stream", PosX=0.16, PosY=0, Symbol="_{in}^{Vapour}");
+	out	OutletLiquid 	as stream	(Brief="Liquid outlet stream", PosX=0.53, PosY=1, Symbol="_{out}^{Liquid}");
+	in	InletQ 			as power 	(Brief="Heat Duty", PosX=1, PosY=0.08, Symbol="Q_{in}",Protected=true);
+
+	out	TI as control_signal	(Brief="Temperature  Indicator of Condenser", Protected = true, PosX=0.50, PosY=0);
+	out	PI as control_signal	(Brief="Pressure  Indicator of Condenser", Protected = true, PosX=0.32, PosY=0);
+
+EQUATIONS
+
+"Molar Flow Balance"
+	InletVapour.F = OutletLiquid.F;
+
+"Molar Composition Balance"
+	InletVapour.z = OutletLiquid.z;
+
+"Energy Balance"
+	InletVapour.F*InletVapour.h  + InletQ = OutletLiquid.F*OutletLiquid.h;
+
+"Pressure Drop"
+	OutletLiquid.P = InletVapour.P - Pdrop;
+
+"Fake Temperature"
+	OutletLiquid.T = Fake_Temperature;
+
+"Vapourisation Fraction"
+	OutletLiquid.v = 0;
+	
+"Temperature indicator"
+	TI * 'K' = OutletLiquid.T;
+
+"Pressure indicator"
+	PI * 'atm' = OutletLiquid.P;
+
+end
+
 Model condenserReact
 	ATTRIBUTES
-	Pallete 	= true;
+	Pallete 	= false;
 	Icon 		= "icon/Condenser"; 
 	Brief 		= "Model of a Condenser with reaction in liquid phase.";
 	Info 		=
@@ -160,89 +174,509 @@ Model condenserReact
 == Specify ==
 * the reaction related variables;
 * the inlet stream;
-* the outlet flows: OutletV.F and OutletL.F;
+* the outlet flows: OutletVapour.F and OutletLiquid.F;
 * the heat supply.
 
 == Initial Conditions ==
-* the condenser temperature (OutletL.T);
+* the condenser temperature (OutletLiquid.T);
 * the condenser liquid level (Level);
-* (NoComps - 1) OutletL (OR OutletV) compositions.
+* (NoComps - 1) OutletLiquid (OR OutletVapour) compositions.
 ";
 	
-	PARAMETERS
-	outer PP as Plugin(Type="PP");
+PARAMETERS
+	outer PP 	as Plugin(Type="PP");
 	outer NComp as Integer;
-	V as volume (Brief="Condenser total volume");
-	Across as area (Brief="Cross Section Area of reboiler");
-
-	stoic(NComp) as Real(Brief="Stoichiometric matrix");
-	Hr as energy_mol;
-	Pstartup as pressure;
-
-	VARIABLES
-in	InletV as stream(Brief="Vapour inlet stream", PosX=0.1164, PosY=0, Symbol="_{inV}");
-out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4513, PosY=1, Symbol="_{outL}");
-out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4723, PosY=0, Symbol="_{outV}");
-in	InletQ as energy_stream (Brief="Cold supplied", PosX=1, PosY=0.6311, Symbol="_{in}");
-
-	M(NComp) as mol (Brief="Molar Holdup in the tray");
-	ML as mol (Brief="Molar liquid holdup");
-	MV as mol (Brief="Molar vapour holdup");
-	E as energy (Brief="Total Energy Holdup on tray");
-	vL as volume_mol (Brief="Liquid Molar Volume");
-	vV as volume_mol (Brief="Vapour Molar volume");
-	Level as length (Brief="Level of liquid phase");
-	Vol as volume;
-	r3 as reaction_mol (Brief = "Reaction resulting ethyl acetate", DisplayUnit = 'mol/l/s');
-	C(NComp) as conc_mol (Brief = "Molar concentration", Lower = -1);
-
-	EQUATIONS
-	"Molar Concentration"
-	OutletL.z = vL * C;
 	
-	"Reaction"
-	r3 = exp(-7150*'K'/OutletL.T)*(4.85e4*C(1)*C(2) - 1.23e4*C(3)*C(4)) * 'l/mol/s';
+	V 		as volume (Brief="Condenser total volume");
+	Across 	as area 	(Brief="Cross Section Area of reboiler");
+
+	stoic(NComp) 	as Real			(Brief="Stoichiometric matrix");
+	Hr 				as energy_mol;
+	Initial_Level 				as length 			(Brief="Initial Level of liquid phase");
+	Initial_Temperature			as temperature 		(Brief="Initial Temperature of Condenser");
+	Initial_Composition(NComp) 	as fraction 		(Brief="Initial Liquid Composition");
 	
-	"Component Molar Balance"
-	diff(M) = InletV.F*InletV.z - OutletL.F*OutletL.z
-				- OutletV.F*OutletV.z + stoic*r3*ML*vL;
+VARIABLES
 
-	"Energy Balance"
-	diff(E) = InletV.F*InletV.h - OutletL.F*OutletL.h
-				- OutletV.F*OutletV.h + InletQ.Q + Hr * r3 * ML*vL;
+in	InletVapour 		as stream			(Brief="Vapour inlet stream", PosX=0.1164, PosY=0, Symbol="_{inV}");
+out	OutletLiquid 	as liquid_stream	(Brief="Liquid outlet stream", PosX=0.4513, PosY=1, Symbol="_{outL}");
+out	OutletVapour 	as vapour_stream	(Brief="Vapour outlet stream", PosX=0.4723, PosY=0, Symbol="_{outV}");
+	InletQ 		as power 			(Brief="Cold supplied", PosX=1, PosY=0.6311, Symbol="_{in}");
 
-	"Molar Holdup"
-	M = ML*OutletL.z + MV*OutletV.z; 
+	M(NComp) 	as mol 			(Brief="Molar Holdup in the tray");
+	ML 			as mol 			(Brief="Molar liquid holdup");
+	MV 			as mol 			(Brief="Molar vapour holdup");
+	E 			as energy 		(Brief="Total Energy Holdup on tray");
+	vL 			as volume_mol 	(Brief="Liquid Molar Volume");
+	vV 			as volume_mol 	(Brief="Vapour Molar volume");
+	Level 		as length 		(Brief="Level of liquid phase");
+	Vol 		as volume;
+	r3 			as reaction_mol (Brief="Reaction Rates", DisplayUnit = 'mol/l/s');
+	C(NComp) 	as conc_mol 	(Brief="Molar concentration", Lower = -1);
+
+INITIAL
+
+	Level 					= Initial_Level;
+	OutletLiquid.T 				= Initial_Temperature;
+	OutletLiquid.z(1:NComp-1)   	= Initial_Composition(1:NComp-1)/sum(Initial_Composition);
+
+EQUATIONS
+"Molar Concentration"
+	OutletLiquid.z = vL * C;
 	
-	"Energy Holdup"
-	E = ML*OutletL.h + MV*OutletV.h - OutletV.P*V;
+"Reaction"
+	r3 = exp(-7150*'K'/OutletLiquid.T)*(4.85e4*C(1)*C(2) - 1.23e4*C(3)*C(4)) * 'l/mol/s';
 	
-	"Mol fraction normalisation"
-	sum(OutletL.z)=1.0;
+"Component Molar Balance"
+	diff(M) = InletVapour.F*InletVapour.z - OutletLiquid.F*OutletLiquid.z - OutletVapour.F*OutletVapour.z + stoic*r3*ML*vL;
 
-	"Liquid Volume"
-	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
-	"Vapour Volume"
-	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
+"Energy Balance"
+	diff(E) = InletVapour.F*InletVapour.h - OutletLiquid.F*OutletLiquid.h- OutletVapour.F*OutletVapour.h + InletQ + Hr * r3 * ML*vL;
 
-	"Thermal Equilibrium"
-	OutletL.T = OutletV.T;
+"Molar Holdup"
+	M = ML*OutletLiquid.z + MV*OutletVapour.z; 
+	
+"Energy Holdup"
+	E = ML*OutletLiquid.h + MV*OutletVapour.h - OutletVapour.P*V;
+	
+"Mol fraction normalisation"
+	sum(OutletLiquid.z)=1.0;
 
-	"Mechanical Equilibrium"
-	OutletV.P = OutletL.P;
+"Liquid Volume"
+	vL = PP.LiquidVolume(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
 
-	"Geometry Constraint"
+"Vapour Volume"
+	vV = PP.VapourVolume(OutletVapour.T, OutletVapour.P, OutletVapour.z);
+
+"Thermal Equilibrium"
+	OutletLiquid.T = OutletVapour.T;
+
+"Mechanical Equilibrium"
+	OutletVapour.P = OutletLiquid.P;
+
+"Geometry Constraint"
 	V = ML*vL + MV*vV;
 
 	Vol = ML*vL;
 	
-	"Level of liquid phase"
+"Level of liquid phase"
 	Level = ML*vL/Across;
 	
-	"Chemical Equilibrium"
-	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
-	PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z)*OutletLiquid.z = 
+	PP.VapourFugacityCoefficient(OutletVapour.T, OutletVapour.P, OutletVapour.z)*OutletVapour.z;
 
-	sum(OutletL.z)=sum(OutletV.z);
+	sum(OutletLiquid.z)=sum(OutletVapour.z);
 
 end
+
+Model condenser
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Condenser"; 
+	Brief 		= "Model of a  dynamic condenser with control.";
+	Info 		=
+"== ASSUMPTIONS ==
+* perfect mixing of both phases;
+* thermodynamics equilibrium.
+	
+== SPECIFY ==
+* the InletVapour stream;
+* the outlet flows: OutletVapour.F and OutletLiquid.F;
+* the InletQ (the model requires an energy stream, also you can use a controller for setting the heat duty using the heat_flow model).
+
+== OPTIONAL ==
+* the condenser model has three control ports
+** TI OutletLiquid Temperature Indicator;
+** PI OutletLiquid Pressure Indicator;
+** LI Level Indicator of Condenser;
+
+== INITIAL CONDITIONS ==
+* Initial_Temperature :  the condenser temperature (OutletLiquid.T);
+* Levelpercent_Initial : the condenser liquid level in percent (LI);
+* Initial_Composition : (NoComps) OutletLiquid compositions.
+";	
+	
+PARAMETERS
+	outer PP 		as Plugin	(Brief = "External Physical Properties", Type="PP");
+	outer NComp 	as Integer (Brief="Number of Components");
+	
+	Mw(NComp)  	as molweight 	(Brief = "Component Mol Weight",Hidden=true);
+	low_flow  	as flow_mol 	(Brief = "Low Flow",Default = 1E-6, Hidden=true);
+	zero_flow 	as flow_mol 	(Brief = "No Flow",Default = 0, Hidden=true);
+	
+	VapourFlow 	as Switcher	(Brief="Vapour Flow", Valid = ["on", "off"], Default = "on",Hidden=true);
+
+	Kfactor as positive (Brief="K factor for pressure drop", Lower = 1E-8, Default = 1E-3);
+	
+	Levelpercent_Initial 		as positive 	(Brief="Initial liquid height in Percent", Default = 0.70);
+	Initial_Temperature			as temperature 	(Brief="Initial Temperature of Condenser");
+	Initial_Composition(NComp) 	as positive 	(Brief="Initial Liquid Composition", Lower=1E-6);
+	
+VARIABLES
+
+	Geometry 		as VesselVolume (Brief="Vessel Geometry", Symbol=" ");
+
+in	InletVapour 	as stream			(Brief="Vapour inlet stream", PosX=0.13, PosY=0, Symbol="_{in}^{Vapour}");
+out	OutletLiquid 	as liquid_stream	(Brief="Liquid outlet stream", PosX=0.35, PosY=1, Symbol="_{out}^{Liquid}");
+out	OutletVapour 	as vapour_stream	(Brief="Vapour outlet stream", PosX=0.54, PosY=0, Symbol="_{out}^{Vapour}");
+in	InletQ 			as power 			(Brief="Heat supplied", Protected = true, PosX=1, PosY=0.08, Symbol="Q_{in}");
+
+	out	TI as control_signal	(Brief="Temperature  Indicator of Condenser", Protected = true, PosX=0.33, PosY=0);
+	out	LI as control_signal	(Brief="Level  Indicator of Condenser", Protected = true, PosX=0.43, PosY=0);
+	out	PI as control_signal	(Brief="Pressure  Indicator of Condenser", Protected = true, PosX=0.25, PosY=0);
+
+	M(NComp) 	as mol 			(Brief="Molar Holdup in the tray", Protected = true);
+	ML 			as mol 			(Brief="Molar liquid holdup", Protected = true);
+	MV 			as mol 			(Brief="Molar vapour holdup", Protected = true);
+	E 			as energy 		(Brief="Total Energy Holdup on tray", Protected = true);
+	vL 			as volume_mol 	(Brief="Liquid Molar Volume", Protected = true);
+	vV 			as volume_mol 	(Brief="Vapour Molar volume", Protected = true);
+	rho			as dens_mass	(Brief ="Inlet Vapour Mass Density",Hidden=true, Symbol ="\rho");
+	Pdrop 		as press_delta 	(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P", Protected=true);
+
+SET
+	Mw   = PP.MolecularWeight();
+	low_flow = 1E-6 * 'kmol/h';
+	zero_flow = 0 * 'kmol/h';
+	
+INITIAL
+
+"Initial level Percent"
+	LI = Levelpercent_Initial;
+
+"Initial Temperature"
+	OutletLiquid.T 	= Initial_Temperature;
+
+"Initial Composition"
+	OutletLiquid.z(1:NComp-1) = Initial_Composition(1:NComp-1)/sum(Initial_Composition);
+
+EQUATIONS
+
+switch VapourFlow
+
+case "on":
+	InletVapour.F*vV = Kfactor *sqrt(Pdrop/rho)*'m^2';
+
+	when InletVapour.F < low_flow switchto "off";
+
+case "off":
+	InletVapour.F = zero_flow;
+
+	when InletVapour.P > OutletLiquid.P switchto "on";
+
+end
+
+"Component Molar Balance"
+	diff(M) = InletVapour.F*InletVapour.z - OutletLiquid.F*OutletLiquid.z- OutletVapour.F*OutletVapour.z;
+
+"Energy Balance"
+	diff(E) = InletVapour.F*InletVapour.h - OutletLiquid.F*OutletLiquid.h- OutletVapour.F*OutletVapour.h + InletQ;
+
+"Molar Holdup"
+	M = ML*OutletLiquid.z + MV*OutletVapour.z; 
+	
+"Energy Holdup"
+	E = ML*OutletLiquid.h + MV*OutletVapour.h - OutletVapour.P*Geometry.Vtotal;
+	
+"Mol fraction normalisation"
+	sum(OutletLiquid.z)=1.0;
+
+"Mol fraction Constraint"
+	sum(OutletLiquid.z)=sum(OutletVapour.z);
+
+"Liquid Volume"
+	vL = PP.LiquidVolume(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
+	
+"Vapour Volume"
+	vV = PP.VapourVolume(OutletVapour.T, OutletVapour.P, OutletVapour.z);
+
+"Inlet Vapour Density"
+	rho = PP.VapourDensity(InletVapour.T, InletVapour.P, InletVapour.z);
+	
+"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z)*OutletLiquid.z = 
+		PP.VapourFugacityCoefficient(OutletVapour.T, OutletVapour.P, OutletVapour.z)*OutletVapour.z;
+
+"Thermal Equilibrium"
+	OutletLiquid.T = OutletVapour.T;
+
+"Mechanical Equilibrium"
+	OutletVapour.P = OutletLiquid.P;
+
+"Pressure Drop"
+	OutletLiquid.P  = InletVapour.P - Pdrop;
+
+"Geometry Constraint"
+	Geometry.Vtotal = ML*vL + MV*vV;
+
+"Liquid Level"
+	ML * vL = Geometry.Vfilled;
+
+"Temperature indicator"
+	TI * 'K' = OutletLiquid.T;
+
+"Pressure indicator"
+	PI * 'atm' = OutletLiquid.P;
+
+"Level indicator"
+	LI*Geometry.Vtotal= Geometry.Vfilled;
+	
+end
+
+
+Model condenser2
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Condenser"; 
+	Brief 		= "Model of a  dynamic condenser with control.";
+	Info 		=
+"== ASSUMPTIONS ==
+* perfect mixing of both phases;
+* thermodynamics equilibrium.
+	
+== SPECIFY ==
+* the InletVapour stream;
+* the outlet flows: Product.F and Reflux.F;
+* the InletQ (the model requires an energy stream, also you can use a controller for setting the heat duty using the heat_flow model).
+
+== OPTIONAL ==
+* the condenser model has three control ports
+** TI OutletLiquid Temperature Indicator;
+** PI OutletLiquid Pressure Indicator;
+** LI Level Indicator of Condenser;
+
+== INITIAL CONDITIONS ==
+* Initial_Temperature :  the condenser temperature (OutletLiquid.T);
+* Levelpercent_Initial : the condenser liquid level in percent (LI);
+* Initial_Composition : (NoComps) OutletLiquid compositions.
+";	
+	
+PARAMETERS
+	outer PP 		as Plugin	(Brief = "External Physical Properties", Type="PP");
+	outer NComp 	as Integer (Brief="Number of Components");
+	
+	Mw(NComp)  	as molweight 	(Brief = "Component Mol Weight",Hidden=true);
+	low_flow  	as flow_mol 	(Brief = "Low Flow",Default = 1E-6, Hidden=true);
+	zero_flow 	as flow_mol 	(Brief = "No Flow",Default = 0, Hidden=true);
+
+	CondenserType	as Switcher	(Brief="Condenser type", Valid = ["partial", "total"], Default = "partial");
+	VapourFlow		as Switcher	(Brief="Vapour Flow", Valid = ["on", "off"], Default = "on",Hidden=true);
+
+	Kfactor as positive (Brief="K factor for pressure drop", Lower = 1E-8, Default = 1E-3);
+	
+	Levelpercent_Initial 		as positive 	(Brief="Initial liquid height in Percent", Default = 0.70);
+	Initial_Temperature			as temperature 	(Brief="Initial Temperature of Condenser");
+	Initial_Composition(NComp) 	as positive 	(Brief="Initial Liquid Composition", Lower=1E-6);
+	
+VARIABLES
+
+	Geometry 		as VesselVolume (Brief="Vessel Geometry", Symbol=" ");
+
+in	InletVapour 	as stream			(Brief="Vapour inlet stream", PosX=0.13, PosY=0, Symbol="_{in}^{Vapour}");
+out	OutletLiquid 	as liquid_stream	(Brief="Liquid outlet stream", PosX=0.35, PosY=1, Symbol="_{out}^{Liquid}");
+	Vapour			as vapour_stream	(Brief="Vapour outlet stream", Hidden=true, Symbol="_{out}^{Vapour}");
+out	Product			as stream			(Brief="Vapour or Liquid product stream", PosX=0.54, PosY=0, Symbol="_{out}^{Vapour}");
+in	InletQ 			as power 			(Brief="Heat supplied", Protected = true, PosX=1, PosY=0.08, Symbol="Q_{in}");
+
+	RefluxRatio		as positive	(Brief = "Reflux Ratio", Default=10, Lower = 0.05);
+
+	out	TI as control_signal	(Brief="Temperature  Indicator of Condenser", Protected = true, PosX=0.33, PosY=0);
+	out	LI as control_signal	(Brief="Level  Indicator of Condenser", Protected = true, PosX=0.43, PosY=0);
+	out	PI as control_signal	(Brief="Pressure  Indicator of Condenser", Protected = true, PosX=0.25, PosY=0);
+
+	M(NComp) 	as mol 			(Brief="Molar Holdup in the tray", Protected = true);
+	ML 			as mol 			(Brief="Molar liquid holdup", Protected = true);
+	MV 			as mol 			(Brief="Molar vapour holdup", Protected = true);
+	E 			as energy 		(Brief="Total Energy Holdup on tray", Protected = true);
+	vL 			as volume_mol 	(Brief="Liquid Molar Volume", Protected = true);
+	vV 			as volume_mol 	(Brief="Vapour Molar volume", Protected = true);
+	rho			as dens_mass	(Brief ="Inlet Vapour Mass Density",Hidden=true, Symbol ="\rho");
+	Pdrop 		as press_delta 	(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P", Protected=true);
+
+SET
+	Mw   = PP.MolecularWeight();
+	low_flow = 1E-6 * 'kmol/h';
+	zero_flow = 0 * 'kmol/h';
+	
+INITIAL
+
+"Initial level Percent"
+	LI = Levelpercent_Initial;
+
+"Initial Temperature"
+	OutletLiquid.T 	= Initial_Temperature;
+
+"Initial Composition"
+	OutletLiquid.z(1:NComp-1) = Initial_Composition(1:NComp-1)/sum(Initial_Composition);
+
+EQUATIONS
+
+	
+	Vapour.F = zero_flow;
+	"Reflux ratio"
+	RefluxRatio*Product.F = OutletLiquid.F;
+
+switch CondenserType
+
+case "partial":
+	Product.v = Vapour.v;
+	Product.h = Vapour.h;
+	Product.z = Vapour.z;
+	
+case "total":
+	Product.v = OutletLiquid.v;
+	Product.h = OutletLiquid.h;
+	Product.z = OutletLiquid.z;
+end
+
+
+switch VapourFlow
+
+case "on":
+	InletVapour.F*vV = Kfactor *sqrt(Pdrop/rho)*'m^2';
+
+	when InletVapour.F < low_flow switchto "off";
+
+case "off":
+	InletVapour.F = zero_flow;
+
+	when InletVapour.P > OutletLiquid.P switchto "on";
+
+end
+
+"Component Molar Balance"
+	diff(M) = InletVapour.F*InletVapour.z - OutletLiquid.F*OutletLiquid.z- Product.F*Product.z;
+
+"Energy Balance"
+	diff(E) = InletVapour.F*InletVapour.h - OutletLiquid.F*OutletLiquid.h- Product.F*Product.h + InletQ;
+
+"Molar Holdup"
+	M = ML*OutletLiquid.z + MV*Vapour.z; 
+	
+"Energy Holdup"
+	E = ML*OutletLiquid.h + MV*Vapour.h - Vapour.P*Geometry.Vtotal;
+	
+"Mol fraction normalisation"
+	sum(OutletLiquid.z)=1.0;
+
+"Mol fraction Constraint"
+	sum(OutletLiquid.z)=sum(Vapour.z);
+
+"Liquid Volume"
+	vL = PP.LiquidVolume(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
+	
+"Vapour Volume"
+	vV = PP.VapourVolume(Vapour.T, Vapour.P, Vapour.z);
+
+"Inlet Vapour Density"
+	rho = PP.VapourDensity(InletVapour.T, InletVapour.P, InletVapour.z);
+	
+"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z)*OutletLiquid.z = 
+		PP.VapourFugacityCoefficient(Vapour.T, Vapour.P, Vapour.z)*Vapour.z;
+
+"Thermal Equilibrium"
+	OutletLiquid.T = Vapour.T;
+	OutletLiquid.T = Product.T;
+
+"Mechanical Equilibrium"
+	Vapour.P = OutletLiquid.P;
+	Vapour.P = Product.P;
+
+"Pressure Drop"
+	OutletLiquid.P  = InletVapour.P - Pdrop;
+
+"Geometry Constraint"
+	Geometry.Vtotal = ML*vL + MV*vV;
+
+"Liquid Level"
+	ML * vL = Geometry.Vfilled;
+
+"Temperature indicator"
+	TI * 'K' = OutletLiquid.T;
+
+"Pressure indicator"
+	PI * 'atm' = OutletLiquid.P;
+
+"Level indicator"
+	LI*Geometry.Vtotal= Geometry.Vfilled;
+	
+end
+
+
+Model condenserSubcooled
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/CondenserSteady"; 
+	Brief 		= "Model of a  Steady State total condenser with specified outlet temperature conditions.";
+	Info 		=
+"A simple model of a Steady State total condenser with specified temperature (or subcooling degree), with a real 
+calculation of the output stream enthalpy. The subcooling degree is considered to be the difference between the 
+inlet vapour and the outlet liquid temperatures.
+
+== ASSUMPTIONS ==
+* perfect mixing of both phases;
+* saturated vapour at the Inlet;
+* no thermodynamics equilibrium;
+* no pressure drop in the condenser.
+
+== SPECIFY ==
+* the InletVapour stream;
+* the subcooled temperature OR the the degree of subcooling.
+
+";
+
+PARAMETERS
+        outer PP        as Plugin       (Brief = "External Physical Properties", Type="PP");
+        outer NComp as Integer  (Brief = "Number of Components");
+
+#        Pdrop   as press_delta  (Brief="Pressure Drop in the condenser",Default=0, Symbol="\Delta _P");
+        #Fake_Temperature               as temperature  (Brief="Fake temperature", Symbol = "T_{fake}");
+
+
+VARIABLES
+        in      InletVapour     as stream       (Brief="Vapour inlet stream", PosX=0.16, PosY=0, Symbol="_{in}^{Vapour}");
+        out     OutletLiquid    as stream       (Brief="Liquid outlet stream", PosX=0.53, PosY=1, Symbol="_{out}^{Liquid}");
+        #in     InletQ                  as power        (Brief="Heat Duty", PosX=1, PosY=0.08, Symbol="Q_{in}",Protected=true);
+        T_sub                           as temperature (Brief="Condensate temperature (subcooled)", Symbol = "T_{sub}");
+        SubcoolingDegree        as temp_delta (Brief="Subcooling Degree", Symbol = "\Delta T_{sub}");
+        CondenserDuty           as power (Brief="Calculated condenser duty for desired subcooling", Protected = true, Symbol = "Q_{cond}");
+
+        #out     TI as control_signal    (Brief="Temperature  Indicator of Condenser", Protected = true, PosX=0.50, PosY=0);
+        #out     PI as control_signal    (Brief="Pressure  Indicator of Condenser", Protected = true, PosX=0.32, PosY=0);
+
+EQUATIONS
+
+"Molar Flow Balance"
+        InletVapour.F = OutletLiquid.F;
+
+"Molar Composition Balance"
+        InletVapour.z = OutletLiquid.z;
+
+#"Energy Balance"
+        #InletVapour.F*InletVapour.h  + InletQ = OutletLiquid.F*OutletLiquid.h;
+
+"Pressure Drop"
+        OutletLiquid.P = InletVapour.P;
+
+"Subcooled Temperature"
+        OutletLiquid.T = T_sub;
+        
+"Degree of subcooling"  
+        SubcoolingDegree = InletVapour.T - T_sub;
+
+"Liquid enthalpy"
+        OutletLiquid.h = PP.LiquidEnthalpy(OutletLiquid.T, OutletLiquid.P, OutletLiquid.z);
+        
+"Condenser Duty"
+        CondenserDuty = OutletLiquid.F*OutletLiquid.h - InletVapour.F*InletVapour.h;
+        
+"Vapourisation Fraction"
+        OutletLiquid.v = 0;
+
+end
+

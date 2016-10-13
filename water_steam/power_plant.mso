@@ -27,15 +27,24 @@
 	Eficiencia			as Real(Default=0.75,Lower=0,Upper=1);
 	EnergiaInterna		as Real(Default=2,Lower=0,Upper=10,Unit='MJ/kg');
 	Entalpia			as Real(Default=3,Lower=1e-3,Upper=7,Unit='MJ/kg');
-	Entropia			as Real(Default=5,Lower=1e-3,Upper=8,Unit='kJ/kg/K');
+	EntalpiaMol			as Real(Default=3,Lower=1e-3,Upper=7,Unit='kJ/kmol');
+	Entropia			as Real(Default=5,Lower=1e-3,Upper=10,Unit='kJ/kg/K');
 	Fracao				as Real(Default=0.5,Lower=0,Upper=1);
-	Potencia			as Real(Default=10,Lower=0,Upper=500,Unit='1000*kW');
+	Potencia			as Real(Default=10,Lower=0,Upper=500,Unit='1000*kW', Color="Red");
 	Pressao				as Real(Default=1,Lower=5e-4,Upper=20,Unit='MPa');
 	MassaEspecifica		as Real(Default=1e3,Lower=1e-3,Upper=1e6,Unit='kg/m^3');
     NoType				as Real(Default=1,Lower=-2,Upper=2);
 	Temperatura			as Real(Default=600,Lower=273.16,Upper=900,Unit='K');
 	VazaoMassica		as Real(Default=50,Lower=0,Upper=1e4,Unit='kg/s');
 	VolumeEspecifico	as Real(Default=1e-3,Lower=1e-6,Upper=500,Unit='m^3/kg');
+	Pot_sinal			as Potencia(Color="Red", LineDashed=true);
+	positive 			as Real (Brief = "Positive General Constant", Default=1.0, Lower=-1e-6);
+	mol 				as positive (Brief = "Moles", Default=2500, Upper=1e9, final Unit = 'kmol');
+	fraction			as Real (Brief = "Fraction" , Default=0.5, Lower=-1e-6, Upper=1.00001);
+	molweight 			as Real (Brief = "Molar Weight", Default=75, Lower=1, Upper=1e8, final Unit = 'kg/kmol');
+	Volume				as Real (Default=1e-3,Lower=1e-6,Upper=500,Unit='m^3');
+	Reacao_mol			as Real (Brief = "Molar Reaction Rate", Default=0, Lower=-1e6, Upper=1e6, final Unit = 'kmol/h/m^3');
+	VazaoMolar			as Real(Default=50,Lower=0,Upper=1e4,Unit='kmol/s');
 
 Model Corrente
 	#Brief="Corrente para conexão entre os equipamentos"
@@ -43,11 +52,38 @@ Model Corrente
 	F as VazaoMassica;
 	P as Pressao;
 	T as Temperatura;
-	S as Entropia;
-	H as Entalpia;
+	S as Entropia; # (Lower=-2);
+	H as Entalpia; # (Lower=-100);
 end
 
-Model Fonte
+Model CorrenteZ as Corrente
+	PARAMETERS
+outer Ncomp as Integer;
+
+	VARIABLES
+	z(NComp) as fraction;
+end
+
+Model CorrenteVap as CorrenteZ
+	ATTRIBUTES
+	Pallete = false;
+	Brief = "Vapour Material Stream";
+	Info =
+	"Model for vapour material streams.
+	This model should be used only when the phase of the stream
+	is known ''a priori''.";
+
+	PARAMETERS
+outer PP as Plugin(Brief = "External Physical Properties");
+	
+	EQUATIONS
+	"Vapour Enthalpy"
+	H = PP.VapourEnthalpy(T, P, z);
+	"Vapour Entropy"
+	S = PP.VapourEntropy(T, P, z);
+end
+
+Model Fonte2
 	ATTRIBUTES
 	Pallete = true;
 	Icon = "icon/fonte2";
@@ -55,14 +91,15 @@ Model Fonte
 	Info = " ";
 
 	PARAMETERS
-outer PP as Plugin(Brief="Steam tables");
+outer PP2 as Plugin(Brief="Steam tables");
 
 	VARIABLES
 out Fout	as	Corrente(Symbol="_{out}", PosX = 1, PosY = 0.5);
 
 	EQUATIONS
-	[Fout.S,Fout.H] = PP.propPTl(Fout.P,Fout.T);
+	[Fout.S,Fout.H] = PP2.propPTl(Fout.P,Fout.T);
 end
+
 
 Model Sumidouro
 	ATTRIBUTES
@@ -86,29 +123,31 @@ Model SumidouroQ
 in Qin	as	Potencia(Symbol="_{in}", PosX = 0, PosY = 0.5);
 end
 
+
 # Modelo de turbina sem sangria
 Model Turbina
 	ATTRIBUTES
 	Pallete = true;
 	Icon = "icon/turbina";
-
+	
+	
 	PARAMETERS
-outer propterm as Plugin(Brief="Steam tables", Type="water");
+outer PP2 as Plugin(Brief="Steam tables");
 	
 	VARIABLES
 	H_IS		as Entalpia;
 	EF_T		as Eficiencia (Brief="Eficiencia da turbina");
-	POT_TURB	as Potencia (Brief="Potencia da turbina");
-in	Fin		as Corrente (Symbol="_{in}");
-out	Fout	as Corrente (Symbol="_{out}");
+in	Fin			as Corrente (Symbol="_{in}", PosX = 0, PosY = 0.25);
+out	POT_TURB	as Potencia (Brief="Potencia da turbina",PosX = 1, PosY = 0.5);
+out	Fout		as Corrente (Symbol="_{out}", PosX = 1, PosY = 1);
 
 	EQUATIONS
 
-	H_IS = propterm.propPS(Fout.P,Fin.S);
+	H_IS = PP2.propPS(Fout.P,Fin.S);
 
 	Fout.H = (H_IS - Fin.H) * EF_T + Fin.H;
 	
-	[Fout.S,Fout.T] = propterm.propPH(Fout.P,Fout.H);
+	[Fout.S,Fout.T] = PP2.propPH(Fout.P,Fout.H);
 			
 	Fin.F * (Fin.H - Fout.H) = POT_TURB;
 
@@ -120,26 +159,27 @@ Model Turbina_sangra
 ATTRIBUTES
 	Pallete = true;
 	Icon = "icon/turbina_sa";
-
+	
+	
 	PARAMETERS
-outer propterm as Plugin(Brief="Steam tables", Type="water");
+outer PP2 as Plugin(Brief="Steam tables");
 
 	VARIABLES
 	H_IS		as Entalpia;
 	EF_T		as Eficiencia(Brief="Eficiencia da turbina");
-	POT_TURB	as Potencia(Brief="Potencia da turbina");
+out POT_TURB	as Potencia(Brief="Potencia da turbina", PosX = 0.9, PosY = 0.45);
 	y			as Fracao(Brief="Fracao massica da sangria");
-in	Fin			as Corrente (Symbol="_{in}");
-out Fout		as Corrente (Symbol="_{out}");
-out Fouts		as Corrente (Symbol="_{outx}");#(Brief="Sangria da Turbina")
+in	Fin			as Corrente (Symbol="_{in}", PosX = 0, PosY = 0.25);
+out Fout		as Corrente (Symbol="_{out}", PosX = 1, PosY = 0.85);
+out Fouts		as Corrente (Symbol="_{outx}", PosX = 0.85, PosY = 1); #(Brief="Sangria da Turbina");
 
 	EQUATIONS
 
-	H_IS = propterm.propPS(Fout.P,Fin.S);
+	H_IS = PP2.propPS(Fout.P,Fin.S);
 
 	Fout.H = (H_IS - Fin.H) * EF_T + Fin.H;
 	
-	[Fout.S,Fout.T] = propterm.propPH(Fout.P,Fout.H);
+	[Fout.S,Fout.T] = PP2.propPH(Fout.P,Fout.H);
 			
 	Fin.F * (Fin.H - Fout.H) = POT_TURB;
 
@@ -158,20 +198,20 @@ Model Condensador
 	Icon = "icon/condensador";
 
 	PARAMETERS
-outer propterm as Plugin(Brief="Steam tables", Type="water");
+outer PP2 as Plugin(Brief="Steam tables");
 	
 	VARIABLES
-	Q_COND	as Potencia (Brief="Taxa de calor removido");
+out	Q_COND	as Potencia (Brief="Taxa de calor removido",PosX = 1, PosY = 0.5);
 	G_S		as Dif_Temp (Brief="Grau de sub-resfriamento");
-in	Fin		as Corrente (Symbol="_{in}");
-out	Fout	as Corrente (Symbol="_{out}");
+in	Fin		as Corrente (Symbol="_{in}", PosX = 0.5, PosY = 0);
+out	Fout	as Corrente (Symbol="_{out}", PosX = 0.5, PosY = 1);
 
 	EQUATIONS
 
 	Fout.P = Fin.P;
-	Fout.T = propterm.Tsat(Fout.P) - G_S;
+	Fout.T = PP2.Tsat(Fout.P) - G_S;
 	
-	[Fout.S,Fout.H] = propterm.propPTl(Fout.P,Fout.T);
+	[Fout.S,Fout.H] = PP2.propPTl(Fout.P,Fout.T);
 	 
 	Q_COND = Fin.F * (Fin.H - Fout.H);
 	Fout.F = Fin.F;
@@ -179,12 +219,8 @@ end
 
 # Modelo de condensador com duas alimentacoes
 Model Condensador_2alim
-	ATTRIBUTES
-	Pallete = true;
-	Icon = "icon/condensador";
-
 	PARAMETERS
-outer propterm as Plugin(Brief="Steam tables", Type="water");
+outer PP2 as Plugin(Brief="Steam tables");
     
 	VARIABLES
 	Q_COND	as Potencia (Brief="Taxa de calor removido");
@@ -196,23 +232,40 @@ out	Fout	as Corrente (Symbol="_{out}");
 	EQUATIONS
 
 	Fout.P = Fin1.P;
-	Fout.T = propterm.Tsat(Fout.P) - G_S;
+	Fout.T = PP2.Tsat(Fout.P) - G_S;
 	
-	[Fout.S,Fout.H] = propterm.propPTl(Fout.P,Fout.T);
+	[Fout.S,Fout.H] = PP2.propPTl(Fout.P,Fout.T);
 
 	Fout.F = Fin1.F + Fin2.F;
 	Q_COND = Fin1.F * Fin1.H + Fin2.F * Fin2.H - Fout.F * Fout.H;
 end
 
-# Modelo de tanque de armazenamento com tres alimentacoes
-Model Tanque
+# Modelo de tanque de armazenamento com dois alimentacoes
+Model Tanque2
 	ATTRIBUTES
 	Pallete = true;
 	Icon = "icon/tanque2";
-
 	PARAMETERS
-outer propterm as Plugin(Brief="Steam tables", Type="water");
+outer PP2 as Plugin(Brief="Steam tables");
 	
+    VARIABLES
+in	Fin1	as Corrente (Symbol="_{in1}",PosX = 0.1, PosY = 0.20);
+in	Fin2	as Corrente (Symbol="_{in2}",PosX = 0.1, PosY = 0.79);
+out	Fout	as Corrente (Symbol="_{out}",PosX = 0.9, PosY = 0.5);
+
+	EQUATIONS
+
+	Fout.F = Fin1.F + Fin2.F;
+	Fout.F * Fout.H = Fin1.F * Fin1.H + Fin2.F * Fin2.H;
+
+	[Fout.S,Fout.T] = PP2.propPH(Fout.P,Fout.H);
+end
+
+# Modelo de tanque de armazenamento com tres alimentacoes sem perdas
+Model Tanque
+	PARAMETERS
+outer PP2 as Plugin(Brief="Steam tables");
+
     VARIABLES
 in	Fin1	as Corrente (Symbol="_{in1}");
 in	Fin2	as Corrente (Symbol="_{in2}");
@@ -224,13 +277,123 @@ out	Fout	as Corrente (Symbol="_{out}");
 	Fout.F = Fin1.F + Fin2.F + Fin3.F;
 	Fout.F * Fout.H = Fin1.F * Fin1.H + Fin2.F * Fin2.H + Fin3.F * Fin3.H;
 
-	[Fout.S,Fout.T] = propterm.propPH(Fout.P,Fout.H);
+	[Fout.S,Fout.T] = PP2.propPH(Fout.P,Fout.H);
+end
+
+# Modelo de tanque de armazenamento com tres alimentacoes e perdas
+Model Tanque3
+	PARAMETERS
+outer PP2 as Plugin(Brief="Steam tables");
+	
+    VARIABLES
+in	Fin1	as Corrente (Symbol="_{in1}");
+in	Fin2	as Corrente (Symbol="_{in2}");
+in	Fin3	as Corrente (Symbol="_{in3}");
+out	Fout	as Corrente (Symbol="_{out}");
+out Fperda	as Corrente (Symbol="_{perda}");
+
+	EQUATIONS
+
+	Fout.F = Fin1.F + Fin2.F + Fin3.F - Fperda.F;
+	Fout.F * Fout.H = Fin1.F * Fin1.H + Fin2.F * Fin2.H + Fin3.F * Fin3.H - Fperda.F*Fperda.H;
+
+	[Fout.S,Fout.T] = PP2.propPH(Fout.P,Fout.H);
+	Fperda.S = Fout.S;
+	Fperda.T = Fout.T;
+	Fperda.P = Fout.P;
+	Fperda.H = Fout.H;
+	
+end
+
+
+# Modelo de tanque de armazenamento com quatro alimentacoes
+Model Tanque4
+	PARAMETERS
+outer PP2 as Plugin(Brief="Steam tables");
+	
+    VARIABLES
+in	Fin1	as Corrente (Symbol="_{in1}");
+in	Fin2	as Corrente (Symbol="_{in2}");
+in	Fin3	as Corrente (Symbol="_{in3}");
+in	Fin4	as Corrente (Symbol="_{in4}");
+out	Fout	as Corrente (Symbol="_{out}");
+
+	EQUATIONS
+
+	Fout.F = Fin1.F + Fin2.F + Fin3.F + Fin4.F;
+	Fout.F * Fout.H = Fin1.F * Fin1.H + Fin2.F * Fin2.H + Fin3.F * Fin3.H + Fin4.F * Fin4.H;
+
+	[Fout.S,Fout.T] = PP2.propPH(Fout.P,Fout.H);
+end
+
+
+# Modelo de tanque de armazenamento com quatro alimentacoes e perdas
+
+
+
+Model Tanque4perdas
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/tanque4perdas";
+	
+	PARAMETERS
+outer PP2 as Plugin(Brief="Steam tables");
+	
+    VARIABLES
+	y       as Fracao(Brief="Fracao massica de perdas");
+	Fsalida as VazaoMassica;
+in	Fin1	as Corrente (Symbol="_{in1}", PosX = 0.1, PosY = 0.16);
+in	Fin2	as Corrente (Symbol="_{in2}", PosX = 0.1, PosY = 0.35);
+in	Fin3	as Corrente (Symbol="_{in3}", PosX = 0.1, PosY = 0.55);
+in	Fin4	as Corrente (Symbol="_{in4}", PosX = 0.1, PosY = 0.75);
+out	Fout	as Corrente (Symbol="_{out}", PosX = 1, PosY = 0.45);
+out Fperda  as Corrente (Symbol="_{perdas}",PosX = 0.5, PosY = 1);
+
+	EQUATIONS
+
+	Fout.F = Fin1.F + Fin2.F + Fin3.F + Fin4.F - Fperda.F;
+	Fsalida= Fin1.F + Fin2.F + Fin3.F + Fin4.F;
+	Fperda.F=y*Fsalida;
+	
+	Fout.F * Fout.H = Fin1.F * Fin1.H + Fin2.F * Fin2.H + Fin3.F * Fin3.H +
+	Fin4.F * Fin4.H - Fperda.F*Fperda.H;
+
+	[Fout.S,Fout.T] = PP2.propPH(Fout.P,Fout.H);
+	Fperda.S = Fout.S;
+	Fperda.T = Fout.T;
+	Fperda.P = Fout.P;
+	Fperda.H = Fout.H;
+end
+
+# Modelo de desaerador (tanque) com 5 entradas e saída líquido saturado (x=0)
+Model Desaerador5
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/desaerador";
+	PARAMETERS
+outer PP2 as Plugin(Brief="Steam tables");
+	
+    VARIABLES
+in	Fin1	as Corrente (Symbol="_{in1}", PosX = 1, PosY = 0.2);
+in	Fin2	as Corrente (Symbol="_{in2}", PosX = 1, PosY = 0.45);
+in	Fin3	as Corrente (Symbol="_{in3}", PosX = 1, PosY = 0.7);
+in	Fin4	as Corrente (Symbol="_{in4}", PosX = 1, PosY = 0.9);
+in	Fin5	as Corrente (Symbol="_{in5}", PosX = 0.5, PosY = 0);
+out	Fout	as Corrente (Symbol="_{out}", PosX = 0, PosY = 0.85);
+
+	EQUATIONS
+
+	Fout.F = Fin1.F + Fin2.F + Fin3.F + Fin4.F + Fin5.F;
+	Fout.F * Fout.H = Fin1.F * Fin1.H + Fin2.F * Fin2.H + Fin3.F * Fin3.H + Fin4.F * Fin4.H + Fin5.F * Fin5.H;
+	#Fout.T = PP2.Tsat(Fout.P);
+
+	[Fout.S,Fout.H] = PP2.propPTl(Fout.P,Fout.T);
 end
 
 # Modelo de trocador de calor, dada a carga termica
 Model Trocador
 	PARAMETERS
-outer propterm as Plugin(Brief="Steam tables", Type="water");
+outer PP2 as Plugin(Brief="Steam tables");
 	
     VARIABLES
 	Q		as Potencia;
@@ -243,7 +406,7 @@ out	Fout	as Corrente (Symbol="_{out}");
 	Fout.F = Fin.F;
 	Fout.P = Fin.P - DP;
 	Fout.F * (Fout.H - Fin.H) = Q;
-	[Fout.S,Fout.T] = propterm.propPH(Fout.P,Fout.H);
+	[Fout.S,Fout.T] = PP2.propPH(Fout.P,Fout.H);
 end
 
 # Modelo de torre de refrigeracao
@@ -257,7 +420,7 @@ Model Torre
 
 	VARIABLES
 	F		as VazaoMassica;
-	Q		as Potencia;
+in	Qin		as Potencia (Symbol="_{in1}", PosX = 0.1, PosY = 0.5);
 	DTh		as Dif_Temp;
 	DTc		as Dif_Temp;
 	DTar	as Dif_Temp; # grau de aquecimento do ar
@@ -272,9 +435,9 @@ Model Torre
 	DTar = Tar_h - Tar_c;
 	DTh = Th - Tar_h;
 	DTc = Tc  - Tar_c;
-	F * cpa * (Th - Tc) = Q;
-	Uat * (DTh - DTc) = Q * ln(abs(DTh/DTc));
-#	Uat * 0.5 * (DTh + DTc) = Q;
+	F * cpa * (Th - Tc) = Qin;
+	Uat * (DTh - DTc) = Qin * ln(abs(DTh/DTc));
+#	Uat * 0.5 * (DTh + DTc) = Qin;
 end
 
 # Modelo de bomba
@@ -282,32 +445,37 @@ Model Bomba
 	ATTRIBUTES
 	Pallete = true;
 	Icon = "icon/bomba1";
-
+		
+	
 	PARAMETERS
-outer propterm as Plugin(Brief="Steam tables", Type="water");
-	v_esp	  as VolumeEspecifico;
+outer PP2 as Plugin(Brief="Steam tables");
+#	v_esp	  as VolumeEspecifico;
 	
 	VARIABLES
 	H_IS	as Entalpia;
-	POT_BMB	as Potencia(Brief="Potencia do motor da bomba");
+out	POT_BMB	as Pot_sinal(Brief="Potencia do motor da bomba", PosX = 0.5, PosY = 1 );
 	POT_EF	as Potencia(Brief="Potencia injetada pela bomba");
 	EF_B	as Eficiencia(Brief="Eficiencia da bomba");
 in	Fin		as Corrente (Symbol="_{in}");
-out	Fout	as Corrente (Symbol="_{out}");
-	
+out	Fout	as Corrente (Symbol="_{out}",PosX = 0, PosY = 0.2);
+	v_esp	  as VolumeEspecifico;
+
 	EQUATIONS
 
-	H_IS = propterm.propPS(Fout.P,Fin.S);
+	v_esp = PP2.Vesp(Fin.P,Fin.T);
+	
+	H_IS = PP2.propPS(Fout.P,Fin.S);
 
 	(Fout.H - Fin.H) * EF_B = H_IS - Fin.H;
 #	(Fout.H - Fin.H) * Fin.F = POT_EF; # Forma alternativa
         
-	[Fout.S,Fout.T] = propterm.propPH(Fout.P,Fout.H);
+	[Fout.S,Fout.T] = PP2.propPH(Fout.P,Fout.H);
 
 	POT_EF = POT_BMB * EF_B;
 	POT_EF = Fin.F * v_esp * (Fout.P - Fin.P);
 	Fout.F = Fin.F;
 end
+
 
 # Modelo de gerador de vapor
 Model Gerador_Vapor
@@ -316,58 +484,101 @@ Model Gerador_Vapor
 	Icon = "icon/caldeira";	
 
 	PARAMETERS
-outer propterm as Plugin(Brief="Steam tables", Type="water");
+outer PP2 as Plugin(Brief="Steam tables");
 
     VARIABLES
-	Q_GV		as Potencia (Brief="Taxa de calor gerado na caldeira");
+out	Q_GV		as Pot_sinal (Brief="Taxa de calor gerado na caldeira", PosX = 1, PosY = 0.5);
 	EF_GV		as Eficiencia (Brief="Eficiencia do gerador de vapor");
 	Qra			as Potencia (Brief="Taxa de calor nos reaquecedores");
 	Qsa			as Potencia (Brief="Taxa de calor nos superaquecedores");
 	Qca			as Potencia (Brief="Taxa de calor no evaporador");
 	Qec			as Potencia (Brief="Taxa de calor nos economizadores");
-in	Fin_a		as Corrente (Brief="Agua de alimentacao", Symbol="_{in_a}");
-in	Fin_ra		as Corrente (Brief="Vapor a ser Reaquecido", Symbol="_{in_ra}");
-out	Fout_sa	    as Corrente (Brief="Vapor Superaquecido", Symbol="_{out_sa}");
-out	Fout_ra	    as Corrente (Brief="Vapor Reaquecido", Symbol="_{out_ra}");
+in	Fin_a		as Corrente (Brief="Agua de alimentacao", Symbol="_{in_a}", PosX = 0.5, PosY = 1);
+in	Fin_ra		as Corrente (Brief="Vapor a ser Reaquecido", Symbol="_{in_ra}", PosX = 0.7, PosY = 1);
+out	Fout_sa	    as Corrente (Brief="Vapor Superaquecido", Symbol="_{out_sa}", PosX = 0.5, PosY = 0);
+out	Fout_ra	    as Corrente (Brief="Vapor Reaquecido", Symbol="_{out_ra}", PosX = 0.7, PosY = 0);
 	Fvap		as Corrente (Brief="Evaporador");
 	Feco		as Corrente (Brief="Economizadores");
 
 	EQUATIONS
 
-#	[Fin_a.S,Fin_a.H] = propterm.propPTl(Fin_a.P,Fin_a.T); # Reduntante no ciclo fechado
+#	[Fin_a.S,Fin_a.H] = PP2.propPTl(Fin_a.P,Fin_a.T); # Reduntante no ciclo fechado
 
 	"Economizadores ECO1 + ECO1"
 #	Feco.F = Fin_a.F; # Reduntante no ciclo fechado
-	[Feco.S,Feco.H] = propterm.propPTv(Feco.P,Feco.T);	
+	[Feco.S,Feco.H] = PP2.propPTv(Feco.P,Feco.T);	
 	Qec = Feco.F * (Feco.H - Fin_a.H);
 
 	"Evaporador - Camisa dagua"
 	Fvap.F = Feco.F;
-	[Fvap.S,Fvap.H] = propterm.propPTv(Fvap.P,Fvap.T);	
+	[Fvap.S,Fvap.H] = PP2.propPTv(Fvap.P,Fvap.T);	
 	Qca = Fvap.F * (Fvap.H - Feco.H);
 
 	"Superaquecedores BT + AT"
 	Fout_sa.F = Fvap.F;
-	[Fout_sa.S,Fout_sa.H] = propterm.propPTv(Fout_sa.P,Fout_sa.T);
+	[Fout_sa.S,Fout_sa.H] = PP2.propPTv(Fout_sa.P,Fout_sa.T);
 	Qsa = Fout_sa.F * (Fout_sa.H - Fvap.H);
 
 	"Reaquecedores BT + AT"
 	Fout_ra.F = Fin_ra.F;
-	[Fout_ra.S,Fout_ra.H] = propterm.propPTv(Fout_ra.P,Fout_ra.T);
+	[Fout_ra.S,Fout_ra.H] = PP2.propPTv(Fout_ra.P,Fout_ra.T);
 	Qra = Fout_ra.F * (Fout_ra.H - Fin_ra.H);
 
 	"Caldeira"
 	Q_GV * EF_GV = Qec + Qca + Qsa + Qra;
 end
 
-# Modelo simplificado gerador de vapor
-Model Gerador_Vapor_Simples
+
+# Modelo de gerador de vapor modificado
+Model Gerador_VaporMod
 	ATTRIBUTES
     Pallete = true;
 	Icon = "icon/caldeira";	
-
+	
+	
 	PARAMETERS
-outer propterm as Plugin(Brief="Steam tables", Type="water");
+outer PP2 as Plugin(Brief="Steam tables");
+
+    VARIABLES
+out	Q_GV		as Pot_sinal (Brief="Taxa de calor gerado na caldeira", PosX = 1, PosY = 0.5);
+	EF_GV		as Eficiencia (Brief="Eficiencia do gerador de vapor");
+	Qpre		as Potencia (Brief="Taxa de calor no pre aquecedor de ar");
+	Qsa			as Potencia (Brief="Taxa de calor nos superaquecedores");
+	Qca			as Potencia (Brief="Taxa de calor no evaporador");
+	Qec			as Potencia (Brief="Taxa de calor nos economizadores");
+in	Fin_a		as Corrente (Brief="Agua de alimentacao", Symbol="_{in_a}", PosX = 0.5, PosY = 1);
+out	Fout_sa	    as Corrente (Brief="Vapor Superaquecido", Symbol="_{out_sa}", PosX = 0.5, PosY = 0);
+	Fvap		as Corrente (Brief="Evaporador");
+	Feco		as Corrente (Brief="Economizadores");
+
+	EQUATIONS
+
+#	[Fin_a.S,Fin_a.H] = PP2.propPTl(Fin_a.P,Fin_a.T); # Reduntante no ciclo fechado
+
+	"Economizadores ECO1 + ECO1"
+#	Feco.F = Fin_a.F; # Reduntante no ciclo fechado
+	[Feco.S,Feco.H] = PP2.propPTv(Feco.P,Feco.T);	
+	Qec = Feco.F * (Feco.H - Fin_a.H);
+
+	"Evaporador - Camisa dagua"
+	Fvap.F = Feco.F;
+	[Fvap.S,Fvap.H] = PP2.propPTv(Fvap.P,Fvap.T);	
+	Qca = Fvap.F * (Fvap.H - Feco.H);
+
+	"Superaquecedores BT + AT"
+	Fout_sa.F = Fvap.F;
+	[Fout_sa.S,Fout_sa.H] = PP2.propPTv(Fout_sa.P,Fout_sa.T);
+	Qsa = Fout_sa.F * (Fout_sa.H - Fvap.H);
+
+	"Caldeira"
+	Q_GV * EF_GV = Qec + Qca + Qsa + Qpre;
+end
+
+
+# Modelo simplificado gerador de vapor
+Model Gerador_Vapor_Simples
+	PARAMETERS
+outer PP2 as Plugin(Brief="Steam tables");
 	
 	VARIABLES
 	Q_GV		as Potencia;
@@ -379,7 +590,7 @@ out	Fout		as Corrente (Symbol="_{out}");
 
 	Fout.P = Fin.P;
 	
-	[Fout.S,Fout.H] = propterm.propPTv(Fout.P,Fout.T);
+	[Fout.S,Fout.H] = PP2.propPTv(Fout.P,Fout.T);
 
 	Q_GV * EF_GV = Fin.F * (Fout.H - Fin.H);
 #	Fout.F = Fin.F;
@@ -390,25 +601,51 @@ Model Gerador_Eletrico
     ATTRIBUTES
 	Pallete = true;
 	Icon = "icon/gerador";	
-
+	
 	PARAMETERS
 	EF_GE as Eficiencia(Brief="Eficiencia do gerador eletrico");
 
 	VARIABLES
-	POT_GE as Potencia(Brief="Potencia do gerador eletrico");
+out	POT_GE as Pot_sinal(Brief="Potencia do gerador eletrico", PosX = 1, PosY = 0.5);
+	POT_TURB as Potencia(Brief="Potencia total das turbinas");
+in	POT_TURB1 as Potencia(Brief="Potencia total da turbina", PosX = 0, PosY = 0.5);
+in	POT_TURB2 as Potencia(Brief="Potencia total da turbina", PosX = 0.02, PosY = 0.25);
+in	POT_TURB3 as Potencia(Brief="Potencia total da turbina", PosX = 0.02, PosY = 0.75);
+in	POT_TURB4 as Potencia(Brief="Potencia total da turbina", PosX = 0.5, PosY = 1);
+
+	EQUATIONS
+	"Potencia total das turbinas"
+	POT_TURB = POT_TURB1 + POT_TURB2 + POT_TURB3 + POT_TURB4;
+	
+	"Potencia do Gerador Eletrico"
+	POT_GE = EF_GE * POT_TURB;
 end
+
+# Modelo de gerador eletrico
+Model Gerador_Eletrico_Simples
+    ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/gerador";	
+	
+	PARAMETERS
+	EF_GE as Eficiencia(Brief="Eficiencia do gerador eletrico");
+
+	VARIABLES
+out	POT_GE as Pot_sinal(Brief="Potencia do gerador eletrico", PosX = 1, PosY = 0.5);
+end
+
 
 # Modelo de separador de corrente
 Model Splitter
 	ATTRIBUTES
 	Pallete = true;
 	Icon = "icon/splitter";	
-
+	
 	VARIABLES
 	y			as Fracao(Brief="Fracao de massa para a segunda corrente");
-in	Fin			as Corrente (Symbol="_{in}");
-out	Fout		as Corrente (Symbol="_{out}");
-out	Fouts		as Corrente(Brief="Segunda corrente", Symbol="_{outx}");
+in	Fin			as Corrente (Symbol="_{in}", PosX = 0, PosY = 0.5);
+out	Fout		as Corrente (Symbol="_{out}", PosX = 1, PosY = 0.25);
+out	Fouts		as Corrente(Brief="Segunda corrente", Symbol="_{outx}", PosX = 1, PosY = 0.75);
 
 	EQUATIONS
 
@@ -425,3 +662,207 @@ out	Fouts		as Corrente(Brief="Segunda corrente", Symbol="_{outx}");
 	Fouts.F = Fin.F * y;
 	Fout.F = Fin.F - Fouts.F;
 end
+
+
+# Modelo de separador de corrente de 4 saidas
+Model Splitter4
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/splitter4";
+	
+	VARIABLES
+	y(3)		as Fracao(Brief="Fracao de massa");
+in	Fin			as Corrente (Symbol="_{in}", PosX = 1, PosY = 0.5);
+out	Fout1		as Corrente (Symbol="_{out1}", PosX = 0, PosY = 0.19);
+out	Fout2		as Corrente(Symbol="_{out2}", PosX = 0, PosY = 0.4);
+out	Fout3		as Corrente (Symbol="_{out3}", PosX = 0, PosY = 0.62);
+out	Fout4		as Corrente(Symbol="_{out4}", PosX = 0, PosY = 0.85);
+
+
+	EQUATIONS
+
+	Fout1.P = Fin.P;
+	Fout1.T = Fin.T;
+	Fout1.S = Fin.S;
+	Fout1.H = Fin.H;
+
+	Fout2.P = Fin.P;
+	Fout2.T = Fin.T;
+	Fout2.S = Fin.S;
+	Fout2.H = Fin.H;
+
+	Fout3.P = Fin.P;
+	Fout3.T = Fin.T;
+	Fout3.S = Fin.S;
+	Fout3.H = Fin.H;
+	
+	Fout4.P = Fin.P;
+	Fout4.T = Fin.T;
+	Fout4.S = Fin.S;
+	Fout4.H = Fin.H;
+	
+	Fout1.F = Fin.F * y(1);
+	Fout2.F = Fin.F * y(2);
+	Fout3.F = Fin.F * y(3);
+	#Fout4.F = Fin.F * y(4);
+	
+	
+	Fout4.F = Fin.F - Fout1.F - Fout2.F - Fout3.F;
+end
+
+# Modelo de flash provisório, pois o PP tem cálculo de flash mas
+# esta função não está disponibilizada no plugin (esta função seria mais
+# eficiente nos cálculos, não teria cálculos repetitivos)
+Model Flash
+
+    ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/flash";
+	
+	PARAMETERS
+outer PP2 as Plugin(Brief="Steam tables");
+	
+    VARIABLES
+	TIT		as Fracao (Upper=2);
+#	S_ad	as Entropia;
+in	Fin		as Corrente (Symbol="_{in}",PosX = 1, PosY = 0.5);
+out	FoutL	as Corrente (Symbol="_{outL}", PosX = 0.4, PosY = 1);
+out	FoutV	as Corrente (Symbol="_{outV}", PosX = 0.4, PosY = 0);
+
+	EQUATIONS
+
+	Fin.F = FoutL.F + FoutV.F;
+	FoutV.F = TIT * Fin.F;
+
+	FoutL.T = FoutV.T;
+	FoutL.P = FoutV.P;
+
+#	[S_ad,FoutL.T] = PP2.propPH(FoutL.P,Fin.H);
+#	[FoutV.S,FoutV.H] = PP2.propPTv(FoutV.P,FoutV.T+0.1*'K'); # perturbado para evitar ir para liq.
+#	[FoutL.S,FoutL.H] = PP2.propPTl(FoutL.P,FoutL.T-0.1*'K'); # perturbado para evitar ir para vap.
+
+	[FoutL.S,FoutL.H,FoutV.S,FoutV.H,FoutL.T,TIT] = PP2.FlashPH(FoutL.P,Fin.H);
+
+#	TIT * (FoutV.H - FoutL.H) = Fin.H - FoutL.H;
+end
+
+Model ETA_CICLO
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/eficiencia";
+
+	VARIABLES
+	EF_CIC 		as Eficiencia;
+in	POT_BMB1	as Pot_sinal(Symbol = "_{inB1}", PosX = 0.2, PosY = 0);
+in	POT_BMB2	as Pot_sinal(Symbol = "_{inB2}", PosX = 0.4, PosY = 0);
+in	POT_BMB3	as Pot_sinal(Symbol = "_{inB3}", PosX = 0.6, PosY = 0);
+in	POT_BMB4	as Pot_sinal(Symbol = "_{inB4}", PosX = 0.8, PosY = 0);
+in	POT_BMB5	as Pot_sinal(Symbol = "_{inB5}", PosX = 0.25, PosY = 1);
+in	POT_GE		as Pot_sinal(Symbol = "_{inGE}", PosX = 0.5, PosY = 1);
+in	POT_GV		as Pot_sinal(Symbol = "_{inGV}", PosX = 0.75, PosY = 1);
+
+
+	EQUATIONS
+	"Eficiencia do Ciclo"
+	EF_CIC * POT_GV = POT_GE - POT_BMB1 - POT_BMB2 - POT_BMB3 - POT_BMB4 - POT_BMB5;
+
+end
+
+
+#*---------------------------------------------------------------------
+*	only vapour phase
+*--------------------------------------------------------------------*#
+Model Equil_vap
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/cstr"; 
+	Brief 		= "Model of a generic vapour-phase equilibrium CSTR";
+	Info 		= "
+== Assumptions ==
+* only vapour-phase
+* thermodynamic equilibrium
+* steady-state
+
+== Specify ==
+* inlet stream
+* stoichiometric matrix
+* equilibrium temperature
+";
+
+	PARAMETERS
+outer PP as Plugin(Brief = "External Physical Properties");
+	NReac		as Integer 		(Brief="Number of reactions", Default=1);
+    stoic(NComp,NReac) as Real 	(Brief="Stoichiometric matrix", Symbol="\nu");
+	Rg			as Real			(Brief="Universal gas constant", Unit='J/mol/K', Default=8.314);
+	fs(NComp) 	as Pressao	 	(Brief="Fugacity in standard state", Default=1, DisplayUnit='atm');
+	To			as Temperatura  (Brief="Reference temperature", Default=298.15);
+	V			as Volume;
+	Mw(NComp)	as molweight;
+
+	VARIABLES
+in	Inlet 		as CorrenteZ	(Brief="Inlet stream", PosX=0, PosY=0, Symbol="_{in}");
+out Outlet		as CorrenteVap	(Brief="Outlet stream", PosX=1, PosY=1, Symbol="_{out}");
+
+	G(NComp)	as EntalpiaMol 	(Brief="Gibbs free-energy of formation");
+	K(NReac)	as Real			(Brief="Equillibrium constant", Lower=0, Default=1.5);
+	activ(NComp)as Real 		(Brief="Activity", Symbol="\hat{a}", Lower=0, Default=0.2);
+	
+	rate(NComp) as Reacao_mol	(Brief="Overall component rate of reaction");
+	extent(NReac) as VazaoMolar	(Brief="Extent of reaction", Symbol="\xi");
+	conv(NComp) as Real 		(Brief="Fractional conversion of component", Symbol="X", Default=0); # Lower=-1e3, Upper=1e3);
+
+	SET
+	Mw = PP.MolecularWeight();
+
+	EQUATIONS
+	"Outlet stream"
+	Outlet.F*Outlet.z = Inlet.F*Inlet.z + rate*V*Mw;
+	
+	"Mechanical equilibrium"
+	Outlet.P = Inlet.P;
+	
+	"Energy balance"
+	Outlet.F*Outlet.H = Inlet.F*Inlet.H;
+	
+	"Steady-state"
+	Outlet.F = Inlet.F + sum(sumt(stoic*extent)*Mw);
+
+	"Gibbs free-energy of formation"
+	G = PP.IdealGasGibbsOfFormation(Outlet.T);
+
+#	"Gibbs free-energy of formation without Cp correction"
+#	G = PP.IdealGasGibbsOfFormationAt25C()*Outlet.T/To
+#		+ PP.IdealGasEnthalpyOfFormationAt25C()*(1 - Outlet.T/To);
+
+	for j in [1:NReac] do
+	"Gibbs free energy of reaction"
+		sumt(G*stoic(:,j)) = -Rg*Outlet.T*ln(K(j));
+#		K(j) = exp(-sumt(G*stoic(:,j))/(Rg*Outlet.T));
+
+	"Equilibrium constant"
+		K(j) = prod(activ^stoic(:,j));
+	end
+
+	for i in [1:NComp] do
+	"Outlet molar fraction"
+		Outlet.F*Outlet.z(i) = (Inlet.F*Inlet.z(i) + sumt(stoic(i,:)*extent)*Mw);
+	end	
+
+	for i in [1:NComp] do
+	  if (Inlet.z(i) > 1e-16) then
+	    "Molar conversion"
+	    Outlet.F*Outlet.z(i) = Inlet.F*Inlet.z(i)*(1 - conv(i));
+	  else if (Outlet.z(i) > 0) then
+			"Molar conversion"
+				conv(i) = 1;	# ?
+			else
+			"Molar conversion"
+				conv(i) = 0;	# ?
+			end
+	  end
+	end
+
+	"Activity"
+	activ = PP.VapourFugacityCoefficient(Outlet.T,Outlet.P,Outlet.z)*Outlet.P*Outlet.z/fs;
+end
+

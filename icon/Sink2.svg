@@ -13,12 +13,12 @@
    sodipodi:version="0.32"
    inkscape:version="0.46"
    width="113.04742"
-   height="59.297539"
+   height="49.879261"
    sodipodi:docbase="/home/paula/BibliotecaSVN/eml"
-   sodipodi:docname="work_sink.svg"
-   inkscape:export-filename="/media/sdb5/gerson/projetos/repositorio/biblioteca/trunk/eml/icon/work_source.png"
-   inkscape:export-xdpi="108.27314"
-   inkscape:export-ydpi="108.27314"
+   sodipodi:docname="Sink2.svg"
+   inkscape:export-filename="/home/bicca/apps/biblioteca/branches/gui/eml/icon/Sink2.png"
+   inkscape:export-xdpi="115.43829"
+   inkscape:export-ydpi="115.43829"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    sodipodi:modified="true"
    version="1.0">
@@ -53,13 +53,13 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient6760"
-       id="linearGradient3214"
+       id="linearGradient2462"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-3.2240493e-3,0.1324068,-0.5686632,-7.5067732e-4,599.98304,556.08238)"
-       x1="342.53107"
-       y1="340.69449"
-       x2="343.64938"
-       y2="537.94733" />
+       gradientTransform="matrix(3.2240493e-3,0.1324068,0.5686632,-7.5067732e-4,99.229641,556.08238)"
+       x1="207.92532"
+       y1="446.30573"
+       x2="494.30014"
+       y2="444.79449" />
   </defs>
   <sodipodi:namedview
      inkscape:window-height="926"
@@ -74,12 +74,12 @@
      pagecolor="#ffffff"
      id="base"
      showgrid="false"
-     inkscape:zoom="8.6878856"
-     inkscape:cx="50.259866"
-     inkscape:cy="31.339382"
-     inkscape:window-x="0"
-     inkscape:window-y="44"
-     inkscape:current-layer="g6591"
+     inkscape:zoom="4.3439428"
+     inkscape:cx="36.882384"
+     inkscape:cy="-8.4780477"
+     inkscape:window-x="2"
+     inkscape:window-y="25"
+     inkscape:current-layer="g2457"
      showguides="true"
      inkscape:guide-bbox="true"
      showborder="false"
@@ -93,30 +93,24 @@
   <g
      id="g6591"
      transform="translate(-293.08037,-578.06465)">
-    <path
-       style="fill:url(#linearGradient3214);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.3;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="M 381.13596,579.39071 L 405.13826,601.18008 L 381.13597,626.80232 L 294.06989,626.95438 L 313.92953,601.18008 L 294.79795,579.05417 L 381.13596,579.39071 z"
-       id="rect2097"
-       sodipodi:nodetypes="ccccccc" />
-    <text
-       xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="335"
-       y="607.36218"
-       id="text3218"><tspan
-         sodipodi:role="line"
-         id="tspan3220"
-         x="335"
-         y="607.36218">work</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:28px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="335"
-       y="637.36218"
-       id="text2462"><tspan
-         sodipodi:role="line"
-         id="tspan2464"
-         x="335"
-         y="637.36218">W</tspan></text>
+    <g
+       id="g2457">
+      <path
+         sodipodi:nodetypes="csccscc"
+         id="rect2097"
+         d="M 318.07671,579.05417 C 318.07671,579.05417 294.43321,591.39329 294.07442,601.18008 C 293.68855,611.70557 318.07671,626.80232 318.07671,626.80232 L 405.14279,626.80232 C 405.14279,626.80232 384.94713,610.49639 385.28315,601.18008 C 385.61917,591.86377 405.14279,579.05417 405.14279,579.05417 L 318.07671,579.05417 z"
+         style="fill:url(#linearGradient2462);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         transform="scale(0.846921,1.1807476)"
+         id="text3218"
+         y="516.70648"
+         x="396.37387"
+         style="font-size:17.62894821px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="516.70648"
+           x="396.37387"
+           id="tspan3220"
+           sodipodi:role="line">sink</tspan></text>
+    </g>
   </g>
 </svg>

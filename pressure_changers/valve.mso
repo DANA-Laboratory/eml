@@ -1,4 +1,4 @@
-#*-------------------------------------------------------------------
+ #*-------------------------------------------------------------------
 * EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
 *
 * This LIBRARY is free software; you can distribute it and/or modify
@@ -19,120 +19,6 @@
 
 using "streams";
 	
-
-Model valve
-	ATTRIBUTES
-	Pallete 	= true;
-	Icon 		= "icon/Valve"; 
-	Brief 		= "Model of a valve.";
-	Info 		=
-"== Model of valves ==
-* Linear;
-* Parabolic;
-* Equal;
-* Quick;
-* Hyperbolic.
-	
-== Assumptions ==
-* Steady State;
-* Liquid;
-* Isentalpic.
-	
-== Specify ==
-* the valve type;
-* the inlet stream;
-* the Volumetric Flow (Qv);
-* the Valve Coefficient (cv);
-* the opening (x).
-";
-		
-	PARAMETERS
-	valve_type as Switcher (Valid = ["linear", "parabolic", "equal", "quick", "hyperbolic"], Default = "linear");
-outer PP   		as Plugin 	(Brief = "External Physical Properties", Type = "PP");
-outer NComp   	as Integer	(Brief = "Number of chemical components", Lower = 1);
-	rho60F 	as dens_mass;
-
-	VARIABLES
-	Pratio 	as positive			(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
-	Pdrop	as press_delta		(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
-	Qv		as flow_vol			(Brief = "Volumetric Flow");
-	fc 		as positive			(Brief = "Opening Function");
-	cv		as positive			(Brief = "Valve Coefficient", Unit = 'm^3/h/kPa^0.5');
-	Gf		as positive			(Brief = "Specific Gravity");
-	rho 	as dens_mass;	
-	vm		as vol_mol			(Brief = "Mixture Molar Volume");	
-	x 		as fraction 		(Brief = "Opening");
-in	Inlet 	as stream			(Brief = "Inlet stream", PosX=0, PosY=0.7365, Symbol="_{in}");
-out	Outlet 	as streamPH			(Brief = "Outlet stream", PosX=1, PosY=0.7365, Symbol="_{out}");
-	
-	SET
-	rho60F = 999.02	* 'kg/m^3';
-	
-	EQUATIONS
-	"Pressure Drop"
-	Outlet.P  = Inlet.P - Pdrop;
-
-	"Pressure Ratio"
-	Outlet.P = Inlet.P * Pratio;
-	
-	"Enthalpy Balance"
-	Outlet.h = Inlet.h;
-	
-	"Molar Balance"
-	Outlet.F = Inlet.F;
-	
-	"Calculate Outlet Composition"
-	Outlet.z = Inlet.z;
-
-	if Pdrop > 0 then
-		"Valve Equation - Flow"
-		Qv = fc*cv*sqrt(Pdrop/Gf);	
-	else
-		"Valve Equation - Closed"
-		Qv = 0 * 'm^3/h';
-	end
-	
-	"Calculate Gf"
-	Gf = rho/rho60F;
-	
-	"Calculate Specific Mass"
-	rho = PP.LiquidDensity(Inlet.T,Inlet.P,Inlet.z);
-	
-	"Calculate Mass Flow"
-	Qv = Inlet.F*vm;	
-	
-	"Calculate Liquid Molar Volume"
-	vm = PP.LiquidVolume(Inlet.T,Inlet.P,Inlet.z);
-	
-	switch valve_type
-	case "linear":
-
-		"Opening Equation"
-		fc = x;
-
-	case "parabolic":
-
-		"Opening Equation"
-		fc = x^2;
-
-	case "equal":
-
-		"Opening Equation"
-		fc = x^2/(2-x^4)^(1/2);
-
-	case "quick":
-	
-		"Opening Equation"
-		fc = 10*x/sqrt(1+99*x^2);
-
-	case "hyperbolic":
-
-		"Opening Equation"
-		fc = 0.1*x/sqrt(1-0.99*x^2);
-
-	end
-end
-
 #*-------------------------------------------------------------------
 * Model of a valve (simplified)
 *-------------------------------------------------------------------- 
@@ -203,7 +89,7 @@ out	Outlet 	as streamPH	(Brief = "Outlet stream", PosX=1, PosY=0.7365, Symbol="_
 	v = Inlet.v*PP.VapourVolume((Inlet.T+Outlet.T)/2, (Inlet.P+Outlet.P)/2, Outlet.z) +
 		(1-Inlet.v)*PP.LiquidVolume((Inlet.T+Outlet.T)/2, (Inlet.P+Outlet.P)/2, Outlet.z);
 
-	if Pdrop > 0 then
+	if Pdrop > 0 * 'atm' then
 		"Flow"
 		Outlet.F * v = k*x*sqrt(Pdrop * rho_ref / rho ) ;
 	else
@@ -211,3 +97,249 @@ out	Outlet 	as streamPH	(Brief = "Outlet stream", PosX=1, PosY=0.7365, Symbol="_
 		Outlet.F = 0 * 'kmol/h';
 	end
 end
+
+Model valve_flow
+
+ATTRIBUTES
+	Pallete = true;
+	Icon 	= "icon/Valve"; 
+	Brief 	= "Model of a very simple valve for setting the flow with a controller.";
+	Info 	=
+"== ASSUMPTIONS ==
+* nothing happens in this valve
+
+== SET ==
+* MinFlow: the Minimum Flow Allowable in the valve;
+* MaxFlow: the Maximum Flow Allowable in the valve;
+
+== SPECIFY ==
+* the Inlet stream
+* the FlowFraction (the model requires an inlet signal, also you can use a controller for setting the FlowFraction)
+";
+
+PARAMETERS
+	outer PP 		as Plugin	(Brief = "External Physical Properties", Type="PP");
+	outer NComp 	as Integer 	(Brief="Number of Components");
+
+	MinFlow as flow_mol(Brief="Minimum Flow Allowable in the valve", Default=0);
+	MaxFlow as flow_mol(Brief="Maximum Flow Allowable in the valve", Default=1000);
+	
+VARIABLES
+
+in	Inlet 			as stream	(Brief ="Inlet stream", PosX=0, PosY=0.7365, Symbol="_{in}",Protected=true);
+out	Outlet 			as stream	(Brief ="Outlet stream", PosX=1, PosY=0.7365, Symbol="_{out}",Protected=true);
+in	FlowFraction 	as control_signal (Brief ="Flow Signal", PosX=0.5, PosY=0,Protected=true);
+	
+EQUATIONS
+"Overall Molar Balance"
+	Outlet.F = Inlet.F;
+
+"Temperature"
+	Outlet.T = Inlet.T;
+
+"Pressure"
+	Outlet.P = Inlet.P;
+
+"Energy Balance"
+	Outlet.h = Inlet.h;
+
+"Vapour fraction"
+	Outlet.v = Inlet.v;
+
+"Componente Molar Balance"
+	Outlet.z = Inlet.z;
+
+"Flow computation"
+	Outlet.F = MinFlow + FlowFraction*(MaxFlow-MinFlow);
+
+end
+
+Model valve
+
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Valve"; 
+	Brief 	= "Model of a valve.";
+	Info 		=
+"== Model of valves ==
+* Linear;
+* Parabolic;
+* Equal;
+* Quick;
+* Hyperbolic.
+	
+== Assumptions ==
+* First Order Dynamic;
+* Only Liquid or Only Vapour;
+* Isentalpic.
+	
+== Specify ==
+* the valve type;
+* the Valve Coefficient (Cv);
+* the valve time constant (Tau).
+";
+
+PARAMETERS
+
+outer PP   			as Plugin 	(Brief = "External Physical Properties", Type = "PP");
+outer NComp   	as Integer	(Brief = "Number of chemical components", Lower = 1);
+
+	ValveType 	as Switcher 		(Valid = ["linear", "parabolic", "equal", "quick", "hyperbolic"], Default = "linear");
+	ValidPhases	as Switcher		(Brief = "Valid Phases for Flash Calculation", Valid = ["Vapour-Only", "Liquid-Only"], Default="Liquid-Only");
+#	Tau		    	as time_sec 		(Brief="valve time constant");
+	rho60F 			as dens_mass		(Brief = "Water Mass Density at 60 F",Hidden=true);	
+
+VARIABLES
+	W as flow_mass(DisplayUnit='kg/s');
+	Pdrop			as press_delta		(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+	Fvol				as flow_vol			(Brief = "Volumetric Flow");
+	fc 				as positive			(Brief = "Opening Function",Hidden=true);
+	Cv 				as Real 				(Brief="Valve Flow Coefficient", Unit='gal/min/psi^0.5');
+	Cv1 				as Real 				(Brief="Valve Flow Coefficient", Unit='m^2');
+	Cg				as Real 				(Brief="Valve Gas Flow Coefficient", Unit='ft^3/h/psi');
+	C				as Real 				(Brief="Liquid-gas Coefficient Ratio", Unit='(ft^3/gal)*(min/h)/(psi^.5)');
+	StemPosition	as fraction 			(Brief = "Actual valve stem position");
+	a as Real;
+	#b as Real (Brief="d", Unit='1/(psi^.5)');
+	vm				as vol_mol			(Brief = "Mixture Molar Volume");
+	rho 				as dens_mass 		(Brief = "Mixture Mass Density");	
+#	vsp 				as fraction 			(Brief = "Valve stem position",Hidden=true);
+	
+in		Inlet 	as stream			(Brief = "Inlet stream", PosX=0, PosY=0.7365, Symbol="_{in}");
+out	Outlet 	as streamPH		(Brief = "Outlet stream", PosX=1, PosY=0.7365, Symbol="_{out}");
+#in		vsignal	as fraction 		(Brief = "Flow Signal", PosX=0.5, PosY=0);
+
+SET
+
+	rho60F = 984.252	* 'kg/m^3';
+	
+EQUATIONS
+
+#"First order valve dynamics"
+#	Tau*diff(StemPosition) = vsp-StemPosition;
+
+#"Flow Signal"
+#	vsp = vsignal;
+
+"Pressure Drop"
+	Outlet.P  = Inlet.P - Pdrop;
+
+"Enthalpy Balance"
+	Outlet.h = Inlet.h;
+	
+"Molar Balance"
+	Outlet.F = Inlet.F;
+	
+"Outlet Composition"
+	Outlet.z = Inlet.z;
+	
+	Cv1=Cv*'1/(gal/min/psi^0.5)'*2.3837e-5*'m^2';
+
+switch ValidPhases
+		
+#############################################################
+
+	case "Liquid-Only":
+	
+if Pdrop > 0 * 'atm' then
+
+"Valve Equation - Liquid Flow"
+	Fvol = fc*(Cv/sqrt(1/rho60F))*sqrt(Pdrop/rho);
+	"Liquid-gas Coefficient Ratio"
+	C*Cv=Cg;
+a=1/(1.6764e-2*C*'1/((ft^3/gal)*(min/h)/(psi^.5))')*sqrt(Pdrop/Inlet.P); 	
+else
+
+"Valve Equation - Liquid Flow"
+	Fvol = fc*(Cv/sqrt(1/rho60F))*sqrt(Pdrop/rho);
+	"Liquid-gas Coefficient Ratio"
+	C*Cv=Cg;
+a=1/(1.6764e-2*C*'1/((ft^3/gal)*(min/h)/(psi^.5))')*sqrt(Pdrop/Inlet.P); 
+end
+	
+"Liquid Mass Density"
+	rho = PP.LiquidDensity(Inlet.T,Inlet.P,Inlet.z);
+
+"Liquid Molar Volume"
+	vm = PP.LiquidVolume(Inlet.T,Inlet.P,Inlet.z);
+	
+
+	
+############################################################
+
+	case "Vapour-Only":
+	
+if Pdrop > 0 * 'atm' then #Update for gas flow !!!!
+	
+"Liquid-gas Coefficient Ratio"
+	C*Cv=Cg;
+	a=1/(1.6764e-2*C*'1/((ft^3/gal)*(min/h)/(psi^.5))')*sqrt(Pdrop/Inlet.P); 
+
+	if 1.5708 > a then
+	"Valve Equation - Vapour Flow"
+		#Fvol = fc*Cg*sqrt(Inlet.P/1000*rho60F/rho);####rho60f/rho ok!!!!
+		#Fvol = fc*Cv*sqrt(Pdrop/1000*rho60F/rho);
+		#W = fc*Cv1*sqrt(Pdrop/1000*rho);
+		Fvol = fc*0.13446*'psi^.5'*Cg*sqrt(Inlet.P/1000*rho60F/rho)*sin(a*'rad');
+		
+	else
+	"Valve Equation - Vapour Flow"
+		Fvol = fc*0.13446*Cv*sqrt(Inlet.P*rho60F/rho);
+	end
+else
+
+"Valve Equation - Vapour Flow"
+	Fvol = fc*(Cv/sqrt(1/rho60F))*sqrt(Pdrop/rho);
+
+"Liquid-gas Coefficient Ratio"
+	C*Cv=Cg;
+	a=1/(1.6764e-2*C*'1/((ft^3/gal)*(min/h)/(psi^.5))')*sqrt(Pdrop/Inlet.P); 
+end
+	
+"Vapour Mass Density"
+	rho = PP.VapourDensity(Inlet.T,Inlet.P,Inlet.z);
+	#rho=3.708741*'kg/m^3';
+"Vapour Molar Volume"
+	vm = PP.VapourVolume(Inlet.T,Inlet.P,Inlet.z);
+	
+end
+
+######################################################
+
+"Calculate Mass Flow"
+	Fvol = Inlet.F*vm;
+	
+	W=Fvol*rho;
+	
+	
+switch ValveType #Update the valve Type
+	
+	case "linear":
+
+		"Opening Equation"
+		fc = StemPosition;
+
+	case "parabolic":
+
+		"Opening Equation"
+		fc = StemPosition^2;
+
+	case "equal":
+
+		"Opening Equation"
+		fc = StemPosition^2/(2-StemPosition^4)^(1/2);
+
+	case "quick":
+	
+		"Opening Equation"
+		fc = 10*StemPosition/sqrt(1+99*StemPosition^2);
+
+	case "hyperbolic":
+
+		"Opening Equation"
+		fc = 0.1*StemPosition/sqrt(1-0.99*StemPosition^2);
+
+	end
+
+end
+

@@ -48,9 +48,9 @@ outer NComp 	as Integer	(Brief = "Number of chemical components", Lower = 1);
 	
 	VARIABLES
 in	Inlet	as stream (Brief="Feed stream", PosX=0, PosY=0.9385, Symbol="_{in}");
-in	InletL 	as stream (Brief="Liquid inlet stream", PosX=0.5, PosY=0.1984, Symbol="_{inL}"); # FIXME
-out	OutletV as vapour_stream (Brief="Vapour outlet stream", PosX=1, PosY=0.1984, Symbol="_{outV}");
-in	InletQ 	as energy_stream (Brief="Heat supplied", PosX=1, PosY=0.9578, Symbol="_{in}");
+in	InletLiquid 	as stream (Brief="Liquid inlet stream", PosX=0.5, PosY=0.1984, Symbol="_{inL}"); # FIXME
+out	OutletVapour as vapour_stream (Brief="Vapour outlet stream", PosX=1, PosY=0.1984, Symbol="_{outV}");
+in	InletQ 	as power (Brief="Heat supplied", PosX=1, PosY=0.9578, Symbol="_{in}");
 
 	M(NComp) 	as mol 			(Brief="Molar Holdup in the distillator");
 	ML 			as mol 			(Brief="Molar liquid holdup");
@@ -67,36 +67,36 @@ in	InletQ 	as energy_stream (Brief="Heat supplied", PosX=1, PosY=0.9578, Symbol=
 	EQUATIONS
 	
 	"Component Molar Balance"
-	diff(M)= Inlet.F*Inlet.z + InletL.F*InletL.z - OutletV.F*OutletV.z;
+	diff(M)= Inlet.F*Inlet.z + InletLiquid.F*InletLiquid.z - OutletVapour.F*OutletVapour.z;
 	
 	"Energy Balance"
-	diff(E) = Inlet.F*Inlet.h + InletL.F*InletL.h - OutletV.F*OutletV.h + InletQ.Q;
+	diff(E) = Inlet.F*Inlet.h + InletLiquid.F*InletLiquid.h - OutletVapour.F*OutletVapour.h + InletQ;
 	
 	"Molar Holdup"
-	M = ML*x + MV*OutletV.z; 
+	M = ML*x + MV*OutletVapour.z; 
 	
 	"Energy Holdup"
-	E = ML*h + MV*OutletV.h - P*V;
+	E = ML*h + MV*OutletVapour.h - P*V;
 	
 	"Mol fraction normalisation"
 	sum(x)=1.0;
-	sum(x)=sum(OutletV.z);
+	sum(x)=sum(OutletVapour.z);
 
 	"Liquid Volume"
 	volL = PP.LiquidVolume(T, P, x);
 	
 	"Vapour Volume"
-	volV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
+	volV = PP.VapourVolume(OutletVapour.T, OutletVapour.P, OutletVapour.z);
 	
 	"Chemical Equilibrium"
 	PP.LiquidFugacityCoefficient(T, P, x)*x = 
-		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+		PP.VapourFugacityCoefficient(OutletVapour.T, OutletVapour.P, OutletVapour.z)*OutletVapour.z;
 
 	"Mechanical Equilibrium"
-	P = OutletV.P;
+	P = OutletVapour.P;
 	
 	"Thermal Equilibrium"
-	T = OutletV.T;
+	T = OutletVapour.T;
 	
 	"Geometry Constraint"
 	V = ML*volL + MV*volV;

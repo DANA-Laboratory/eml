@@ -345,7 +345,7 @@ else
 
 end
 
-for i in [1:N]
+for i in [1:N] do
 
 if InletInner.v equal 0
 	
@@ -498,14 +498,14 @@ end
 "Pipe Initial Length from Left to Right - OBS: Left: Always Inlet inner side"
 	Lincr(1) = 0*'m';
 
-for i in [1:N]
+for i in [1:N] do
 
 "Incremental Length"
 	Lincr(i+1) = i*abs(Lpipe)/N;
 
 end
 
-for i in [1:N]
+for i in [1:N] do
 
 switch innerFlowRegime
 	
@@ -535,7 +535,7 @@ end
 
 end
 
-for i in [1:N]
+for i in [1:N] do
 
 switch outerFlowRegime
 	
@@ -565,7 +565,7 @@ end
 
 end
 
-for i in [1:N]
+for i in [1:N] do
 
 switch innerFlowRegime
 	
@@ -640,7 +640,7 @@ end
 
 end
 
-for i in [1:N]
+for i in [1:N] do
 
 switch outerFlowRegime
 	
@@ -793,7 +793,7 @@ end
 
 end
 
-for i in [2:N]
+for i in [2:N] do
 
 "Incremental Enthalpy Inner Stream"
 	Inner.HeatTransfer.Enth(i) = (1-InletInner.v)*PP.LiquidEnthalpy(Inner.HeatTransfer.Tlocal(i), Inner.PressureDrop.Plocal(i), InletInner.z) + InletInner.v*PP.VapourEnthalpy(Inner.HeatTransfer.Tlocal(i), Inner.PressureDrop.Plocal(i), InletInner.z);
@@ -878,7 +878,7 @@ switch FlowDirection
 "Outer Pipe Pressure Drop for friction"
 	Outer.PressureDrop.Pd_fric(1) = 0*'kPa';
 
-for i in [1:N]
+for i in [1:N] do
    
 "Outer Pipe Local Pressure"# FIXME: NOZZLE PRESSURE DROP MUST BE ADDED
 	Outer.PressureDrop.Plocal(i+1) =	Outer.PressureDrop.Plocal(1) - Outer.PressureDrop.Pd_fric(i+1);
@@ -891,7 +891,7 @@ end
 	Outer.PressureDrop.Pdrop  = Outer.PressureDrop.Pd_fric(1)+Outer.PressureDrop.Pdnozzle_in+Outer.PressureDrop.Pdnozzle_out;
 
 
-for i in [1:N]
+for i in [1:N] do
 
 "Outer Pipe Pressure Drop for friction"			
 	Outer.PressureDrop.Pd_fric(i) = (2*Outer.PressureDrop.fi(i)*Lincr(1+N-i)*Outer.Properties.Average.rho(i)*Outer.HeatTransfer.Vmean(i)^2)/(Outer.PressureDrop.Dh*Outer.HeatTransfer.Phi(i));
@@ -901,7 +901,7 @@ end
 "Outer Pipe Pressure Drop for friction"
 	Outer.PressureDrop.Pd_fric(Npoints) = 0*'kPa';
 
-for i in [1:N]
+for i in [1:N] do
    
 "Outer Pipe Local Pressure"# FIXME: NOZZLE PRESSURE DROP MUST BE ADDED
 	Outer.PressureDrop.Plocal(i) =	Outer.PressureDrop.Plocal(Npoints) - Outer.PressureDrop.Pd_fric(i+1);
@@ -919,7 +919,7 @@ end
 "Inner Pipe Pressure Drop for friction"
 	Inner.PressureDrop.Pd_fric(1) = 0*'kPa';
 
-for i in [1:N]
+for i in [1:N] do
 
 "Inner Pipe Local Pressure"# FIXME: NOZZLE PRESSURE DROP MUST BE ADDED
 	Inner.PressureDrop.Plocal(i+1) =	Inner.PressureDrop.Plocal(1) - Inner.PressureDrop.Pd_fric(i+1);

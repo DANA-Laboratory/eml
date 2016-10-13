@@ -353,7 +353,7 @@ else
 
 end
 
-for i in [1:N]
+for i in [1:N] do
 
 if InletInner.v equal 0
 	
@@ -464,14 +464,14 @@ end
 "Pipe Initial Length from Left to Right"
 	Lincr(1) = 0*'m';
 
-for i in [1:N]
+for i in [1:N] do
 
 "Incremental Length"
 	Lincr(i+1) = i*abs(Lpipe)/N;
 
 end
 
-for i in [1:N]
+for i in [1:N] do
 
 switch innerFlowRegime
 	
@@ -501,7 +501,7 @@ end
 
 end
 
-for i in [1:N]
+for i in [1:N] do
 
 switch outerFlowRegime
 	
@@ -531,7 +531,7 @@ end
 
 end
 
-for i in [1:N]
+for i in [1:N] do
 
 switch innerFlowRegime
 	
@@ -606,7 +606,7 @@ end
 
 end
 
-for i in [1:N]
+for i in [1:N] do
 
 switch outerFlowRegime
 	
@@ -684,7 +684,7 @@ end
 
 end
 
-for i in [2:N]
+for i in [2:N] do
 
 "Incremental Enthalpy Inner Stream"
 	Inner.HeatTransfer.Enth(i) = (1-InletInner.v)*PP.LiquidEnthalpy(Inner.HeatTransfer.Tlocal(i), Inner.PressureDrop.Plocal(i), InletInner.z) + InletInner.v*PP.VapourEnthalpy(Inner.HeatTransfer.Tlocal(i), Inner.PressureDrop.Plocal(i), InletInner.z);
@@ -748,23 +748,6 @@ ATTRIBUTES
 	Brief 	= "Incremental Hairpin Heat Exchanger. ";
 	Info 		=
 "Incremental approach for Hairpin heat exchanger. ";
-
-PARAMETERS
-
-outer PP 	    	as Plugin		(Brief="External Physical Properties", Type="PP");
-outer NComp   	as Integer   	(Brief="Number of Components");
-	
-outer	Pi				as constant 	(Brief="Pi Number",Default=3.14159265, Symbol = "\pi");
-outer	N   			as Integer   	(Brief="Number of zones", Default = 2);
-outer	Npoints   	as Integer   	(Brief="Number of incremental points", Default = 3);
-
-outer	DoInner 	as length			(Brief="Outside Diameter of Inner Pipe",Lower=1e-6);
-outer	DiInner		as length			(Brief="Inside Diameter of Inner Pipe",Lower=1e-10);
-outer	DiOuter		as length			(Brief="Inside Diameter of Outer pipe",Lower=1e-10);
-outer	Lpipe		as length			(Brief="Effective Tube Length of one segment of Pipe",Lower=0.1, Symbol = "L_{pipe}");
-outer	Kwall		as conductivity 	(Brief="Tube Wall Material Thermal Conductivity",Default=1.0, Symbol = "K_{wall}");
-outer	Rfi			as positive		(Brief="Inside Fouling Resistance",Unit='m^2*K/kW',Default=1e-6,Lower=0);
-outer	Rfo			as positive		(Brief="Outside Fouling Resistance",Unit='m^2*K/kW',Default=1e-6,Lower=0);
 
 EQUATIONS
 
@@ -834,7 +817,7 @@ end
 "Pressure of Outer Side - Outlet Boundary"
 	Outer.PressureDrop.Plocal(1) = OutletOuter.P;
 
-for i in [1:N]
+for i in [1:N] do
 
 "Outer Pipe Pressure Drop for friction"			
 	Outer.PressureDrop.Pd_fric(i) = (2*Outer.PressureDrop.fi(i)*Lincr(1+Npoints-i)*Outer.Properties.Average.rho(i)*Outer.HeatTransfer.Vmean(i)^2)/(Outer.PressureDrop.Dh*Outer.HeatTransfer.Phi(i));
@@ -859,24 +842,6 @@ ATTRIBUTES
 	Brief 		= "Incremental Hairpin Heat Exchanger. ";
 	Info 		=
 "Incremental approach for Hairpin heat exchanger. ";
-
-PARAMETERS
-
-outer PP 	    	as Plugin		(Brief="External Physical Properties", Type="PP");
-outer NComp   	as Integer   	(Brief="Number of Components");
-
-outer	Pi				as constant 	(Brief="Pi Number",Default=3.14159265, Symbol = "\pi");
-outer	N   			as Integer   	(Brief="Number of zones", Default = 2);
-outer  	Npoints   	as Integer   	(Brief="Number of incremental points", Default = 3);
-	
-
-outer	DoInner 	as length			(Brief="Outside Diameter of Inner Pipe",Lower=1e-6);
-outer	DiInner		as length			(Brief="Inside Diameter of Inner Pipe",Lower=1e-10);
-outer	DiOuter		as length			(Brief="Inside Diameter of Outer pipe",Lower=1e-10);
-outer	Lpipe		as length			(Brief="Effective Tube Length of one segment of Pipe",Lower=0.1, Symbol = "L_{pipe}");
-outer	Kwall		as conductivity 	(Brief="Tube Wall Material Thermal Conductivity",Default=1.0, Symbol = "K_{wall}");
-outer	Rfi			as positive		(Brief="Inside Fouling Resistance",Unit='m^2*K/kW',Default=1e-6,Lower=0);
-outer	Rfo			as positive		(Brief="Outside Fouling Resistance",Unit='m^2*K/kW',Default=1e-6,Lower=0);
 
 EQUATIONS
 
@@ -947,7 +912,7 @@ end
 "Pressure of Inner Side - Outlet Boundary"
 	Inner.PressureDrop.Plocal(1) = OutletInner.P;
 
-for i in [1:N]
+for i in [1:N] do
 
 "Inner Pipe Pressure Drop for friction"			
 	Inner.PressureDrop.Pd_fric(i) = (2*Inner.PressureDrop.fi(i)*Lincr(1+Npoints-i)*Inner.Properties.Average.rho(i)*Inner.HeatTransfer.Vmean(i)^2)/(DiInner*Inner.HeatTransfer.Phi(i));
@@ -1039,7 +1004,7 @@ EQUATIONS
 	Summary.Outer.Pdrop	= Summary.Outer.Pdnozzle_in+Summary.Outer.Pdnozzle_out+LowerPipe.Outer.PressureDrop.Pd_fric(Npoints)
 	+UpperPipe.Outer.PressureDrop.Pd_fric(1);
 
-for i in [1:N]
+for i in [1:N] do
 
 "Outer Pipe Local Pressure"# FIXME: NOZZLE PRESSURE DROP MUST BE ADDED
 	UpperPipe.Outer.PressureDrop.Plocal(i) =	UpperPipe.Outer.PressureDrop.Plocal(Npoints) - UpperPipe.Outer.PressureDrop.Pd_fric(i);

@@ -1,0 +1,66 @@
+ #*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*---------------------------------------------------------------------
+* Author: Gerson Bicca
+*$Id$									
+*-------------------------------------------------------------------*#
+
+using "streams";
+	
+Model flow_measurement
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/flow_measurement"; 
+	Brief 	= "Model to measure the flow rate in a pipe line. ";
+
+PARAMETERS
+
+outer PP as Plugin(Type="PP");
+outer NComp as Integer;
+		FlowConst 				as flow_mol				(Brief = "Flow Constant", Hidden=true);
+
+VARIABLES
+in		Inlet 				as stream				(Brief = "Inlet stream", PosX=0, PosY=0.78,Protected=true);
+out	Outlet 				as stream				(Brief = "Outlet stream", PosX=1, PosY=0.78,Protected=true);
+out	FlowSignal 		as control_signal 	(Brief="Flow Signal", PosX=0.5, PosY=0,Protected=true);
+
+SET
+
+	FlowConst = 1*'kmol/h';
+
+EQUATIONS
+"Overall Molar Balance"
+	Outlet.F = Inlet.F;
+
+"Temperature"
+	Outlet.T = Inlet.T;
+
+"Pressure"
+	Outlet.P = Inlet.P;
+
+"Energy Balance"
+	Outlet.h = Inlet.h;
+
+"Vapour fraction"
+	Outlet.v = Inlet.v;
+
+"Componente Molar Balance"
+	Outlet.z = Inlet.z;
+
+"Flow Measurement in kmol/h"
+	FlowSignal*FlowConst = Inlet.F;
+
+end
+
